@@ -1,0 +1,39 @@
+// use prisma-8
+
+model Cidade {
+  id       Uuid    @id @default(uuid())
+  nome     String
+  uf       String
+  lat      Decimal?
+  lng      Decimal?
+  contatos Contato[]
+
+  @@unique([nome, uf])
+  @@map("cidades")
+  @@rls
+}
+
+model Contato {
+  id                   Uuid      @id @default(uuid())
+  nome                 String
+  telefone             String?
+  cidadeId             Uuid      @map("cidade_id")
+  endereco             String?
+  status               String    @default("lead")
+  origem               String?
+  natural              Boolean?
+  cor                  String?
+  textura              String?
+  quimica              String?
+  comprimentoCm        Int?      @map("comprimento_cm")
+  cicloRecompraMeses   Int       @default(8) @map("ciclo_recompra_meses")
+  observacoes           String?
+  createdAt             temporal.createdAt() @map("created_at")
+  updatedAt             temporal.updatedAt() @map("updated_at")
+  deletedAt             DateTime? @map("deleted_at")
+
+  cidade Cidade @relation(fields: [cidadeId], references: [id])
+
+  @@map("contatos")
+  @@rls
+}
