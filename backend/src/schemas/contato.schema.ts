@@ -20,3 +20,14 @@ export const criarContatoSchema = z.object({
 });
 
 export type CriarContatoInput = z.infer<typeof criarContatoSchema>;
+
+export const atualizarContatoSchema = criarContatoSchema
+  .partial()
+  .refine(
+    (data) => Object.keys(data).length > 0,
+    {
+      message: "Informe pelo menos um campo para atualizar",
+    },
+  );
+
+export type AtualizarContatoInput = z.infer<typeof atualizarContatoSchema>;

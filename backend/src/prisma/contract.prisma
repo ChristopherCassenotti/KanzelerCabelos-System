@@ -33,7 +33,27 @@ model Contato {
   deletedAt             DateTime? @map("deleted_at")
 
   cidade Cidade @relation(fields: [cidadeId], references: [id])
+  fotos  Foto[]
 
   @@map("contatos")
+  @@rls
+}
+
+model Foto {
+  id        Uuid   @id @default(uuid())
+  contatoId Uuid   @map("contato_id")
+
+  tipo      String?
+  url       String
+  thumbUrl  String? @map("thumb_url")
+  ordem     Int      @default(0)
+
+  createdAt temporal.createdAt() @map("created_at")
+  updatedAt temporal.updatedAt() @map("updated_at")
+
+  contato Contato @relation(fields: [contatoId], references: [id])
+
+  @@index([contatoId])
+  @@map("fotos")
   @@rls
 }

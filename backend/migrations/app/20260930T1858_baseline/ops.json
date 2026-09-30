@@ -1,0 +1,298 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.cidades",
+    "label": "Create table \"cidades\"",
+    "summary": "Creates table \"cidades\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "cidades"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"cidades\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cidades\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"cidades\"",
+        "sql": "CREATE TABLE \"public\".\"cidades\" (\n  \"id\" uuid NOT NULL,\n  \"lat\" numeric,\n  \"lng\" numeric,\n  \"nome\" text NOT NULL,\n  \"uf\" character(2) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"cidades\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"cidades\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.contatos",
+    "label": "Create table \"contatos\"",
+    "summary": "Creates table \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"contatos\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"contatos\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"contatos\"",
+        "sql": "CREATE TABLE \"public\".\"contatos\" (\n  \"ciclo_recompra_meses\" int4 DEFAULT 8 NOT NULL,\n  \"cidade_id\" uuid NOT NULL,\n  \"comprimento_cm\" int4,\n  \"cor\" text,\n  \"created_at\" timestamptz NOT NULL,\n  \"deleted_at\" timestamptz,\n  \"endereco\" text,\n  \"id\" uuid NOT NULL,\n  \"natural\" bool,\n  \"nome\" text NOT NULL,\n  \"observacoes\" text,\n  \"origem\" text,\n  \"quimica\" text,\n  \"status\" text DEFAULT 'lead' NOT NULL,\n  \"telefone\" text,\n  \"textura\" text,\n  \"updated_at\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"contatos\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"contatos\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.cidades.cidades_nome_uf_key",
+    "label": "Add unique constraint on \"cidades\" (nome, uf)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "cidades_nome_uf_key",
+        "table": "cidades"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"cidades_nome_uf_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cidades_nome_uf_key",
+          "public",
+          "\"public\".\"cidades\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"cidades_nome_uf_key\"",
+        "sql": "ALTER TABLE \"public\".\"cidades\" ADD CONSTRAINT \"cidades_nome_uf_key\" UNIQUE (\"nome\", \"uf\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"cidades_nome_uf_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "cidades_nome_uf_key",
+          "public",
+          "\"public\".\"cidades\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.contatos.contatos_cidade_id_idx_3c7827ff",
+    "label": "Create index \"contatos_cidade_id_idx_3c7827ff\" on \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "contatos_cidade_id_idx_3c7827ff",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"contatos_cidade_id_idx_3c7827ff\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"contatos_cidade_id_idx_3c7827ff\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"contatos_cidade_id_idx_3c7827ff\"",
+        "sql": "CREATE INDEX \"contatos_cidade_id_idx_3c7827ff\" ON \"public\".\"contatos\" (\"cidade_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"contatos_cidade_id_idx_3c7827ff\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"contatos_cidade_id_idx_3c7827ff\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.contatos.contatos_cidade_id_fkey",
+    "label": "Add foreign key \"contatos_cidade_id_fkey\" on \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "contatos_cidade_id_fkey",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"contatos_cidade_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "contatos_cidade_id_fkey",
+          "public",
+          "\"public\".\"contatos\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"contatos_cidade_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\"\nADD CONSTRAINT \"contatos_cidade_id_fkey\"\nFOREIGN KEY (\"cidade_id\")\nREFERENCES \"public\".\"cidades\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"contatos_cidade_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "contatos_cidade_id_fkey",
+          "public",
+          "\"public\".\"contatos\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.cidades",
+    "label": "Enable row-level security on \"cidades\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "cidades"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"cidades\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "cidades"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"cidades\"",
+        "sql": "ALTER TABLE \"public\".\"cidades\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"cidades\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "cidades"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.contatos",
+    "label": "Enable row-level security on \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"contatos\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "contatos"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"contatos\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"contatos\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "contatos"
+        ]
+      }
+    ]
+  }
+]

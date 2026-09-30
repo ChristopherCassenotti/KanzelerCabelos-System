@@ -11,6 +11,10 @@
     "contatos": {
       "model": "Contato",
       "namespace": "public"
+    },
+    "fotos": {
+      "model": "Foto",
+      "namespace": "public"
     }
   },
   "domain": {
@@ -232,6 +236,21 @@
                   "model": "Cidade",
                   "namespace": "public"
                 }
+              },
+              "fotos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "contatoId"
+                  ]
+                },
+                "to": {
+                  "model": "Foto",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
@@ -291,6 +310,114 @@
               "namespaceId": "public",
               "table": "contatos"
             }
+          },
+          "Foto": {
+            "fields": {
+              "contatoId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "ordem": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "thumbUrl": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tipo": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "url": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "contato": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "contatoId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Contato",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "contatoId": {
+                  "column": "contato_id"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "ordem": {
+                  "column": "ordem"
+                },
+                "thumbUrl": {
+                  "column": "thumb_url"
+                },
+                "tipo": {
+                  "column": "tipo"
+                },
+                "updatedAt": {
+                  "column": "updated_at"
+                },
+                "url": {
+                  "column": "url"
+                }
+              },
+              "namespaceId": "public",
+              "table": "fotos"
+            }
           }
         }
       }
@@ -310,6 +437,11 @@
               "kind": "rls",
               "namespaceId": "public",
               "tableName": "contatos"
+            },
+            "fotos": {
+              "kind": "rls",
+              "namespaceId": "public",
+              "tableName": "fotos"
             }
           },
           "table": {
@@ -487,6 +619,88 @@
                 ]
               },
               "uniques": []
+            },
+            "fotos": {
+              "columns": {
+                "contato_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "ordem": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "thumb_url": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "tipo": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "url": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "source": {
+                    "columns": [
+                      "contato_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "fotos"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "contatos"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "contato_id"
+                  ],
+                  "name": "fotos_contato_id_idx_f7fc9452",
+                  "prefix": "fotos_contato_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
             }
           }
         },
@@ -494,10 +708,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "6e5a8808ac8b9bb9d4d4def6aca7523ae5f6ae4d865e95034e594483e275b575"
+    "storageHash": "423d4f5fae7be6308bbf0b0a1b8b720ec49b75d0df9f3b22e9a6b16a464e30c5"
   },
   "execution": {
-    "executionHash": "8cf149c319f8101a923da18b1a7ed4e13d3649679edeb46e42ea5135426698c3",
+    "executionHash": "25a22c45589c7c4be342ee18e399d349da5f69c2500b5b9a16cbf0b6290dca44",
     "mutations": {
       "defaults": [
         {
@@ -544,6 +758,43 @@
           },
           "ref": {
             "entry": "contatos",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "fotos",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "fotos",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "fotos",
             "field": "updated_at",
             "namespace": "public"
           }

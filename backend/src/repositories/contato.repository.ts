@@ -1,5 +1,5 @@
 import { db } from "../prisma/db";
-import type { CriarContatoModel } from "../models/contato.model";
+import type { CriarContatoModel, AtualizarContatoModel } from "../models/contato.model";
 
 export class ContatoRepository {
   async create(data: CriarContatoModel) {
@@ -22,4 +22,47 @@ export class ContatoRepository {
       observacoes: data.observacoes,
     });
   }
+
+  async findAll() {
+    return db.orm.public.Contato
+      .where({
+        deletedAt: null,
+      })
+      .orderBy((contato) => contato.createdAt.desc())
+      .all();
+  }
+
+  async findById(id: string) {
+    return db.orm.public.Contato
+      .include("cidade")
+      .where({
+        deletedAt: null,
+      })
+      .first({
+        id,
+      });
+  }
+
+  async update(id: string, data: AtualizarContatoModel) {
+    return db.orm.public.Contato
+      .where({
+        id,
+        deletedAt: null,
+      })
+      .update(data);
+  }
+
+  async softDelete(id: string) {
+    return db.orm.public.Contato
+      .where({
+        id,
+        deletedAt: null,
+      })
+      .update({
+        deletedAt: Temporal.Now.instant(),
+      });
+  }
 }
+
+
+
