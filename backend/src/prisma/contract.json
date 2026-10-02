@@ -8,18 +8,66 @@
       "model": "Cidade",
       "namespace": "public"
     },
+    "compras": {
+      "model": "Compra",
+      "namespace": "public"
+    },
     "contatos": {
       "model": "Contato",
       "namespace": "public"
     },
+    "dias_rota": {
+      "model": "DiaRota",
+      "namespace": "public"
+    },
     "fotos": {
       "model": "Foto",
+      "namespace": "public"
+    },
+    "itens_rota": {
+      "model": "ItemRota",
       "namespace": "public"
     }
   },
   "domain": {
     "namespaces": {
       "public": {
+        "enum": {
+          "ResultadoItemRota": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "Comprou",
+                "value": "comprou"
+              },
+              {
+                "name": "NaoComprou",
+                "value": "nao_comprou"
+              },
+              {
+                "name": "NaoAtendeu",
+                "value": "nao_atendeu"
+              },
+              {
+                "name": "Remarcar",
+                "value": "remarcar"
+              }
+            ]
+          },
+          "TipoItemRota": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "Visita",
+                "value": "visita"
+              },
+              {
+                "name": "Tarefa",
+                "value": "tarefa"
+              }
+            ]
+          }
+        },
         "models": {
           "Cidade": {
             "fields": {
@@ -74,6 +122,21 @@
                   "model": "Contato",
                   "namespace": "public"
                 }
+              },
+              "diasRotaPartida": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "partidaCidadeId"
+                  ]
+                },
+                "to": {
+                  "model": "DiaRota",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
@@ -96,6 +159,184 @@
               },
               "namespaceId": "public",
               "table": "cidades"
+            }
+          },
+          "Compra": {
+            "fields": {
+              "comprador": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "comprimentoCm": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "contatoId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "cor": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "dataCorte": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/date-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "dataRevenda": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/date-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "formaPagamento": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "pesoG": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "quimica": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "textura": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "valorPago": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "valorRevenda": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "contato": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "contatoId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Contato",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "comprador": {
+                  "column": "comprador"
+                },
+                "comprimentoCm": {
+                  "column": "comprimento_cm"
+                },
+                "contatoId": {
+                  "column": "contato_id"
+                },
+                "cor": {
+                  "column": "cor"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "dataCorte": {
+                  "column": "data_corte"
+                },
+                "dataRevenda": {
+                  "column": "data_revenda"
+                },
+                "formaPagamento": {
+                  "column": "forma_pagamento"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "pesoG": {
+                  "column": "peso_g"
+                },
+                "quimica": {
+                  "column": "quimica"
+                },
+                "textura": {
+                  "column": "textura"
+                },
+                "updatedAt": {
+                  "column": "updated_at"
+                },
+                "valorPago": {
+                  "column": "valor_pago"
+                },
+                "valorRevenda": {
+                  "column": "valor_revenda"
+                }
+              },
+              "namespaceId": "public",
+              "table": "compras"
             }
           },
           "Contato": {
@@ -153,6 +394,13 @@
                 "nullable": false,
                 "type": {
                   "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "motivoPerda": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -237,6 +485,21 @@
                   "namespace": "public"
                 }
               },
+              "compras": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "contatoId"
+                  ]
+                },
+                "to": {
+                  "model": "Compra",
+                  "namespace": "public"
+                }
+              },
               "fotos": {
                 "cardinality": "1:N",
                 "on": {
@@ -249,6 +512,21 @@
                 },
                 "to": {
                   "model": "Foto",
+                  "namespace": "public"
+                }
+              },
+              "itensRota": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "contatoId"
+                  ]
+                },
+                "to": {
+                  "model": "ItemRota",
                   "namespace": "public"
                 }
               }
@@ -278,6 +556,9 @@
                 },
                 "id": {
                   "column": "id"
+                },
+                "motivoPerda": {
+                  "column": "motivo_perda"
                 },
                 "natural": {
                   "column": "natural"
@@ -309,6 +590,179 @@
               },
               "namespaceId": "public",
               "table": "contatos"
+            }
+          },
+          "DiaRota": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "custoAlimentacao": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "custoCombustivel": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "custoHospedagem": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "custoOutros": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "data": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/date-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "distanciaKm": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "duracaoMin": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "horaSaida": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/time-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "minutosPorVisita": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "partidaCidadeId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "itens": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "diaRotaId"
+                  ]
+                },
+                "to": {
+                  "model": "ItemRota",
+                  "namespace": "public"
+                }
+              },
+              "partidaCidade": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "partidaCidadeId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Cidade",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "custoAlimentacao": {
+                  "column": "custo_alimentacao"
+                },
+                "custoCombustivel": {
+                  "column": "custo_combustivel"
+                },
+                "custoHospedagem": {
+                  "column": "custo_hospedagem"
+                },
+                "custoOutros": {
+                  "column": "custo_outros"
+                },
+                "data": {
+                  "column": "data"
+                },
+                "distanciaKm": {
+                  "column": "distancia_km"
+                },
+                "duracaoMin": {
+                  "column": "duracao_min"
+                },
+                "horaSaida": {
+                  "column": "hora_saida"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "minutosPorVisita": {
+                  "column": "minutos_por_visita"
+                },
+                "partidaCidadeId": {
+                  "column": "partida_cidade_id"
+                },
+                "updatedAt": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "dias_rota"
             }
           },
           "Foto": {
@@ -418,6 +872,172 @@
               "namespaceId": "public",
               "table": "fotos"
             }
+          },
+          "ItemRota": {
+            "fields": {
+              "concluido": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "contatoId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "diaRotaId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "hora": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/time-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "ordem": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "resultado": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "ResultadoItemRota",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "tipo": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "TipoItemRota",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "titulo": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "contato": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "contatoId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Contato",
+                  "namespace": "public"
+                }
+              },
+              "diaRota": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "diaRotaId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "DiaRota",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "concluido": {
+                  "column": "concluido"
+                },
+                "contatoId": {
+                  "column": "contato_id"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "diaRotaId": {
+                  "column": "dia_rota_id"
+                },
+                "hora": {
+                  "column": "hora"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "ordem": {
+                  "column": "ordem"
+                },
+                "resultado": {
+                  "column": "resultado"
+                },
+                "tipo": {
+                  "column": "tipo"
+                },
+                "titulo": {
+                  "column": "titulo"
+                },
+                "updatedAt": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "itens_rota"
+            }
           }
         }
       }
@@ -433,15 +1053,30 @@
               "namespaceId": "public",
               "tableName": "cidades"
             },
+            "compras": {
+              "kind": "rls",
+              "namespaceId": "public",
+              "tableName": "compras"
+            },
             "contatos": {
               "kind": "rls",
               "namespaceId": "public",
               "tableName": "contatos"
             },
+            "dias_rota": {
+              "kind": "rls",
+              "namespaceId": "public",
+              "tableName": "dias_rota"
+            },
             "fotos": {
               "kind": "rls",
               "namespaceId": "public",
               "tableName": "fotos"
+            },
+            "itens_rota": {
+              "kind": "rls",
+              "namespaceId": "public",
+              "tableName": "itens_rota"
             }
           },
           "table": {
@@ -489,6 +1124,119 @@
                 }
               ]
             },
+            "compras": {
+              "columns": {
+                "comprador": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "comprimento_cm": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
+                },
+                "contato_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "cor": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "data_corte": {
+                  "codecId": "pg/date-temporal@1",
+                  "nativeType": "date",
+                  "nullable": false
+                },
+                "data_revenda": {
+                  "codecId": "pg/date-temporal@1",
+                  "nativeType": "date",
+                  "nullable": true
+                },
+                "forma_pagamento": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "peso_g": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
+                },
+                "quimica": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "textura": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "valor_pago": {
+                  "codecId": "pg/numeric@1",
+                  "nativeType": "numeric",
+                  "nullable": false
+                },
+                "valor_revenda": {
+                  "codecId": "pg/numeric@1",
+                  "nativeType": "numeric",
+                  "nullable": true
+                }
+              },
+              "foreignKeys": [
+                {
+                  "source": {
+                    "columns": [
+                      "contato_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "compras"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "contatos"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "contato_id"
+                  ],
+                  "name": "compras_contato_id_idx_f7fc9452",
+                  "prefix": "compras_contato_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "contatos": {
               "columns": {
                 "ciclo_recompra_meses": {
@@ -534,6 +1282,11 @@
                   "codecId": "pg/uuid@1",
                   "nativeType": "uuid",
                   "nullable": false
+                },
+                "motivo_perda": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "natural": {
                   "codecId": "pg/bool@1",
@@ -611,6 +1364,14 @@
                   "name": "contatos_cidade_id_idx_3c7827ff",
                   "prefix": "contatos_cidade_id_idx",
                   "unique": false
+                },
+                {
+                  "columns": [
+                    "status"
+                  ],
+                  "name": "contatos_status_idx_e98638ab",
+                  "prefix": "contatos_status_idx",
+                  "unique": false
                 }
               ],
               "primaryKey": {
@@ -619,6 +1380,139 @@
                 ]
               },
               "uniques": []
+            },
+            "dias_rota": {
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "custo_alimentacao": {
+                  "codecId": "pg/numeric@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "0"
+                  },
+                  "nativeType": "numeric",
+                  "nullable": false
+                },
+                "custo_combustivel": {
+                  "codecId": "pg/numeric@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "0"
+                  },
+                  "nativeType": "numeric",
+                  "nullable": false
+                },
+                "custo_hospedagem": {
+                  "codecId": "pg/numeric@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "0"
+                  },
+                  "nativeType": "numeric",
+                  "nullable": false
+                },
+                "custo_outros": {
+                  "codecId": "pg/numeric@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "0"
+                  },
+                  "nativeType": "numeric",
+                  "nullable": false
+                },
+                "data": {
+                  "codecId": "pg/date-temporal@1",
+                  "nativeType": "date",
+                  "nullable": false
+                },
+                "distancia_km": {
+                  "codecId": "pg/numeric@1",
+                  "nativeType": "numeric",
+                  "nullable": true
+                },
+                "duracao_min": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
+                },
+                "hora_saida": {
+                  "codecId": "pg/time-temporal@1",
+                  "default": {
+                    "expression": "'08:00:00'::time",
+                    "kind": "function"
+                  },
+                  "nativeType": "time",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "minutos_por_visita": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 40
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "partida_cidade_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "source": {
+                    "columns": [
+                      "partida_cidade_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "dias_rota"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "cidades"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "partida_cidade_id"
+                  ],
+                  "name": "dias_rota_partida_cidade_id_idx_27c2e9f5",
+                  "prefix": "dias_rota_partida_cidade_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "data"
+                  ]
+                }
+              ]
             },
             "fotos": {
               "columns": {
@@ -701,6 +1595,175 @@
                 ]
               },
               "uniques": []
+            },
+            "itens_rota": {
+              "checks": [
+                {
+                  "expression": "\"resultado\" IN ('comprou', 'nao_comprou', 'nao_atendeu', 'remarcar')",
+                  "name": "itens_rota_resultado_check_49039db2",
+                  "prefix": "itens_rota_resultado_check"
+                },
+                {
+                  "expression": "\"tipo\" IN ('visita', 'tarefa')",
+                  "name": "itens_rota_tipo_check_c6f966b0",
+                  "prefix": "itens_rota_tipo_check"
+                }
+              ],
+              "columns": {
+                "concluido": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
+                "contato_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": true
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "dia_rota_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "hora": {
+                  "codecId": "pg/time-temporal@1",
+                  "nativeType": "time",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "ordem": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "resultado": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "ResultadoItemRota",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "tipo": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "TipoItemRota",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "titulo": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "dia_rota_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "itens_rota"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "dias_rota"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "contato_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "itens_rota"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "contatos"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "contato_id"
+                  ],
+                  "name": "itens_rota_contato_id_idx_f7fc9452",
+                  "prefix": "itens_rota_contato_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "dia_rota_id"
+                  ],
+                  "name": "itens_rota_dia_rota_id_idx_4abc0932",
+                  "prefix": "itens_rota_dia_rota_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            }
+          },
+          "valueSet": {
+            "ResultadoItemRota": {
+              "kind": "valueSet",
+              "values": [
+                "comprou",
+                "nao_comprou",
+                "nao_atendeu",
+                "remarcar"
+              ]
+            },
+            "TipoItemRota": {
+              "kind": "valueSet",
+              "values": [
+                "visita",
+                "tarefa"
+              ]
             }
           }
         },
@@ -708,10 +1771,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "423d4f5fae7be6308bbf0b0a1b8b720ec49b75d0df9f3b22e9a6b16a464e30c5"
+    "storageHash": "28edfe8fe58d1435114e556a9979e5c01f9c9d3b63c4653029bde1281eaa2339"
   },
   "execution": {
-    "executionHash": "25a22c45589c7c4be342ee18e399d349da5f69c2500b5b9a16cbf0b6290dca44",
+    "executionHash": "ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f",
     "mutations": {
       "defaults": [
         {
@@ -722,6 +1785,43 @@
           "ref": {
             "entry": "cidades",
             "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "compras",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "compras",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "compras",
+            "field": "updated_at",
             "namespace": "public"
           }
         },
@@ -768,6 +1868,43 @@
             "kind": "generator"
           },
           "ref": {
+            "entry": "dias_rota",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "dias_rota",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "dias_rota",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
             "entry": "fotos",
             "field": "created_at",
             "namespace": "public"
@@ -795,6 +1932,43 @@
           },
           "ref": {
             "entry": "fotos",
+            "field": "updated_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "itens_rota",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "itens_rota",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "itens_rota",
             "field": "updated_at",
             "namespace": "public"
           }

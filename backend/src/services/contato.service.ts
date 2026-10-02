@@ -1,10 +1,18 @@
 import type { CriarContatoInput, AtualizarContatoInput } from "../schemas/contato.schema";
 import { ContatoRepository } from "../repositories/contato.repository";
 import type { CriarContatoModel, AtualizarContatoModel } from "../models/contato.model";
+import { FotoRepository } from "../repositories/foto.repository";
+import { StorageService } from "./storage.service";
+import { CompraRepository } from "../repositories/compra.repository";
+import { RecompraService } from "./recompra.service";
 
 export class ContatoService {
   constructor(
     private readonly contatoRepository = new ContatoRepository(),
+    private readonly fotoRepository = new FotoRepository(),
+    private readonly compraRepository = new CompraRepository(),
+    private readonly storageService = new StorageService(),
+    private readonly recompraService = new RecompraService(),
   ) {}
 
   async create(data: CriarContatoInput) {
@@ -35,7 +43,41 @@ export class ContatoService {
   }
 
   async findById(id: string) {
-    return this.contatoRepository.findById(id);
+    const contato = await this.contatoRepository.findById(id);
+  
+    if (!contato) {
+      return null;
+    }
+  
+    const [fotos, compras, recompra] = await Promise.all([
+      this.fotoRepository.findByContatoId(id),
+      this.compraRepository.findByContatoId(id),
+    
+      contato.status === "comprado"
+        ? this.recompraService.calcular(
+            id,
+            contato.cicloRecompraMeses,
+          )
+        : Promise.resolve(null),
+    ]);
+  
+    const fotosComUrl = await Promise.all(
+      fotos.map(async (foto) => ({
+        ...foto,
+        signedUrl: await this.storageService.createSignedUrl(
+          foto.url,
+          3600,
+        ),
+      })),
+    );
+    
+  
+    return {
+      ...contato,
+      fotos: fotosComUrl,
+      compras,
+      recompra,
+    };
   }
 
   async update(id: string, data: AtualizarContatoInput) {
@@ -92,3 +134,4 @@ export class ContatoService {
     return this.contatoRepository.softDelete(id);
   }
 }
+

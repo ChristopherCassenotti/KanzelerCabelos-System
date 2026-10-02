@@ -7,6 +7,7 @@ model Cidade {
   lat      Decimal?
   lng      Decimal?
   contatos Contato[]
+  diasRotaPartida DiaRota[]
 
   @@unique([nome, uf])
   @@map("cidades")
@@ -20,6 +21,7 @@ model Contato {
   cidadeId             Uuid      @map("cidade_id")
   endereco             String?
   status               String    @default("lead")
+  motivoPerda String? @map("motivo_perda")
   origem               String?
   natural              Boolean?
   cor                  String?
@@ -34,7 +36,10 @@ model Contato {
 
   cidade Cidade @relation(fields: [cidadeId], references: [id])
   fotos  Foto[]
-
+  compras Compra[]
+  itensRota ItemRota[]
+  
+  @@index([status])
   @@map("contatos")
   @@rls
 }
@@ -55,5 +60,121 @@ model Foto {
 
   @@index([contatoId])
   @@map("fotos")
+  @@rls
+}
+
+model Compra {
+  id        Uuid @id @default(uuid())
+  contatoId Uuid @map("contato_id")
+
+  dataCorte Date @map("data_corte")
+
+  pesoG          Int? @map("peso_g")
+  comprimentoCm  Int? @map("comprimento_cm")
+  cor             String?
+  textura         String?
+  quimica         String?
+
+  valorPago       Decimal @map("valor_pago")
+  formaPagamento  String @map("forma_pagamento")
+
+  valorRevenda    Decimal? @map("valor_revenda")
+  dataRevenda     Date? @map("data_revenda")
+  comprador       String?
+
+  createdAt temporal.createdAt() @map("created_at")
+  updatedAt temporal.updatedAt() @map("updated_at")
+
+  contato Contato @relation(fields: [contatoId], references: [id])
+
+  @@index([contatoId])
+  @@map("compras")
+  @@rls
+}
+
+enum TipoItemRota {
+  @@type("pg/text@1")
+
+  Visita = "visita"
+  Tarefa = "tarefa"
+}
+
+enum ResultadoItemRota {
+  @@type("pg/text@1")
+
+  Comprou      = "comprou"
+  NaoComprou   = "nao_comprou"
+  NaoAtendeu   = "nao_atendeu"
+  Remarcar     = "remarcar"
+}
+
+model DiaRota {
+  id Uuid @id @default(uuid())
+
+  data Date @unique
+
+  partidaCidadeId Uuid @map("partida_cidade_id")
+
+  horaSaida        Time @default(sql`'08:00:00'::time`) @map("hora_saida")
+  minutosPorVisita Int  @default(40) @map("minutos_por_visita")
+
+  custoCombustivel Decimal @default(0) @map("custo_combustivel")
+  custoAlimentacao Decimal @default(0) @map("custo_alimentacao")
+  custoHospedagem  Decimal @default(0) @map("custo_hospedagem")
+  custoOutros      Decimal @default(0) @map("custo_outros")
+
+  distanciaKm Decimal? @map("distancia_km")
+  duracaoMin  Int?     @map("duracao_min")
+
+  createdAt temporal.createdAt() @map("created_at")
+  updatedAt temporal.updatedAt() @map("updated_at")
+
+  partidaCidade Cidade @relation(
+    fields: [partidaCidadeId],
+    references: [id]
+  )
+
+  itens ItemRota[]
+
+  @@index([partidaCidadeId])
+  @@map("dias_rota")
+  @@rls
+}
+
+model ItemRota {
+  id Uuid @id @default(uuid())
+
+  diaRotaId Uuid @map("dia_rota_id")
+
+  tipo TipoItemRota
+
+  contatoId Uuid?   @map("contato_id")
+  titulo    String?
+
+  ordem Int @default(0)
+  hora  Time?
+
+  concluido Boolean @default(false)
+
+  resultado ResultadoItemRota?
+
+  createdAt temporal.createdAt() @map("created_at")
+  updatedAt temporal.updatedAt() @map("updated_at")
+
+  diaRota DiaRota @relation(
+    fields: [diaRotaId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  contato Contato? @relation(
+    fields: [contatoId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([diaRotaId])
+  @@index([contatoId])
+  @@map("itens_rota")
   @@rls
 }

@@ -61,6 +61,38 @@ export class ContatoRepository {
       .update({
         deletedAt: Temporal.Now.instant(),
       });
+      
+  } 
+  
+  async findCompradosComUltimaCompra() {
+    return db.orm.public.Contato
+      .include("cidade")
+      .include("compras", (compras) =>
+        compras
+          .orderBy((compra) => compra.dataCorte.desc())
+          .limit(1),
+      )
+      .where({
+        status: "comprado",
+        deletedAt: null,
+      })
+      .all();
+  }
+
+  async updateStatus(
+    id: string,
+    status: string,
+    motivoPerda: string | null,
+  ) {
+    return db.orm.public.Contato
+      .where({
+        id,
+        deletedAt: null,
+      })
+      .update({
+        status,
+        motivoPerda,
+      });
   }
 }
 

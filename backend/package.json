@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:test:dry": "dotenv -e .env.test -- prisma db update --dry-run",
+    "db:test:update": "dotenv -e .env.test -- prisma db update",
+    "db:test:verify": "dotenv -e .env.test -- prisma db verify --schema-only",
     "postinstall": "prisma skills sync || exit 0",
     "contract:emit": "prisma contract emit",
     "dev": "tsx watch src/server.ts"
@@ -15,8 +19,10 @@
   "type": "commonjs",
   "dependencies": {
     "@fastify/cors": "^11.3.0",
+    "@fastify/multipart": "^10.1.2",
     "@prisma/client": "^7.10.0",
     "@prisma/orm-postgres": "^8.0.0-rc.13",
+    "@supabase/supabase-js": "^2.117.2",
     "dotenv": "^18.0.4",
     "fastify": "^5.12.5",
     "temporal-polyfill": "^1.0.5",
@@ -25,8 +31,10 @@
   "devDependencies": {
     "@prisma/cli-engine": "^0.6.1",
     "@types/node": "^26.6.3",
+    "dotenv-cli": "^11.0.0",
     "prisma": "^8.0.0-rc.17",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.3"
   }
 }

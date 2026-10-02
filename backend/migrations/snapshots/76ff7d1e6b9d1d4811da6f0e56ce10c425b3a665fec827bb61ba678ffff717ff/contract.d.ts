@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'28edfe8fe58d1435114e556a9979e5c01f9c9d3b63c4653029bde1281eaa2339'>;
+  StorageHashBase<'76ff7d1e6b9d1d4811da6f0e56ce10c425b3a665fec827bb61ba678ffff717ff'>;
 export type ExecutionHash =
-  ExecutionHashBase<'ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f'>;
+  ExecutionHashBase<'dc5e9e883d01c1cc9d4f599725b509fdfe10c3894933b7e5cefe77d74993ef84'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -283,7 +283,6 @@ export type FieldOutputTypes = {
       readonly deletedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
       readonly endereco: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
-      readonly motivoPerda: CodecTypes['pg/text@1']['output'] | null;
       readonly natural: CodecTypes['pg/bool@1']['output'] | null;
       readonly nome: CodecTypes['pg/text@1']['output'];
       readonly observacoes: CodecTypes['pg/text@1']['output'] | null;
@@ -292,21 +291,6 @@ export type FieldOutputTypes = {
       readonly status: CodecTypes['pg/text@1']['output'];
       readonly telefone: CodecTypes['pg/text@1']['output'] | null;
       readonly textura: CodecTypes['pg/text@1']['output'] | null;
-      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    };
-    readonly DiaRota: {
-      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly custoAlimentacao: CodecTypes['pg/numeric@1']['output'];
-      readonly custoCombustivel: CodecTypes['pg/numeric@1']['output'];
-      readonly custoHospedagem: CodecTypes['pg/numeric@1']['output'];
-      readonly custoOutros: CodecTypes['pg/numeric@1']['output'];
-      readonly data: CodecTypes['pg/date-temporal@1']['output'];
-      readonly distanciaKm: CodecTypes['pg/numeric@1']['output'] | null;
-      readonly duracaoMin: CodecTypes['pg/int4@1']['output'] | null;
-      readonly horaSaida: CodecTypes['pg/time-temporal@1']['output'];
-      readonly id: CodecTypes['pg/uuid@1']['output'];
-      readonly minutosPorVisita: CodecTypes['pg/int4@1']['output'];
-      readonly partidaCidadeId: CodecTypes['pg/uuid@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly Foto: {
@@ -318,19 +302,6 @@ export type FieldOutputTypes = {
       readonly tipo: CodecTypes['pg/text@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly url: CodecTypes['pg/text@1']['output'];
-    };
-    readonly ItemRota: {
-      readonly concluido: CodecTypes['pg/bool@1']['output'];
-      readonly contatoId: CodecTypes['pg/uuid@1']['output'] | null;
-      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly diaRotaId: CodecTypes['pg/uuid@1']['output'];
-      readonly hora: CodecTypes['pg/time-temporal@1']['output'] | null;
-      readonly id: CodecTypes['pg/uuid@1']['output'];
-      readonly ordem: CodecTypes['pg/int4@1']['output'];
-      readonly resultado: 'comprou' | 'nao_comprou' | 'nao_atendeu' | 'remarcar' | null;
-      readonly tipo: 'visita' | 'tarefa';
-      readonly titulo: CodecTypes['pg/text@1']['output'] | null;
-      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
   };
 };
@@ -369,7 +340,6 @@ export type FieldInputTypes = {
       readonly deletedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
       readonly endereco: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
-      readonly motivoPerda: CodecTypes['pg/text@1']['input'] | null;
       readonly natural: CodecTypes['pg/bool@1']['input'] | null;
       readonly nome: CodecTypes['pg/text@1']['input'];
       readonly observacoes: CodecTypes['pg/text@1']['input'] | null;
@@ -378,21 +348,6 @@ export type FieldInputTypes = {
       readonly status: CodecTypes['pg/text@1']['input'];
       readonly telefone: CodecTypes['pg/text@1']['input'] | null;
       readonly textura: CodecTypes['pg/text@1']['input'] | null;
-      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
-    };
-    readonly DiaRota: {
-      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly custoAlimentacao: CodecTypes['pg/numeric@1']['input'];
-      readonly custoCombustivel: CodecTypes['pg/numeric@1']['input'];
-      readonly custoHospedagem: CodecTypes['pg/numeric@1']['input'];
-      readonly custoOutros: CodecTypes['pg/numeric@1']['input'];
-      readonly data: CodecTypes['pg/date-temporal@1']['input'];
-      readonly distanciaKm: CodecTypes['pg/numeric@1']['input'] | null;
-      readonly duracaoMin: CodecTypes['pg/int4@1']['input'] | null;
-      readonly horaSaida: CodecTypes['pg/time-temporal@1']['input'];
-      readonly id: CodecTypes['pg/uuid@1']['input'];
-      readonly minutosPorVisita: CodecTypes['pg/int4@1']['input'];
-      readonly partidaCidadeId: CodecTypes['pg/uuid@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly Foto: {
@@ -404,19 +359,6 @@ export type FieldInputTypes = {
       readonly tipo: CodecTypes['pg/text@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly url: CodecTypes['pg/text@1']['input'];
-    };
-    readonly ItemRota: {
-      readonly concluido: CodecTypes['pg/bool@1']['input'];
-      readonly contatoId: CodecTypes['pg/uuid@1']['input'] | null;
-      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly diaRotaId: CodecTypes['pg/uuid@1']['input'];
-      readonly hora: CodecTypes['pg/time-temporal@1']['input'] | null;
-      readonly id: CodecTypes['pg/uuid@1']['input'];
-      readonly ordem: CodecTypes['pg/int4@1']['input'];
-      readonly resultado: 'comprou' | 'nao_comprou' | 'nao_atendeu' | 'remarcar' | null;
-      readonly tipo: 'visita' | 'tarefa';
-      readonly titulo: CodecTypes['pg/text@1']['input'] | null;
-      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
   };
 };
@@ -455,7 +397,6 @@ export type StorageColumnTypes = {
       readonly deleted_at: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
       readonly endereco: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
-      readonly motivo_perda: CodecTypes['pg/text@1']['output'] | null;
       readonly natural: CodecTypes['pg/bool@1']['output'] | null;
       readonly nome: CodecTypes['pg/text@1']['output'];
       readonly observacoes: CodecTypes['pg/text@1']['output'] | null;
@@ -464,21 +405,6 @@ export type StorageColumnTypes = {
       readonly status: CodecTypes['pg/text@1']['output'];
       readonly telefone: CodecTypes['pg/text@1']['output'] | null;
       readonly textura: CodecTypes['pg/text@1']['output'] | null;
-      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    };
-    readonly dias_rota: {
-      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly custo_alimentacao: CodecTypes['pg/numeric@1']['output'];
-      readonly custo_combustivel: CodecTypes['pg/numeric@1']['output'];
-      readonly custo_hospedagem: CodecTypes['pg/numeric@1']['output'];
-      readonly custo_outros: CodecTypes['pg/numeric@1']['output'];
-      readonly data: CodecTypes['pg/date-temporal@1']['output'];
-      readonly distancia_km: CodecTypes['pg/numeric@1']['output'] | null;
-      readonly duracao_min: CodecTypes['pg/int4@1']['output'] | null;
-      readonly hora_saida: CodecTypes['pg/time-temporal@1']['output'];
-      readonly id: CodecTypes['pg/uuid@1']['output'];
-      readonly minutos_por_visita: CodecTypes['pg/int4@1']['output'];
-      readonly partida_cidade_id: CodecTypes['pg/uuid@1']['output'];
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly fotos: {
@@ -490,19 +416,6 @@ export type StorageColumnTypes = {
       readonly tipo: CodecTypes['pg/text@1']['output'] | null;
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly url: CodecTypes['pg/text@1']['output'];
-    };
-    readonly itens_rota: {
-      readonly concluido: CodecTypes['pg/bool@1']['output'];
-      readonly contato_id: CodecTypes['pg/uuid@1']['output'] | null;
-      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly dia_rota_id: CodecTypes['pg/uuid@1']['output'];
-      readonly hora: CodecTypes['pg/time-temporal@1']['output'] | null;
-      readonly id: CodecTypes['pg/uuid@1']['output'];
-      readonly ordem: CodecTypes['pg/int4@1']['output'];
-      readonly resultado: 'comprou' | 'nao_comprou' | 'nao_atendeu' | 'remarcar' | null;
-      readonly tipo: 'visita' | 'tarefa';
-      readonly titulo: CodecTypes['pg/text@1']['output'] | null;
-      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
   };
 };
@@ -541,7 +454,6 @@ export type StorageColumnInputTypes = {
       readonly deleted_at: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
       readonly endereco: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
-      readonly motivo_perda: CodecTypes['pg/text@1']['input'] | null;
       readonly natural: CodecTypes['pg/bool@1']['input'] | null;
       readonly nome: CodecTypes['pg/text@1']['input'];
       readonly observacoes: CodecTypes['pg/text@1']['input'] | null;
@@ -550,21 +462,6 @@ export type StorageColumnInputTypes = {
       readonly status: CodecTypes['pg/text@1']['input'];
       readonly telefone: CodecTypes['pg/text@1']['input'] | null;
       readonly textura: CodecTypes['pg/text@1']['input'] | null;
-      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
-    };
-    readonly dias_rota: {
-      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly custo_alimentacao: CodecTypes['pg/numeric@1']['input'];
-      readonly custo_combustivel: CodecTypes['pg/numeric@1']['input'];
-      readonly custo_hospedagem: CodecTypes['pg/numeric@1']['input'];
-      readonly custo_outros: CodecTypes['pg/numeric@1']['input'];
-      readonly data: CodecTypes['pg/date-temporal@1']['input'];
-      readonly distancia_km: CodecTypes['pg/numeric@1']['input'] | null;
-      readonly duracao_min: CodecTypes['pg/int4@1']['input'] | null;
-      readonly hora_saida: CodecTypes['pg/time-temporal@1']['input'];
-      readonly id: CodecTypes['pg/uuid@1']['input'];
-      readonly minutos_por_visita: CodecTypes['pg/int4@1']['input'];
-      readonly partida_cidade_id: CodecTypes['pg/uuid@1']['input'];
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly fotos: {
@@ -577,19 +474,6 @@ export type StorageColumnInputTypes = {
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly url: CodecTypes['pg/text@1']['input'];
     };
-    readonly itens_rota: {
-      readonly concluido: CodecTypes['pg/bool@1']['input'];
-      readonly contato_id: CodecTypes['pg/uuid@1']['input'] | null;
-      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly dia_rota_id: CodecTypes['pg/uuid@1']['input'];
-      readonly hora: CodecTypes['pg/time-temporal@1']['input'] | null;
-      readonly id: CodecTypes['pg/uuid@1']['input'];
-      readonly ordem: CodecTypes['pg/int4@1']['input'];
-      readonly resultado: 'comprou' | 'nao_comprou' | 'nao_atendeu' | 'remarcar' | null;
-      readonly tipo: 'visita' | 'tarefa';
-      readonly titulo: CodecTypes['pg/text@1']['input'] | null;
-      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
-    };
   };
 };
 
@@ -601,8 +485,7 @@ export namespace Models {
     nome: CodecTypes['pg/text@1']['output'];
     uf: CodecTypes['pg/text@1']['output'];
     contatos: public_Contato[];
-    diasRotaPartida: public_DiaRota[];
-    readonly [RelationKeys]?: 'contatos' | 'diasRotaPartida';
+    readonly [RelationKeys]?: 'contatos';
   };
   export type public_Compra = {
     comprador: CodecTypes['pg/text@1']['output'] | null;
@@ -632,7 +515,6 @@ export namespace Models {
     deletedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
     endereco: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/uuid@1']['output'];
-    motivoPerda: CodecTypes['pg/text@1']['output'] | null;
     natural: CodecTypes['pg/bool@1']['output'] | null;
     nome: CodecTypes['pg/text@1']['output'];
     observacoes: CodecTypes['pg/text@1']['output'] | null;
@@ -645,26 +527,7 @@ export namespace Models {
     cidade: public_Cidade;
     compras: public_Compra[];
     fotos: public_Foto[];
-    itensRota: public_ItemRota[];
-    readonly [RelationKeys]?: 'cidade' | 'compras' | 'fotos' | 'itensRota';
-  };
-  export type public_DiaRota = {
-    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    custoAlimentacao: CodecTypes['pg/numeric@1']['output'];
-    custoCombustivel: CodecTypes['pg/numeric@1']['output'];
-    custoHospedagem: CodecTypes['pg/numeric@1']['output'];
-    custoOutros: CodecTypes['pg/numeric@1']['output'];
-    data: CodecTypes['pg/date-temporal@1']['output'];
-    distanciaKm: CodecTypes['pg/numeric@1']['output'] | null;
-    duracaoMin: CodecTypes['pg/int4@1']['output'] | null;
-    horaSaida: CodecTypes['pg/time-temporal@1']['output'];
-    id: CodecTypes['pg/uuid@1']['output'];
-    minutosPorVisita: CodecTypes['pg/int4@1']['output'];
-    partidaCidadeId: CodecTypes['pg/uuid@1']['output'];
-    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    itens: public_ItemRota[];
-    partidaCidade: public_Cidade;
-    readonly [RelationKeys]?: 'itens' | 'partidaCidade';
+    readonly [RelationKeys]?: 'cidade' | 'compras' | 'fotos';
   };
   export type public_Foto = {
     contatoId: CodecTypes['pg/uuid@1']['output'];
@@ -678,22 +541,6 @@ export namespace Models {
     contato: public_Contato;
     readonly [RelationKeys]?: 'contato';
   };
-  export type public_ItemRota = {
-    concluido: CodecTypes['pg/bool@1']['output'];
-    contatoId: CodecTypes['pg/uuid@1']['output'] | null;
-    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    diaRotaId: CodecTypes['pg/uuid@1']['output'];
-    hora: CodecTypes['pg/time-temporal@1']['output'] | null;
-    id: CodecTypes['pg/uuid@1']['output'];
-    ordem: CodecTypes['pg/int4@1']['output'];
-    resultado: 'comprou' | 'nao_comprou' | 'nao_atendeu' | 'remarcar' | null;
-    tipo: 'visita' | 'tarefa';
-    titulo: CodecTypes['pg/text@1']['output'] | null;
-    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    contato: public_Contato | null;
-    diaRota: public_DiaRota;
-    readonly [RelationKeys]?: 'contato' | 'diaRota';
-  };
 }
 
 export declare const models: {
@@ -701,9 +548,7 @@ export declare const models: {
     Cidade: Models.public_Cidade;
     Compra: Models.public_Compra;
     Contato: Models.public_Contato;
-    DiaRota: Models.public_DiaRota;
     Foto: Models.public_Foto;
-    ItemRota: Models.public_ItemRota;
   };
 };
 
@@ -907,11 +752,6 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                 };
-                readonly motivo_perda: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: true;
-                };
                 readonly natural: {
                   readonly nativeType: 'bool';
                   readonly codecId: 'pg/bool@1';
@@ -971,12 +811,6 @@ type ContractBase = Omit<
                   readonly columns: readonly ['cidade_id'];
                   readonly unique: false;
                 },
-                {
-                  readonly name: 'contatos_status_idx_e98638ab';
-                  readonly prefix: 'contatos_status_idx';
-                  readonly columns: readonly ['status'];
-                  readonly unique: false;
-                },
               ];
               foreignKeys: readonly [
                 {
@@ -984,123 +818,6 @@ type ContractBase = Omit<
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'contatos';
                     readonly columns: readonly ['cidade_id'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'cidades';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-              ];
-            };
-            readonly dias_rota: {
-              columns: {
-                readonly created_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: false;
-                };
-                readonly custo_alimentacao: {
-                  readonly nativeType: 'numeric';
-                  readonly codecId: 'pg/numeric@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/numeric@1', '0'>;
-                  };
-                };
-                readonly custo_combustivel: {
-                  readonly nativeType: 'numeric';
-                  readonly codecId: 'pg/numeric@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/numeric@1', '0'>;
-                  };
-                };
-                readonly custo_hospedagem: {
-                  readonly nativeType: 'numeric';
-                  readonly codecId: 'pg/numeric@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/numeric@1', '0'>;
-                  };
-                };
-                readonly custo_outros: {
-                  readonly nativeType: 'numeric';
-                  readonly codecId: 'pg/numeric@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/numeric@1', '0'>;
-                  };
-                };
-                readonly data: {
-                  readonly nativeType: 'date';
-                  readonly codecId: 'pg/date-temporal@1';
-                  readonly nullable: false;
-                };
-                readonly distancia_km: {
-                  readonly nativeType: 'numeric';
-                  readonly codecId: 'pg/numeric@1';
-                  readonly nullable: true;
-                };
-                readonly duracao_min: {
-                  readonly nativeType: 'int4';
-                  readonly codecId: 'pg/int4@1';
-                  readonly nullable: true;
-                };
-                readonly hora_saida: {
-                  readonly nativeType: 'time';
-                  readonly codecId: 'pg/time-temporal@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'function';
-                    readonly expression: "'08:00:00'::time";
-                  };
-                };
-                readonly id: {
-                  readonly nativeType: 'uuid';
-                  readonly codecId: 'pg/uuid@1';
-                  readonly nullable: false;
-                };
-                readonly minutos_por_visita: {
-                  readonly nativeType: 'int4';
-                  readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/int4@1', 40>;
-                  };
-                };
-                readonly partida_cidade_id: {
-                  readonly nativeType: 'uuid';
-                  readonly codecId: 'pg/uuid@1';
-                  readonly nullable: false;
-                };
-                readonly updated_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: false;
-                };
-              };
-              primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['data'] }];
-              indexes: readonly [
-                {
-                  readonly name: 'dias_rota_partida_cidade_id_idx_27c2e9f5';
-                  readonly prefix: 'dias_rota_partida_cidade_id_idx';
-                  readonly columns: readonly ['partida_cidade_id'];
-                  readonly unique: false;
-                },
-              ];
-              foreignKeys: readonly [
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'dias_rota';
-                    readonly columns: readonly ['partida_cidade_id'];
                   };
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
@@ -1182,125 +899,6 @@ type ContractBase = Omit<
                 },
               ];
             };
-            readonly itens_rota: {
-              columns: {
-                readonly concluido: {
-                  readonly nativeType: 'bool';
-                  readonly codecId: 'pg/bool@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
-                  };
-                };
-                readonly contato_id: {
-                  readonly nativeType: 'uuid';
-                  readonly codecId: 'pg/uuid@1';
-                  readonly nullable: true;
-                };
-                readonly created_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: false;
-                };
-                readonly dia_rota_id: {
-                  readonly nativeType: 'uuid';
-                  readonly codecId: 'pg/uuid@1';
-                  readonly nullable: false;
-                };
-                readonly hora: {
-                  readonly nativeType: 'time';
-                  readonly codecId: 'pg/time-temporal@1';
-                  readonly nullable: true;
-                };
-                readonly id: {
-                  readonly nativeType: 'uuid';
-                  readonly codecId: 'pg/uuid@1';
-                  readonly nullable: false;
-                };
-                readonly ordem: {
-                  readonly nativeType: 'int4';
-                  readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
-                  };
-                };
-                readonly resultado: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: true;
-                };
-                readonly tipo: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
-                readonly titulo: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: true;
-                };
-                readonly updated_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: false;
-                };
-              };
-              primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [];
-              indexes: readonly [
-                {
-                  readonly name: 'itens_rota_contato_id_idx_f7fc9452';
-                  readonly prefix: 'itens_rota_contato_id_idx';
-                  readonly columns: readonly ['contato_id'];
-                  readonly unique: false;
-                },
-                {
-                  readonly name: 'itens_rota_dia_rota_id_idx_4abc0932';
-                  readonly prefix: 'itens_rota_dia_rota_id_idx';
-                  readonly columns: readonly ['dia_rota_id'];
-                  readonly unique: false;
-                },
-              ];
-              foreignKeys: readonly [
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'itens_rota';
-                    readonly columns: readonly ['dia_rota_id'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'dias_rota';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'itens_rota';
-                    readonly columns: readonly ['contato_id'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'contatos';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-              ];
-            };
-          };
-          readonly valueSet: {
-            readonly ResultadoItemRota: {
-              readonly kind: 'valueSet';
-              readonly values: readonly ['comprou', 'nao_comprou', 'nao_atendeu', 'remarcar'];
-            };
-            readonly TipoItemRota: {
-              readonly kind: 'valueSet';
-              readonly values: readonly ['visita', 'tarefa'];
-            };
           };
         };
       };
@@ -1315,9 +913,7 @@ type ContractBase = Omit<
     readonly cidades: { readonly namespace: 'public' & NamespaceId; readonly model: 'Cidade' };
     readonly compras: { readonly namespace: 'public' & NamespaceId; readonly model: 'Compra' };
     readonly contatos: { readonly namespace: 'public' & NamespaceId; readonly model: 'Contato' };
-    readonly dias_rota: { readonly namespace: 'public' & NamespaceId; readonly model: 'DiaRota' };
     readonly fotos: { readonly namespace: 'public' & NamespaceId; readonly model: 'Foto' };
-    readonly itens_rota: { readonly namespace: 'public' & NamespaceId; readonly model: 'ItemRota' };
   };
   readonly domain: {
     readonly namespaces: {
@@ -1356,17 +952,6 @@ type ContractBase = Omit<
                 readonly on: {
                   readonly localFields: readonly ['id'];
                   readonly targetFields: readonly ['cidadeId'];
-                };
-              };
-              readonly diasRotaPartida: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'DiaRota';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['partidaCidadeId'];
                 };
               };
             };
@@ -1527,10 +1112,6 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
-              readonly motivoPerda: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
               readonly natural: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
@@ -1603,17 +1184,6 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['contatoId'];
                 };
               };
-              readonly itensRota: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'ItemRota';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['contatoId'];
-                };
-              };
             };
             readonly storage: {
               readonly table: 'contatos';
@@ -1627,7 +1197,6 @@ type ContractBase = Omit<
                 readonly deletedAt: { readonly column: 'deleted_at' };
                 readonly endereco: { readonly column: 'endereco' };
                 readonly id: { readonly column: 'id' };
-                readonly motivoPerda: { readonly column: 'motivo_perda' };
                 readonly natural: { readonly column: 'natural' };
                 readonly nome: { readonly column: 'nome' };
                 readonly observacoes: { readonly column: 'observacoes' };
@@ -1636,112 +1205,6 @@ type ContractBase = Omit<
                 readonly status: { readonly column: 'status' };
                 readonly telefone: { readonly column: 'telefone' };
                 readonly textura: { readonly column: 'textura' };
-                readonly updatedAt: { readonly column: 'updated_at' };
-              };
-            };
-          };
-          readonly DiaRota: {
-            readonly fields: {
-              readonly createdAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-              readonly custoAlimentacao: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
-              };
-              readonly custoCombustivel: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
-              };
-              readonly custoHospedagem: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
-              };
-              readonly custoOutros: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
-              };
-              readonly data: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-temporal@1' };
-              };
-              readonly distanciaKm: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
-              };
-              readonly duracaoMin: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
-              };
-              readonly horaSaida: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/time-temporal@1' };
-              };
-              readonly id: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
-              };
-              readonly minutosPorVisita: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
-              };
-              readonly partidaCidadeId: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
-              };
-              readonly updatedAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-            };
-            readonly relations: {
-              readonly itens: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'ItemRota';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['diaRotaId'];
-                };
-              };
-              readonly partidaCidade: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'Cidade';
-                };
-                readonly cardinality: 'N:1';
-                readonly nullable: false;
-                readonly on: {
-                  readonly localFields: readonly ['partidaCidadeId'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-            };
-            readonly storage: {
-              readonly table: 'dias_rota';
-              readonly namespaceId: 'public';
-              readonly fields: {
-                readonly createdAt: { readonly column: 'created_at' };
-                readonly custoAlimentacao: { readonly column: 'custo_alimentacao' };
-                readonly custoCombustivel: { readonly column: 'custo_combustivel' };
-                readonly custoHospedagem: { readonly column: 'custo_hospedagem' };
-                readonly custoOutros: { readonly column: 'custo_outros' };
-                readonly data: { readonly column: 'data' };
-                readonly distanciaKm: { readonly column: 'distancia_km' };
-                readonly duracaoMin: { readonly column: 'duracao_min' };
-                readonly horaSaida: { readonly column: 'hora_saida' };
-                readonly id: { readonly column: 'id' };
-                readonly minutosPorVisita: { readonly column: 'minutos_por_visita' };
-                readonly partidaCidadeId: { readonly column: 'partida_cidade_id' };
                 readonly updatedAt: { readonly column: 'updated_at' };
               };
             };
@@ -1815,121 +1278,6 @@ type ContractBase = Omit<
                 readonly url: { readonly column: 'url' };
               };
             };
-          };
-          readonly ItemRota: {
-            readonly fields: {
-              readonly concluido: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
-              };
-              readonly contatoId: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
-              };
-              readonly createdAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-              readonly diaRotaId: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
-              };
-              readonly hora: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/time-temporal@1' };
-              };
-              readonly id: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
-              };
-              readonly ordem: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
-              };
-              readonly resultado: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly tipo: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly titulo: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly updatedAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-            };
-            readonly relations: {
-              readonly contato: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'Contato';
-                };
-                readonly cardinality: 'N:1';
-                readonly nullable: true;
-                readonly on: {
-                  readonly localFields: readonly ['contatoId'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-              readonly diaRota: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'DiaRota';
-                };
-                readonly cardinality: 'N:1';
-                readonly nullable: false;
-                readonly on: {
-                  readonly localFields: readonly ['diaRotaId'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-            };
-            readonly storage: {
-              readonly table: 'itens_rota';
-              readonly namespaceId: 'public';
-              readonly fields: {
-                readonly concluido: { readonly column: 'concluido' };
-                readonly contatoId: { readonly column: 'contato_id' };
-                readonly createdAt: { readonly column: 'created_at' };
-                readonly diaRotaId: { readonly column: 'dia_rota_id' };
-                readonly hora: { readonly column: 'hora' };
-                readonly id: { readonly column: 'id' };
-                readonly ordem: { readonly column: 'ordem' };
-                readonly resultado: { readonly column: 'resultado' };
-                readonly tipo: { readonly column: 'tipo' };
-                readonly titulo: { readonly column: 'titulo' };
-                readonly updatedAt: { readonly column: 'updated_at' };
-              };
-            };
-          };
-        };
-        readonly enum: {
-          readonly ResultadoItemRota: {
-            readonly codecId: 'pg/text@1';
-            readonly members: readonly [
-              { readonly name: 'Comprou'; readonly value: 'comprou' },
-              { readonly name: 'NaoComprou'; readonly value: 'nao_comprou' },
-              { readonly name: 'NaoAtendeu'; readonly value: 'nao_atendeu' },
-              { readonly name: 'Remarcar'; readonly value: 'remarcar' },
-            ];
-          };
-          readonly TipoItemRota: {
-            readonly codecId: 'pg/text@1';
-            readonly members: readonly [
-              { readonly name: 'Visita'; readonly value: 'visita' },
-              { readonly name: 'Tarefa'; readonly value: 'tarefa' },
-            ];
           };
         };
       };
@@ -2021,31 +1369,6 @@ type ContractBase = Omit<
         {
           readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
           readonly ref: {
-            readonly entry: 'dias_rota';
-            readonly field: 'created_at';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: { readonly id: 'uuidv4'; readonly kind: 'generator' };
-          readonly ref: {
-            readonly entry: 'dias_rota';
-            readonly field: 'id';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
-          readonly onUpdate: { readonly id: 'instantNow'; readonly kind: 'generator' };
-          readonly ref: {
-            readonly entry: 'dias_rota';
-            readonly field: 'updated_at';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
-          readonly ref: {
             readonly entry: 'fotos';
             readonly field: 'created_at';
             readonly namespace: 'public';
@@ -2064,31 +1387,6 @@ type ContractBase = Omit<
           readonly onUpdate: { readonly id: 'instantNow'; readonly kind: 'generator' };
           readonly ref: {
             readonly entry: 'fotos';
-            readonly field: 'updated_at';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
-          readonly ref: {
-            readonly entry: 'itens_rota';
-            readonly field: 'created_at';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: { readonly id: 'uuidv4'; readonly kind: 'generator' };
-          readonly ref: {
-            readonly entry: 'itens_rota';
-            readonly field: 'id';
-            readonly namespace: 'public';
-          };
-        },
-        {
-          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
-          readonly onUpdate: { readonly id: 'instantNow'; readonly kind: 'generator' };
-          readonly ref: {
-            readonly entry: 'itens_rota';
             readonly field: 'updated_at';
             readonly namespace: 'public';
           };

@@ -8,4 +8,12 @@ export class CidadeRepository {
 
     return db.runtime().query(query);
   }
+
+  async findById(id: string) {
+  return db.orm.public.Cidade
+    .where({
+      id,
+    })
+    .first();
+}
 }
