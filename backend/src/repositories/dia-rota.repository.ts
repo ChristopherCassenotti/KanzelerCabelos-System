@@ -54,4 +54,20 @@ export class DiaRotaRepository {
         : {}),
     });
   }
+
+  async findById(id: string) {
+    return db.orm.public.DiaRota
+      .where({
+        id,
+      })
+      .first();
+  }
+
+  async findAll() {
+    return db.orm.public.DiaRota
+      .include("partidaCidade")
+      .include("itens")
+      .orderBy((rota) => rota.data.asc())
+      .all();
+  }
 }

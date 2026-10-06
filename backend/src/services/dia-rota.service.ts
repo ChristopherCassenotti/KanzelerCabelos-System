@@ -98,4 +98,8 @@ export class DiaRotaService {
       dia,
     };
   }
+
+  async listar() {
+    return this.diaRotaRepository.findAll();
+  }
 }

@@ -5,6 +5,11 @@ import { fotoRoutes } from "./foto.routes";
 import { compraRoutes } from "./compra.routes";
 import { recompraRoutes } from "./recompra.routes";
 import { contatoStatusRoutes } from "./contato-status.routes";
+import { diaRotaRoutes } from "./dia-rota.routes";
+import { visitaRotaRoutes } from "./visita-rota.routes";
+import { tarefaRotaRoutes } from "./tarefa-rota.routes";
+import { itemRotaRoutes } from "./item-rota.routes";
+import { remarcarVisitaRoutes } from "./remarcar-visita.routes";
 
 export async function routes(app: FastifyInstance) {
   await app.register(cidadeRoutes, {
@@ -29,6 +34,26 @@ export async function routes(app: FastifyInstance) {
 
   await app.register(contatoStatusRoutes, {
     prefix: "/contatos",
+  });
+
+  await app.register(diaRotaRoutes, {
+    prefix: "/rotas",
+  });
+
+  await app.register(visitaRotaRoutes, {
+    prefix: "/rotas",
+  });
+
+  await app.register(tarefaRotaRoutes, {
+    prefix: "/rotas",
+  });
+  
+  await app.register(itemRotaRoutes, {
+    prefix: "/rotas",
+  });
+
+  await app.register(remarcarVisitaRoutes, {
+    prefix: "/rotas",
   });
 }
 
