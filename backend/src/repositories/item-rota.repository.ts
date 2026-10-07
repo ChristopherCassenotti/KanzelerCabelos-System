@@ -15,6 +15,11 @@ interface CriarTarefaInput {
   hora?: Temporal.PlainTime;
 }
 
+interface AtualizarHorarioItem {
+  id: string;
+  hora: Temporal.PlainTime | null;
+}
+
 export class ItemRotaRepository {
   async findVisitasAbertasByContatoId(
     contatoId: string,
@@ -203,4 +208,40 @@ export class ItemRotaRepository {
           .all();
       });
     }
-}
+    async atualizarHorarios(
+      diaRotaId: string,
+      horarios: AtualizarHorarioItem[],
+    ) {
+      return db.transaction(async (tx) => {
+        for (const item of horarios) {
+          await tx.orm.public.ItemRota
+            .where({
+              id: item.id,
+              diaRotaId,
+            })
+            .update({
+              hora: item.hora,
+            });
+        }
+      
+        return tx.orm.public.ItemRota
+          .where({
+            diaRotaId,
+          })
+          .orderBy(
+            (item) => item.ordem.asc(),
+          )
+          .all();
+      });
+    }
+
+    async findVisitasAbertas() {
+      return db.orm.public.ItemRota
+        .include("diaRota")
+        .where({
+          tipo: "visita",
+          concluido: false,
+        })
+        .all();
+    }
+  }

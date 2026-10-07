@@ -10,6 +10,8 @@ import { visitaRotaRoutes } from "./visita-rota.routes";
 import { tarefaRotaRoutes } from "./tarefa-rota.routes";
 import { itemRotaRoutes } from "./item-rota.routes";
 import { remarcarVisitaRoutes } from "./remarcar-visita.routes";
+import { horariosRotaRoutes } from "./horarios-rota.routes";
+import { aAgendarRoutes } from "./a-agendar.routes";
 
 export async function routes(app: FastifyInstance) {
   await app.register(cidadeRoutes, {
@@ -54,6 +56,14 @@ export async function routes(app: FastifyInstance) {
 
   await app.register(remarcarVisitaRoutes, {
     prefix: "/rotas",
+  });
+  
+  await app.register(horariosRotaRoutes, {
+      prefix: "/rotas",
+  });
+  
+  await app.register(aAgendarRoutes, {
+    prefix: "/a-agendar",
   });
 }
 

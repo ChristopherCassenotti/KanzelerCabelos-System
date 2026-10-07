@@ -11,7 +11,9 @@ export const registrarCompraSchema = z.object({
   cor: z.string().optional(),
   textura: z.string().optional(),
   quimica: z.string().optional(),
-
+  
+  visitaId: z.string().uuid().optional(),
+  
   valorPago: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, "Valor inválido"),

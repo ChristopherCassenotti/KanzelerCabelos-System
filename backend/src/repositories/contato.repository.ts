@@ -94,6 +94,15 @@ export class ContatoRepository {
         motivoPerda,
       });
   }
+
+  async findAtivosParaAgendar() {
+    return db.orm.public.Contato
+      .include("cidade")
+      .where({
+        deletedAt: null,
+      })
+      .all();
+  }
 }
 
 

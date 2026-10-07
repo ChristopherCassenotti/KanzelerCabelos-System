@@ -19,6 +19,10 @@ export class CompraRepository {
       const compra = await tx.orm.public.Compra.create({
         contatoId: data.contatoId,
 
+        ...(data.visitaId !== undefined
+        ? { visitaId: data.visitaId }
+        : {}),
+        
         dataCorte: Temporal.PlainDate.from(data.dataCorte),
 
         pesoG: data.pesoG ?? null,

@@ -37,4 +37,18 @@ export async function itemRotaRoutes(
         );
       },
     );
+
+  app.patch<{
+    Params: {
+      diaRotaId: string;
+    };
+  }>(
+    "/:diaRotaId/ordem",
+    (request, reply) => {
+      return itemRotaController.reordenar(
+        request,
+        reply,
+      );
+    },
+  );
 }

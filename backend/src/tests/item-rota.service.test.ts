@@ -240,4 +240,98 @@ describe("ItemRotaService", () => {
 
       expect(deletar).not.toHaveBeenCalled();
     });
+
+    it("reordena todos os itens da rota", async () => {
+  const reordenar = vi
+    .fn()
+    .mockResolvedValue([
+      {
+        id: "item-2",
+        ordem: 1,
+      },
+      {
+        id: "item-1",
+        ordem: 2,
+      },
+    ]);
+
+  const repository = {
+    findByDiaRotaId:
+      vi.fn().mockResolvedValue([
+        {
+          id: "item-1",
+          diaRotaId: "rota-1",
+          ordem: 1,
+        },
+        {
+          id: "item-2",
+          diaRotaId: "rota-1",
+          ordem: 2,
+        },
+      ]),
+
+    reordenar,
+  } as unknown as ItemRotaRepository;
+
+  const service =
+    new ItemRotaService(repository);
+
+  const resultado =
+    await service.reordenar(
+      "rota-1",
+      [
+        "item-2",
+        "item-1",
+      ],
+    );
+
+  expect(resultado.tipo).toBe(
+    "sucesso",
+  );
+
+  expect(reordenar).toHaveBeenCalledWith(
+    "rota-1",
+    [
+      "item-2",
+      "item-1",
+    ],
+  );
+});
+
+it("bloqueia ordem faltando itens da rota", async () => {
+  const reordenar = vi.fn();
+
+  const repository = {
+    findByDiaRotaId:
+      vi.fn().mockResolvedValue([
+        {
+          id: "item-1",
+        },
+        {
+          id: "item-2",
+        },
+      ]),
+
+    reordenar,
+  } as unknown as ItemRotaRepository;
+
+  const service =
+    new ItemRotaService(repository);
+
+  const resultado =
+    await service.reordenar(
+      "rota-1",
+      [
+        "item-1",
+      ],
+    );
+
+  expect(resultado.tipo).toBe(
+    "ordem_invalida",
+  );
+
+  expect(
+    reordenar,
+  ).not.toHaveBeenCalled();
+});
 });

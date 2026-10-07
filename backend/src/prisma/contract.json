@@ -267,6 +267,13 @@
                   "codecId": "pg/numeric@1",
                   "kind": "scalar"
                 }
+              },
+              "visitaId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
               }
             },
             "relations": {
@@ -283,6 +290,22 @@
                 },
                 "to": {
                   "model": "Contato",
+                  "namespace": "public"
+                }
+              },
+              "visita": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "visitaId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "ItemRota",
                   "namespace": "public"
                 }
               }
@@ -333,6 +356,9 @@
                 },
                 "valorRevenda": {
                   "column": "valor_revenda"
+                },
+                "visitaId": {
+                  "column": "visita_id"
                 }
               },
               "namespaceId": "public",
@@ -966,6 +992,21 @@
               }
             },
             "relations": {
+              "compras": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "visitaId"
+                  ]
+                },
+                "to": {
+                  "model": "Compra",
+                  "namespace": "public"
+                }
+              },
               "contato": {
                 "cardinality": "N:1",
                 "nullable": true,
@@ -1200,6 +1241,11 @@
                   "codecId": "pg/numeric@1",
                   "nativeType": "numeric",
                   "nullable": true
+                },
+                "visita_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": true
                 }
               },
               "foreignKeys": [
@@ -1218,6 +1264,23 @@
                     "namespaceId": "public",
                     "tableName": "contatos"
                   }
+                },
+                {
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "visita_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "compras"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "itens_rota"
+                  }
                 }
               ],
               "indexes": [
@@ -1227,6 +1290,14 @@
                   ],
                   "name": "compras_contato_id_idx_f7fc9452",
                   "prefix": "compras_contato_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "visita_id"
+                  ],
+                  "name": "compras_visita_id_idx_04fe9ae3",
+                  "prefix": "compras_visita_id_idx",
                   "unique": false
                 }
               ],
@@ -1771,7 +1842,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "28edfe8fe58d1435114e556a9979e5c01f9c9d3b63c4653029bde1281eaa2339"
+    "storageHash": "41bfedc3d4f5237077ce94e3d35660a5356cfffd8f48a27791de0a7ca6ac4983"
   },
   "execution": {
     "executionHash": "ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f",

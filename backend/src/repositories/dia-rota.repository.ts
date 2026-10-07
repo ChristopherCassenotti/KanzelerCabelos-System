@@ -1,5 +1,6 @@
 import { db } from "../prisma/db";
-import type { CriarDiaRotaModel } from "../models/dia-rota.model";
+import type { CriarDiaRotaModel, AtualizarDiaRotaModel } from "../models/dia-rota.model";
+
 
 export class DiaRotaRepository {
   async findByDate(data: Temporal.PlainDate) {
@@ -70,4 +71,50 @@ export class DiaRotaRepository {
       .orderBy((rota) => rota.data.asc())
       .all();
   }
+
+  async findByPeriod(
+  de: Temporal.PlainDate,
+  ate: Temporal.PlainDate,
+) {
+  return db.orm.public.DiaRota
+    .include("partidaCidade")
+    .include("itens")
+    .where((rota) =>
+      rota.data.gte(de),
+    )
+    .where((rota) =>
+      rota.data.lte(ate),
+    )
+    .orderBy((rota) =>
+      rota.data.asc(),
+    )
+    .all();
+}
+async findDetailedById(id: string) {
+  return db.orm.public.DiaRota
+    .include("partidaCidade")
+    .include("itens", (itens) =>
+      itens
+        .include("contato", (contato) =>
+          contato.include("cidade"),
+        )
+        .orderBy((item) =>
+          item.ordem.asc(),
+        ),
+    )
+    .where({
+      id,
+    })
+    .first();
+}
+async update(
+  id: string,
+  data: AtualizarDiaRotaModel,
+) {
+  return db.orm.public.DiaRota
+    .where({
+      id,
+    })
+    .update(data);
+}
 }

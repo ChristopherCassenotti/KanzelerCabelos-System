@@ -88,4 +88,53 @@ export class ItemRotaService {
         tipo: "sucesso" as const,
       };
     }
+
+  async reordenar(
+    diaRotaId: string,
+    itemIds: string[],
+  ) {
+    const itens =
+      await this.itemRotaRepository
+        .findByDiaRotaId(diaRotaId);
+
+    if (itens.length === 0) {
+      return {
+        tipo: "rota_sem_itens" as const,
+      };
+    }
+
+    if (
+      itemIds.length !== itens.length
+    ) {
+      return {
+        tipo: "ordem_invalida" as const,
+      };
+    }
+
+    const idsAtuais = new Set(
+      itens.map((item) => item.id),
+    );
+
+    const todosPertencemARota =
+      itemIds.every((id) =>
+        idsAtuais.has(id),
+      );
+
+    if (!todosPertencemARota) {
+      return {
+        tipo: "ordem_invalida" as const,
+      };
+    }
+
+    const itensOrdenados =
+      await this.itemRotaRepository.reordenar(
+        diaRotaId,
+        itemIds,
+      );
+
+    return {
+      tipo: "sucesso" as const,
+      itens: itensOrdenados,
+    };
+  }
 }

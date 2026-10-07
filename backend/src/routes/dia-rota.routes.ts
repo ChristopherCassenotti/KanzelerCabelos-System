@@ -8,12 +8,17 @@ const diaRotaController =
 export async function diaRotaRoutes(
   app: FastifyInstance,
 ) {
-  app.get("/", (request, reply) => {
-    return diaRotaController.index(
-      request,
-      reply,
-    );
-  });
+app.get<{
+  Querystring: {
+    de?: string;
+    ate?: string;
+  };
+}>("/", (request, reply) => {
+  return diaRotaController.index(
+    request,
+    reply,
+  );
+});
 
   app.post("/", (request, reply) => {
     return diaRotaController.create(
@@ -21,4 +26,25 @@ export async function diaRotaRoutes(
       reply,
     );
   });
+
+  app.get<{
+  Params: {
+    id: string;
+  };
+}>("/:id", (request, reply) => {
+  return diaRotaController.show(
+    request,
+    reply,
+  );
+});
+app.patch<{
+  Params: {
+    id: string;
+  };
+}>("/:id", (request, reply) => {
+  return diaRotaController.update(
+    request,
+    reply,
+  );
+});
 }

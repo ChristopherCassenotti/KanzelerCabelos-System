@@ -11,7 +11,8 @@
     "db:test:verify": "dotenv -e .env.test -- prisma db verify --schema-only",
     "postinstall": "prisma skills sync || exit 0",
     "contract:emit": "prisma contract emit",
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "seed:demo": "tsx src/seed-demo.ts"
   },
   "keywords": [],
   "author": "",

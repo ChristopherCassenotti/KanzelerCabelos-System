@@ -30,18 +30,35 @@ export class CompraController {
       });
     }
 
-    const compra = await this.compraService.registrar(
-      request.params.contatoId,
-      result.data,
-    );
+const resultado =
+  await this.compraService.registrar(
+    request.params.contatoId,
+    result.data,
+  );
 
-    if (!compra) {
-      return reply.status(404).send({
-        error: "Contato não encontrado",
-      });
-    }
+if (
+  resultado.tipo ===
+  "contato_nao_encontrado"
+) {
+  return reply.status(404).send({
+    error: "Contato não encontrado",
+  });
+}
 
-    return reply.status(201).send(compra);
+if (
+  resultado.tipo ===
+  "visita_invalida"
+) {
+  return reply.status(409).send({
+    error:
+      "A visita informada não pertence a este contato",
+  });
+}
+
+return reply
+  .status(201)
+  .send(resultado.compra);
+
   }
 
   async index(

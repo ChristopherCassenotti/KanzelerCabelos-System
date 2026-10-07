@@ -66,28 +66,39 @@ model Foto {
 model Compra {
   id        Uuid @id @default(uuid())
   contatoId Uuid @map("contato_id")
+  visitaId  Uuid? @map("visita_id")
 
   dataCorte Date @map("data_corte")
 
-  pesoG          Int? @map("peso_g")
-  comprimentoCm  Int? @map("comprimento_cm")
-  cor             String?
-  textura         String?
-  quimica         String?
+  pesoG         Int? @map("peso_g")
+  comprimentoCm Int? @map("comprimento_cm")
+  cor            String?
+  textura        String?
+  quimica        String?
 
-  valorPago       Decimal @map("valor_pago")
-  formaPagamento  String @map("forma_pagamento")
+  valorPago      Decimal @map("valor_pago")
+  formaPagamento String @map("forma_pagamento")
 
-  valorRevenda    Decimal? @map("valor_revenda")
-  dataRevenda     Date? @map("data_revenda")
-  comprador       String?
+  valorRevenda Decimal? @map("valor_revenda")
+  dataRevenda  Date?    @map("data_revenda")
+  comprador    String?
 
   createdAt temporal.createdAt() @map("created_at")
   updatedAt temporal.updatedAt() @map("updated_at")
 
-  contato Contato @relation(fields: [contatoId], references: [id])
+  contato Contato @relation(
+    fields: [contatoId],
+    references: [id]
+  )
+
+  visita ItemRota? @relation(
+    fields: [visitaId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([contatoId])
+  @@index([visitaId])
   @@map("compras")
   @@rls
 }
@@ -172,6 +183,8 @@ model ItemRota {
     references: [id],
     onDelete: Cascade
   )
+  
+  compras Compra[]
 
   @@index([diaRotaId])
   @@index([contatoId])

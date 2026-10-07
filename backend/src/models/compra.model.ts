@@ -9,6 +9,8 @@ export interface RegistrarCompraModel {
   textura?: string;
   quimica?: string;
 
+  visitaId?: string;
+
   valorPago: string;
   formaPagamento: "Pix" | "Dinheiro";
 }

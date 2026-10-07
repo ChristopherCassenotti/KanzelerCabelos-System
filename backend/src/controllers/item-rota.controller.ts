@@ -5,6 +5,7 @@ import type {
 
 import { concluirItemRotaSchema } from "../schemas/concluir-item-rota.schema";
 import { ItemRotaService } from "../services/item-rota.service";
+import { reordenarItensRotaSchema } from "../schemas/reordenar-itens-rota.schema"
 
 export class ItemRotaController {
   constructor(
@@ -103,4 +104,56 @@ export class ItemRotaController {
   
       return reply.status(204).send();
     }
+
+    async reordenar(
+  request: FastifyRequest<{
+    Params: {
+      diaRotaId: string;
+    };
+  }>,
+  reply: FastifyReply,
+) {
+  const resultadoSchema =
+    reordenarItensRotaSchema.safeParse(
+      request.body,
+    );
+
+  if (!resultadoSchema.success) {
+    return reply.status(400).send({
+      error: "Dados inválidos",
+      details:
+        resultadoSchema.error.flatten(),
+    });
+  }
+
+  const resultado =
+    await this.itemRotaService.reordenar(
+      request.params.diaRotaId,
+      resultadoSchema.data.itemIds,
+    );
+
+  if (
+    resultado.tipo ===
+    "rota_sem_itens"
+  ) {
+    return reply.status(404).send({
+      error: "Rota não possui itens",
+    });
+  }
+
+  if (
+    resultado.tipo ===
+    "ordem_invalida"
+  ) {
+    return reply.status(400).send({
+      error:
+        "A nova ordem deve conter todos os itens da rota",
+    });
+  }
+
+  return reply.send({
+    tipo: resultado.tipo,
+    itens: resultado.itens,
+  });
+}
 }
