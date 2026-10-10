@@ -293,6 +293,21 @@
                   "namespace": "public"
                 }
               },
+              "fotos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "compraId"
+                  ]
+                },
+                "to": {
+                  "model": "Foto",
+                  "namespace": "public"
+                }
+              },
               "visita": {
                 "cardinality": "N:1",
                 "nullable": true,
@@ -367,6 +382,13 @@
           },
           "Contato": {
             "fields": {
+              "autorizouFoto": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
               "cicloRecompraMeses": {
                 "nullable": false,
                 "type": {
@@ -402,6 +424,20 @@
                   "kind": "scalar"
                 }
               },
+              "dataAvaliacao": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/date-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "dataPrimeiroContato": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/date-temporal@1",
+                  "kind": "scalar"
+                }
+              },
               "deletedAt": {
                 "nullable": true,
                 "type": {
@@ -416,10 +452,38 @@
                   "kind": "scalar"
                 }
               },
+              "geoFonte": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "geoPlaceId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "lat": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/numeric@1",
+                  "kind": "scalar"
+                }
+              },
+              "lng": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/numeric@1",
                   "kind": "scalar"
                 }
               },
@@ -559,6 +623,9 @@
             },
             "storage": {
               "fields": {
+                "autorizouFoto": {
+                  "column": "autorizou_foto"
+                },
                 "cicloRecompraMeses": {
                   "column": "ciclo_recompra_meses"
                 },
@@ -574,14 +641,32 @@
                 "createdAt": {
                   "column": "created_at"
                 },
+                "dataAvaliacao": {
+                  "column": "data_avaliacao"
+                },
+                "dataPrimeiroContato": {
+                  "column": "data_primeiro_contato"
+                },
                 "deletedAt": {
                   "column": "deleted_at"
                 },
                 "endereco": {
                   "column": "endereco"
                 },
+                "geoFonte": {
+                  "column": "geo_fonte"
+                },
+                "geoPlaceId": {
+                  "column": "geo_place_id"
+                },
                 "id": {
                   "column": "id"
+                },
+                "lat": {
+                  "column": "lat"
+                },
+                "lng": {
+                  "column": "lng"
                 },
                 "motivoPerda": {
                   "column": "motivo_perda"
@@ -704,6 +789,13 @@
                   "kind": "scalar"
                 }
               },
+              "rotaPolyline": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "updatedAt": {
                 "nullable": false,
                 "type": {
@@ -783,6 +875,9 @@
                 "partidaCidadeId": {
                   "column": "partida_cidade_id"
                 },
+                "rotaPolyline": {
+                  "column": "rota_polyline"
+                },
                 "updatedAt": {
                   "column": "updated_at"
                 }
@@ -793,6 +888,13 @@
           },
           "Foto": {
             "fields": {
+              "compraId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
               "contatoId": {
                 "nullable": false,
                 "type": {
@@ -851,6 +953,22 @@
               }
             },
             "relations": {
+              "compra": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "compraId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Compra",
+                  "namespace": "public"
+                }
+              },
               "contato": {
                 "cardinality": "N:1",
                 "nullable": false,
@@ -870,6 +988,9 @@
             },
             "storage": {
               "fields": {
+                "compraId": {
+                  "column": "compra_id"
+                },
                 "contatoId": {
                   "column": "contato_id"
                 },
@@ -1310,6 +1431,15 @@
             },
             "contatos": {
               "columns": {
+                "autorizou_foto": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
                 "ciclo_recompra_meses": {
                   "codecId": "pg/int4@1",
                   "default": {
@@ -1339,6 +1469,16 @@
                   "nativeType": "timestamptz",
                   "nullable": false
                 },
+                "data_avaliacao": {
+                  "codecId": "pg/date-temporal@1",
+                  "nativeType": "date",
+                  "nullable": true
+                },
+                "data_primeiro_contato": {
+                  "codecId": "pg/date-temporal@1",
+                  "nativeType": "date",
+                  "nullable": true
+                },
                 "deleted_at": {
                   "codecId": "pg/timestamptz-temporal@1",
                   "nativeType": "timestamptz",
@@ -1349,10 +1489,30 @@
                   "nativeType": "text",
                   "nullable": true
                 },
+                "geo_fonte": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "geo_place_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "id": {
                   "codecId": "pg/uuid@1",
                   "nativeType": "uuid",
                   "nullable": false
+                },
+                "lat": {
+                  "codecId": "pg/numeric@1",
+                  "nativeType": "numeric",
+                  "nullable": true
+                },
+                "lng": {
+                  "codecId": "pg/numeric@1",
+                  "nativeType": "numeric",
+                  "nullable": true
                 },
                 "motivo_perda": {
                   "codecId": "pg/text@1",
@@ -1538,6 +1698,11 @@
                   "nativeType": "uuid",
                   "nullable": false
                 },
+                "rota_polyline": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "updated_at": {
                   "codecId": "pg/timestamptz-temporal@1",
                   "nativeType": "timestamptz",
@@ -1587,6 +1752,11 @@
             },
             "fotos": {
               "columns": {
+                "compra_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": true
+                },
                 "contato_id": {
                   "codecId": "pg/uuid@1",
                   "nativeType": "uuid",
@@ -1648,9 +1818,34 @@
                     "namespaceId": "public",
                     "tableName": "contatos"
                   }
+                },
+                {
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "compra_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "fotos"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "compras"
+                  }
                 }
               ],
               "indexes": [
+                {
+                  "columns": [
+                    "compra_id"
+                  ],
+                  "name": "fotos_compra_id_idx_b246fef9",
+                  "prefix": "fotos_compra_id_idx",
+                  "unique": false
+                },
                 {
                   "columns": [
                     "contato_id"
@@ -1842,7 +2037,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "41bfedc3d4f5237077ce94e3d35660a5356cfffd8f48a27791de0a7ca6ac4983"
+    "storageHash": "002ac354c51802f80afa5074f50626470da1b844bc60801a0ba4704a0a1b5180"
   },
   "execution": {
     "executionHash": "ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f",

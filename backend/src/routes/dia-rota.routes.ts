@@ -47,4 +47,15 @@ app.patch<{
     reply,
   );
 });
+
+app.get<{
+  Params: {
+    id: string;
+  };
+}>("/:id/mapa", (request, reply) => {
+  return diaRotaController.mapa(
+    request,
+    reply,
+  );
+});
 }

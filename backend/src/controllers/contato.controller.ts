@@ -85,4 +85,30 @@ export class ContatoController {
   
     return reply.status(204).send();
   }
+
+  async deleteDefinitivo(
+  request: FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply,
+) {
+  const contato =
+    await this.contatoService
+      .deleteDefinitivo(
+        request.params.id,
+      );
+
+  if (!contato) {
+    return reply.status(404).send({
+      error:
+        "Contato não encontrado",
+    });
+  }
+
+  return reply
+    .status(204)
+    .send();
+}
 }

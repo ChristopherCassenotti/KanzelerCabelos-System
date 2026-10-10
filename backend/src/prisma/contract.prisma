@@ -20,9 +20,21 @@ model Contato {
   telefone             String?
   cidadeId             Uuid      @map("cidade_id")
   endereco             String?
+  lat Decimal?
+  lng Decimal?
+
+  geoFonte String? @map("geo_fonte")
+
+  geoPlaceId String? @map("geo_place_id")
   status               String    @default("lead")
   motivoPerda String? @map("motivo_perda")
-  origem               String?
+  origem String?
+
+  dataPrimeiroContato Date? @map("data_primeiro_contato")
+  dataAvaliacao Date? @map("data_avaliacao")
+autorizouFoto Boolean
+  @default(false)
+  @map("autorizou_foto")
   natural              Boolean?
   cor                  String?
   textura              String?
@@ -45,20 +57,33 @@ model Contato {
 }
 
 model Foto {
-  id        Uuid   @id @default(uuid())
-  contatoId Uuid   @map("contato_id")
+  id Uuid @id @default(uuid())
 
-  tipo      String?
-  url       String
-  thumbUrl  String? @map("thumb_url")
-  ordem     Int      @default(0)
+  contatoId Uuid @map("contato_id")
+  compraId Uuid? @map("compra_id")
+
+  tipo String?
+  url String
+  thumbUrl String? @map("thumb_url")
+  ordem Int @default(0)
 
   createdAt temporal.createdAt() @map("created_at")
   updatedAt temporal.updatedAt() @map("updated_at")
 
-  contato Contato @relation(fields: [contatoId], references: [id])
+  contato Contato @relation(
+    fields: [contatoId],
+    references: [id]
+  )
+
+  compra Compra? @relation(
+    fields: [compraId],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@index([contatoId])
+  @@index([compraId])
+
   @@map("fotos")
   @@rls
 }
@@ -78,6 +103,7 @@ model Compra {
 
   valorPago      Decimal @map("valor_pago")
   formaPagamento String @map("forma_pagamento")
+  fotos Foto[]
 
   valorRevenda Decimal? @map("valor_revenda")
   dataRevenda  Date?    @map("data_revenda")
@@ -136,6 +162,7 @@ model DiaRota {
 
   distanciaKm Decimal? @map("distancia_km")
   duracaoMin  Int?     @map("duracao_min")
+  rotaPolyline String? @map("rota_polyline")
 
   createdAt temporal.createdAt() @map("created_at")
   updatedAt temporal.updatedAt() @map("updated_at")

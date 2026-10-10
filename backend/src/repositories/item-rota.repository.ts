@@ -6,7 +6,7 @@ interface SalvarVisitaInput {
   visitaExistenteId?: string;
   hora?: Temporal.PlainTime;
   alterarStatusParaAvaliacao: boolean;
-  
+  dataAvaliacao?: Temporal.PlainDate;
 }
 
 interface CriarTarefaInput {
@@ -70,19 +70,26 @@ export class ItemRotaRepository {
           });
       }
 
-      if (
-        data.alterarStatusParaAvaliacao
-      ) {
-        await tx.orm.public.Contato
-          .where({
-            id: data.contatoId,
-            deletedAt: null,
-          })
-          .update({
-            status: "avaliacao_agendada",
-            motivoPerda: null,
-          });
-      }
+if (
+  data.alterarStatusParaAvaliacao
+) {
+  await tx.orm.public.Contato
+    .where({
+      id: data.contatoId,
+      deletedAt: null,
+    })
+    .update({
+      status: "avaliacao_agendada",
+      motivoPerda: null,
+
+      ...(data.dataAvaliacao !== undefined
+        ? {
+            dataAvaliacao:
+              data.dataAvaliacao,
+          }
+        : {}),
+    });
+}
 
       return visita;
     });

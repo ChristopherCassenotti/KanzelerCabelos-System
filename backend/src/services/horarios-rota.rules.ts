@@ -3,13 +3,16 @@ interface ItemHorario {
   tipo: string;
   ordem: number;
   hora?: Temporal.PlainTime | null;
+
+  minutosDeslocamento?: number;
 }
 
 interface CalcularHorariosInput {
   horaSaida: Temporal.PlainTime;
   minutosPorVisita: number;
   itens: ItemHorario[];
-  minutosDeslocamento?: number;
+
+  minutosDeslocamentoPadrao?: number;
 }
 
 function arredondarPara5Minutos(
@@ -37,7 +40,7 @@ export function calcularHorariosRota({
   horaSaida,
   minutosPorVisita,
   itens,
-  minutosDeslocamento = 8,
+  minutosDeslocamentoPadrao = 8,
 }: CalcularHorariosInput) {
   const ordenados = [...itens].sort(
     (a, b) => a.ordem - b.ordem,
@@ -53,11 +56,16 @@ export function calcularHorariosRota({
       };
     }
 
-    const chegada = arredondarPara5Minutos(
-      horarioAtual.add({
-        minutes: minutosDeslocamento,
-      }),
-    );
+    const minutosDeslocamento =
+      item.minutosDeslocamento ??
+      minutosDeslocamentoPadrao;
+
+    const chegada =
+      arredondarPara5Minutos(
+        horarioAtual.add({
+          minutes: minutosDeslocamento,
+        }),
+      );
 
     horarioAtual = chegada.add({
       minutes: minutosPorVisita,

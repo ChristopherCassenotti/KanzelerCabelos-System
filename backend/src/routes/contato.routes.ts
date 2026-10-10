@@ -22,5 +22,20 @@ export async function contatoRoutes(app: FastifyInstance) {
 
   app.delete<{Params: {id: string;};}>("/:id", (request, replay) => {
     return contatoController.delete(request, replay);
-  })
+  });
+
+  app.delete<{
+  Params: {
+    id: string;
+  };
+}>(
+  "/:id/definitivo",
+  (request, reply) => {
+    return contatoController
+      .deleteDefinitivo(
+        request,
+        reply,
+      );
+  },
+);
 }

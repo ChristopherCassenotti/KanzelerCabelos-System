@@ -12,8 +12,16 @@ import { itemRotaRoutes } from "./item-rota.routes";
 import { remarcarVisitaRoutes } from "./remarcar-visita.routes";
 import { horariosRotaRoutes } from "./horarios-rota.routes";
 import { aAgendarRoutes } from "./a-agendar.routes";
+import { requireAuth } from "../middlewares/auth.middleware";
+import { painelRoutes } from "./painel.routes";
+import { relatorioRoutes } from "./relatorio.routes";
 
 export async function routes(app: FastifyInstance) {
+  app.addHook(
+  "preHandler",
+  requireAuth,
+);
+
   await app.register(cidadeRoutes, {
     prefix: "/cidades",
   });
@@ -65,5 +73,16 @@ export async function routes(app: FastifyInstance) {
   await app.register(aAgendarRoutes, {
     prefix: "/a-agendar",
   });
+  
+  await app.register(painelRoutes, {
+    prefix: "/painel",
+  });
+
+  await app.register(
+    relatorioRoutes,
+    {
+      prefix: "/relatorios",
+    },
+  );
 }
 

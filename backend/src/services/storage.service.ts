@@ -58,4 +58,23 @@ export class StorageService {
 
     return data.signedUrl;
   }
+
+  async deleteImages(
+  paths: string[],
+) {
+  if (paths.length === 0) {
+    return;
+  }
+
+  const { error } =
+    await supabase.storage
+      .from(BUCKET)
+      .remove(paths);
+
+  if (error) {
+    throw new Error(
+      `Erro ao remover fotos: ${error.message}`,
+    );
+  }
+}
 }

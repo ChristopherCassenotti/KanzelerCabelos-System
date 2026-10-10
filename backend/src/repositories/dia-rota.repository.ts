@@ -117,4 +117,21 @@ async update(
     })
     .update(data);
 }
+
+async atualizarMetricas(
+  id: string,
+  distanciaKm: string | null,
+  duracaoMin: number | null,
+  rotaPolyline: string | null,
+) {
+  return db.orm.public.DiaRota
+    .where({
+      id,
+    })
+    .update({
+      distanciaKm,
+      duracaoMin,
+      rotaPolyline,
+    });
+}
 }

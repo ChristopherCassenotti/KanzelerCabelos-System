@@ -7,12 +7,16 @@ import { criarDiaRotaSchema } from "../schemas/dia-rota.schema";
 import { DiaRotaService } from "../services/dia-rota.service";
 import { diaRotaQuerySchema } from "../schemas/dia-rota-query.schema";
 import { atualizarDiaRotaSchema } from "../schemas/atualizar-dia-rota.schema";
+import { MapaRotaService } from "../services/mapa-rota.service";
 
 export class DiaRotaController {
-  constructor(
-    private readonly diaRotaService =
-      new DiaRotaService(),
-  ) {}
+constructor(
+  private readonly diaRotaService =
+    new DiaRotaService(),
+
+  private readonly mapaRotaService =
+    new MapaRotaService(),
+) {}
 
   async create(
     request: FastifyRequest,
@@ -160,5 +164,26 @@ async update(
     tipo: resultado.tipo,
     rota: resultado.rota,
   });
+}
+async mapa(
+  request: FastifyRequest<{
+    Params: {
+      id: string;
+    };
+  }>,
+  reply: FastifyReply,
+) {
+  const mapa =
+    await this.mapaRotaService.buscar(
+      request.params.id,
+    );
+
+  if (!mapa) {
+    return reply.status(404).send({
+      error: "Rota não encontrada",
+    });
+  }
+
+  return reply.send(mapa);
 }
 }

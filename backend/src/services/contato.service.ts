@@ -5,6 +5,8 @@ import { FotoRepository } from "../repositories/foto.repository";
 import { StorageService } from "./storage.service";
 import { CompraRepository } from "../repositories/compra.repository";
 import { RecompraService } from "./recompra.service";
+import { CidadeRepository } from "../repositories/cidade.repository";
+import { GeocodingService } from "./geocoding.service";
 
 export class ContatoService {
   constructor(
@@ -13,30 +15,119 @@ export class ContatoService {
     private readonly compraRepository = new CompraRepository(),
     private readonly storageService = new StorageService(),
     private readonly recompraService = new RecompraService(),
+    private readonly cidadeRepository = new CidadeRepository(),
+    private readonly geocodingService = new GeocodingService(),
   ) {}
 
-  async create(data: CriarContatoInput) {
-    const contato: CriarContatoModel = {
-      nome: data.nome,
-      cidadeId: data.cidadeId,
+async create(data: CriarContatoInput) {
+  let lat =
+    data.lat !== undefined
+      ? String(data.lat)
+      : null;
 
-      telefone: data.telefone ?? null,
-      endereco: data.endereco ?? null,
-      origem: data.origem ?? null,
+  let lng =
+    data.lng !== undefined
+      ? String(data.lng)
+      : null;
 
-      natural: data.natural ?? null,
+  let geoFonte =
+    data.geoFonte ?? null;
 
-      cor: data.cor ?? null,
-      textura: data.textura ?? null,
-      quimica: data.quimica ?? null,
+  let geoPlaceId =
+    data.geoPlaceId ?? null;
 
-      comprimentoCm: data.comprimentoCm ?? null,
+  const possuiCoordenadas =
+    data.lat !== undefined &&
+    data.lng !== undefined;
 
-      observacoes: data.observacoes ?? null,
-    };
+  if (
+    !possuiCoordenadas &&
+    data.endereco
+  ) {
+    const cidade =
+      await this.cidadeRepository.findById(
+        data.cidadeId,
+      );
 
-    return this.contatoRepository.create(contato);
+    if (cidade) {
+      const enderecoCompleto =
+        `${data.endereco}, ` +
+        `${cidade.nome} - ${cidade.uf}, Brasil`;
+
+      const geocoding =
+        await this.geocodingService.buscarEndereco(
+          enderecoCompleto,
+        );
+
+      if (geocoding) {
+        lat = String(geocoding.lat);
+        lng = String(geocoding.lng);
+
+        geoFonte = "geoapify";
+
+        geoPlaceId =
+          geocoding.geoPlaceId;
+      }
+    }
   }
+const hoje =
+  Temporal.Now.plainDateISO(
+    "America/Sao_Paulo",
+  );
+  const contato: CriarContatoModel = {
+    nome: data.nome,
+    cidadeId: data.cidadeId,
+
+    telefone:
+      data.telefone ?? null,
+
+    endereco:
+      data.endereco ?? null,
+
+    lat,
+    lng,
+    geoFonte,
+    geoPlaceId,
+
+    origem:
+      data.origem ?? null,
+dataPrimeiroContato:
+  data.dataPrimeiroContato !== undefined
+    ? Temporal.PlainDate.from(
+        data.dataPrimeiroContato,
+      )
+    : hoje,
+
+dataAvaliacao:
+  data.dataAvaliacao !== undefined
+    ? Temporal.PlainDate.from(
+        data.dataAvaliacao,
+      )
+    : null,
+    natural:
+      data.natural ?? null,
+autorizouFoto:
+  data.autorizouFoto ?? false,
+    cor:
+      data.cor ?? null,
+
+    textura:
+      data.textura ?? null,
+
+    quimica:
+      data.quimica ?? null,
+
+    comprimentoCm:
+      data.comprimentoCm ?? null,
+
+    observacoes:
+      data.observacoes ?? null,
+  };
+
+  return this.contatoRepository.create(
+    contato,
+  );
+}
 
   async findAll() {
     return this.contatoRepository.findAll();
@@ -80,58 +171,208 @@ export class ContatoService {
     };
   }
 
-  async update(id: string, data: AtualizarContatoInput) {
-    const contato: AtualizarContatoModel = {};
+async update(
+  id: string,
+  data: AtualizarContatoInput,
+) {
+  const atual =
+    await this.contatoRepository.findById(id);
 
-    if (data.nome !== undefined) {
-      contato.nome = data.nome;
-    }
-
-    if (data.telefone !== undefined) {
-      contato.telefone = data.telefone;
-    }
-
-    if (data.cidadeId !== undefined) {
-      contato.cidadeId = data.cidadeId;
-    }
-
-    if (data.endereco !== undefined) {
-      contato.endereco = data.endereco;
-    }
-
-    if (data.origem !== undefined) {
-      contato.origem = data.origem;
-    }
-
-    if (data.natural !== undefined) {
-      contato.natural = data.natural;
-    }
-
-    if (data.cor !== undefined) {
-      contato.cor = data.cor;
-    }
-
-    if (data.textura !== undefined) {
-      contato.textura = data.textura;
-    }
-
-    if (data.quimica !== undefined) {
-      contato.quimica = data.quimica;
-    }
-
-    if (data.comprimentoCm !== undefined) {
-      contato.comprimentoCm = data.comprimentoCm;
-    }
-
-    if (data.observacoes !== undefined) {
-      contato.observacoes = data.observacoes;
-    }
-
-    return this.contatoRepository.update(id, contato);
+  if (!atual) {
+    return null;
   }
+
+  const contato: AtualizarContatoModel = {};
+  
+  if (data.nome !== undefined) {
+    contato.nome = data.nome;
+  }
+if (
+  data.autorizouFoto !== undefined
+) {
+  contato.autorizouFoto =
+    data.autorizouFoto;
+}
+  if (data.telefone !== undefined) {
+    contato.telefone = data.telefone;
+  }
+
+  if (data.cidadeId !== undefined) {
+    contato.cidadeId = data.cidadeId;
+  }
+
+  if (data.endereco !== undefined) {
+    contato.endereco = data.endereco;
+  }
+
+  if (data.origem !== undefined) {
+    contato.origem = data.origem;
+  }
+
+  if (data.natural !== undefined) {
+    contato.natural = data.natural;
+  }
+
+  if (data.cor !== undefined) {
+    contato.cor = data.cor;
+  }
+
+  if (data.textura !== undefined) {
+    contato.textura = data.textura;
+  }
+
+  if (data.quimica !== undefined) {
+    contato.quimica = data.quimica;
+  }
+
+  if (data.comprimentoCm !== undefined) {
+    contato.comprimentoCm =
+      data.comprimentoCm;
+  }
+
+  if (data.observacoes !== undefined) {
+    contato.observacoes =
+      data.observacoes;
+  }
+
+  const enderecoOuCidadeMudou =
+    data.endereco !== undefined ||
+    data.cidadeId !== undefined;
+
+  const coordenadaInformada =
+    data.lat !== undefined ||
+    data.lng !== undefined;
+
+  if (coordenadaInformada) {
+    if (data.lat !== undefined) {
+      contato.lat = String(data.lat);
+    }
+
+    if (data.lng !== undefined) {
+      contato.lng = String(data.lng);
+    }
+
+    contato.geoFonte =
+      data.geoFonte ?? "manual";
+
+    contato.geoPlaceId =
+      data.geoPlaceId ?? null;
+  } else if (enderecoOuCidadeMudou) {
+    const enderecoFinal =
+      data.endereco ?? atual.endereco;
+
+    const cidadeIdFinal =
+      data.cidadeId ?? atual.cidadeId;
+
+    if (enderecoFinal) {
+      const cidade =
+        await this.cidadeRepository.findById(
+          cidadeIdFinal,
+        );
+
+      if (cidade) {
+        const enderecoCompleto =
+          `${enderecoFinal}, ` +
+          `${cidade.nome} - ${cidade.uf}, Brasil`;
+
+        const geocoding =
+          await this.geocodingService.buscarEndereco(
+            enderecoCompleto,
+          );
+
+        if (geocoding) {
+          contato.lat =
+            String(geocoding.lat);
+
+          contato.lng =
+            String(geocoding.lng);
+
+          contato.geoFonte =
+            "geoapify";
+
+          contato.geoPlaceId =
+            geocoding.geoPlaceId;
+        } else {
+          contato.lat = null;
+          contato.lng = null;
+          contato.geoFonte = null;
+          contato.geoPlaceId = null;
+        }
+      }
+    }
+  } else {
+    if (data.geoFonte !== undefined) {
+      contato.geoFonte =
+        data.geoFonte;
+    }
+
+    if (
+      data.geoPlaceId !== undefined
+    ) {
+      contato.geoPlaceId =
+        data.geoPlaceId;
+    }
+  }
+if (
+  data.dataPrimeiroContato !== undefined
+) {
+  contato.dataPrimeiroContato =
+    Temporal.PlainDate.from(
+      data.dataPrimeiroContato,
+    );
+}
+
+if (
+  data.dataAvaliacao !== undefined
+) {
+  contato.dataAvaliacao =
+    Temporal.PlainDate.from(
+      data.dataAvaliacao,
+    );
+}
+  return this.contatoRepository.update(
+    id,
+    contato,
+  );
+}
 
   async delete(id: string) {
     return this.contatoRepository.softDelete(id);
   }
+
+  async deleteDefinitivo(
+  id: string,
+) {
+  const contato =
+    await this.contatoRepository
+      .findByIdIncludingDeleted(
+        id,
+      );
+
+  if (!contato) {
+    return null;
+  }
+
+  const fotos =
+    await this.fotoRepository
+      .findByContatoId(
+        id,
+      );
+
+  const paths =
+    fotos.map(
+      (foto) => foto.url,
+    );
+
+  await this.storageService
+    .deleteImages(
+      paths,
+    );
+
+  return this.contatoRepository
+    .hardDelete(
+      id,
+    );
+}
 }
 

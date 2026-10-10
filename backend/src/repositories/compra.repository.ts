@@ -77,4 +77,87 @@ export class CompraRepository {
       .orderBy((compra) => compra.dataCorte.desc())
       .first();
   }
+  
+  async findByIdForContato(
+  compraId: string,
+  contatoId: string,
+) {
+  return db.orm.public.Compra
+    .where({
+      contatoId,
+    })
+    .first({
+      id: compraId,
+    });
+}
+
+async findAll() {
+  return db.orm.public.Compra
+    .orderBy(
+      (compra) =>
+        compra.dataCorte.desc(),
+    )
+    .all();
+}
+
+async findByPeriod(
+  de: Temporal.PlainDate,
+  ate: Temporal.PlainDate,
+) {
+  return db.orm.public.Compra
+    .where((compra) =>
+      compra.dataCorte.gte(de),
+    )
+    .where((compra) =>
+      compra.dataCorte.lte(ate),
+    )
+    .orderBy(
+      (compra) =>
+        compra.dataCorte.desc(),
+    )
+    .all();
+}
+
+async findByVisitaId(
+  visitaId: string,
+) {
+  return db.orm.public.Compra
+    .where({
+      visitaId,
+    })
+    .all();
+}
+
+async findAllComContato() {
+  return db.orm.public.Compra
+    .include("contato", (contato) =>
+      contato.include("cidade"),
+    )
+    .orderBy(
+      (compra) =>
+        compra.dataCorte.asc(),
+    )
+    .all();
+}
+
+async findByPeriodComContato(
+  de: Temporal.PlainDate,
+  ate: Temporal.PlainDate,
+) {
+  return db.orm.public.Compra
+    .include("contato", (contato) =>
+      contato.include("cidade"),
+    )
+    .where((compra) =>
+      compra.dataCorte.gte(de),
+    )
+    .where((compra) =>
+      compra.dataCorte.lte(ate),
+    )
+    .orderBy(
+      (compra) =>
+        compra.dataCorte.asc(),
+    )
+    .all();
+}
 }

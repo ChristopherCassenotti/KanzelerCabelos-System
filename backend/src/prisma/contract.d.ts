@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'41bfedc3d4f5237077ce94e3d35660a5356cfffd8f48a27791de0a7ca6ac4983'>;
+  StorageHashBase<'002ac354c51802f80afa5074f50626470da1b844bc60801a0ba4704a0a1b5180'>;
 export type ExecutionHash =
   ExecutionHashBase<'ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f'>;
 export type ProfileHash =
@@ -276,14 +276,21 @@ export type FieldOutputTypes = {
       readonly visitaId: CodecTypes['pg/uuid@1']['output'] | null;
     };
     readonly Contato: {
+      readonly autorizouFoto: CodecTypes['pg/bool@1']['output'];
       readonly cicloRecompraMeses: CodecTypes['pg/int4@1']['output'];
       readonly cidadeId: CodecTypes['pg/uuid@1']['output'];
       readonly comprimentoCm: CodecTypes['pg/int4@1']['output'] | null;
       readonly cor: CodecTypes['pg/text@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly dataAvaliacao: CodecTypes['pg/date-temporal@1']['output'] | null;
+      readonly dataPrimeiroContato: CodecTypes['pg/date-temporal@1']['output'] | null;
       readonly deletedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
       readonly endereco: CodecTypes['pg/text@1']['output'] | null;
+      readonly geoFonte: CodecTypes['pg/text@1']['output'] | null;
+      readonly geoPlaceId: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
+      readonly lng: CodecTypes['pg/numeric@1']['output'] | null;
       readonly motivoPerda: CodecTypes['pg/text@1']['output'] | null;
       readonly natural: CodecTypes['pg/bool@1']['output'] | null;
       readonly nome: CodecTypes['pg/text@1']['output'];
@@ -308,9 +315,11 @@ export type FieldOutputTypes = {
       readonly id: CodecTypes['pg/uuid@1']['output'];
       readonly minutosPorVisita: CodecTypes['pg/int4@1']['output'];
       readonly partidaCidadeId: CodecTypes['pg/uuid@1']['output'];
+      readonly rotaPolyline: CodecTypes['pg/text@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly Foto: {
+      readonly compraId: CodecTypes['pg/uuid@1']['output'] | null;
       readonly contatoId: CodecTypes['pg/uuid@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly id: CodecTypes['pg/uuid@1']['output'];
@@ -363,14 +372,21 @@ export type FieldInputTypes = {
       readonly visitaId: CodecTypes['pg/uuid@1']['input'] | null;
     };
     readonly Contato: {
+      readonly autorizouFoto: CodecTypes['pg/bool@1']['input'];
       readonly cicloRecompraMeses: CodecTypes['pg/int4@1']['input'];
       readonly cidadeId: CodecTypes['pg/uuid@1']['input'];
       readonly comprimentoCm: CodecTypes['pg/int4@1']['input'] | null;
       readonly cor: CodecTypes['pg/text@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly dataAvaliacao: CodecTypes['pg/date-temporal@1']['input'] | null;
+      readonly dataPrimeiroContato: CodecTypes['pg/date-temporal@1']['input'] | null;
       readonly deletedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
       readonly endereco: CodecTypes['pg/text@1']['input'] | null;
+      readonly geoFonte: CodecTypes['pg/text@1']['input'] | null;
+      readonly geoPlaceId: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
+      readonly lng: CodecTypes['pg/numeric@1']['input'] | null;
       readonly motivoPerda: CodecTypes['pg/text@1']['input'] | null;
       readonly natural: CodecTypes['pg/bool@1']['input'] | null;
       readonly nome: CodecTypes['pg/text@1']['input'];
@@ -395,9 +411,11 @@ export type FieldInputTypes = {
       readonly id: CodecTypes['pg/uuid@1']['input'];
       readonly minutosPorVisita: CodecTypes['pg/int4@1']['input'];
       readonly partidaCidadeId: CodecTypes['pg/uuid@1']['input'];
+      readonly rotaPolyline: CodecTypes['pg/text@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly Foto: {
+      readonly compraId: CodecTypes['pg/uuid@1']['input'] | null;
       readonly contatoId: CodecTypes['pg/uuid@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly id: CodecTypes['pg/uuid@1']['input'];
@@ -450,14 +468,21 @@ export type StorageColumnTypes = {
       readonly visita_id: CodecTypes['pg/uuid@1']['output'] | null;
     };
     readonly contatos: {
+      readonly autorizou_foto: CodecTypes['pg/bool@1']['output'];
       readonly ciclo_recompra_meses: CodecTypes['pg/int4@1']['output'];
       readonly cidade_id: CodecTypes['pg/uuid@1']['output'];
       readonly comprimento_cm: CodecTypes['pg/int4@1']['output'] | null;
       readonly cor: CodecTypes['pg/text@1']['output'] | null;
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly data_avaliacao: CodecTypes['pg/date-temporal@1']['output'] | null;
+      readonly data_primeiro_contato: CodecTypes['pg/date-temporal@1']['output'] | null;
       readonly deleted_at: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
       readonly endereco: CodecTypes['pg/text@1']['output'] | null;
+      readonly geo_fonte: CodecTypes['pg/text@1']['output'] | null;
+      readonly geo_place_id: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
+      readonly lng: CodecTypes['pg/numeric@1']['output'] | null;
       readonly motivo_perda: CodecTypes['pg/text@1']['output'] | null;
       readonly natural: CodecTypes['pg/bool@1']['output'] | null;
       readonly nome: CodecTypes['pg/text@1']['output'];
@@ -482,9 +507,11 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/uuid@1']['output'];
       readonly minutos_por_visita: CodecTypes['pg/int4@1']['output'];
       readonly partida_cidade_id: CodecTypes['pg/uuid@1']['output'];
+      readonly rota_polyline: CodecTypes['pg/text@1']['output'] | null;
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly fotos: {
+      readonly compra_id: CodecTypes['pg/uuid@1']['output'] | null;
       readonly contato_id: CodecTypes['pg/uuid@1']['output'];
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly id: CodecTypes['pg/uuid@1']['output'];
@@ -537,14 +564,21 @@ export type StorageColumnInputTypes = {
       readonly visita_id: CodecTypes['pg/uuid@1']['input'] | null;
     };
     readonly contatos: {
+      readonly autorizou_foto: CodecTypes['pg/bool@1']['input'];
       readonly ciclo_recompra_meses: CodecTypes['pg/int4@1']['input'];
       readonly cidade_id: CodecTypes['pg/uuid@1']['input'];
       readonly comprimento_cm: CodecTypes['pg/int4@1']['input'] | null;
       readonly cor: CodecTypes['pg/text@1']['input'] | null;
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly data_avaliacao: CodecTypes['pg/date-temporal@1']['input'] | null;
+      readonly data_primeiro_contato: CodecTypes['pg/date-temporal@1']['input'] | null;
       readonly deleted_at: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
       readonly endereco: CodecTypes['pg/text@1']['input'] | null;
+      readonly geo_fonte: CodecTypes['pg/text@1']['input'] | null;
+      readonly geo_place_id: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
+      readonly lng: CodecTypes['pg/numeric@1']['input'] | null;
       readonly motivo_perda: CodecTypes['pg/text@1']['input'] | null;
       readonly natural: CodecTypes['pg/bool@1']['input'] | null;
       readonly nome: CodecTypes['pg/text@1']['input'];
@@ -569,9 +603,11 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/uuid@1']['input'];
       readonly minutos_por_visita: CodecTypes['pg/int4@1']['input'];
       readonly partida_cidade_id: CodecTypes['pg/uuid@1']['input'];
+      readonly rota_polyline: CodecTypes['pg/text@1']['input'] | null;
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly fotos: {
+      readonly compra_id: CodecTypes['pg/uuid@1']['input'] | null;
       readonly contato_id: CodecTypes['pg/uuid@1']['input'];
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly id: CodecTypes['pg/uuid@1']['input'];
@@ -626,18 +662,26 @@ export namespace Models {
     valorRevenda: CodecTypes['pg/numeric@1']['output'] | null;
     visitaId: CodecTypes['pg/uuid@1']['output'] | null;
     contato: public_Contato;
+    fotos: public_Foto[];
     visita: public_ItemRota | null;
-    readonly [RelationKeys]?: 'contato' | 'visita';
+    readonly [RelationKeys]?: 'contato' | 'fotos' | 'visita';
   };
   export type public_Contato = {
+    autorizouFoto: CodecTypes['pg/bool@1']['output'];
     cicloRecompraMeses: CodecTypes['pg/int4@1']['output'];
     cidadeId: CodecTypes['pg/uuid@1']['output'];
     comprimentoCm: CodecTypes['pg/int4@1']['output'] | null;
     cor: CodecTypes['pg/text@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    dataAvaliacao: CodecTypes['pg/date-temporal@1']['output'] | null;
+    dataPrimeiroContato: CodecTypes['pg/date-temporal@1']['output'] | null;
     deletedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
     endereco: CodecTypes['pg/text@1']['output'] | null;
+    geoFonte: CodecTypes['pg/text@1']['output'] | null;
+    geoPlaceId: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/uuid@1']['output'];
+    lat: CodecTypes['pg/numeric@1']['output'] | null;
+    lng: CodecTypes['pg/numeric@1']['output'] | null;
     motivoPerda: CodecTypes['pg/text@1']['output'] | null;
     natural: CodecTypes['pg/bool@1']['output'] | null;
     nome: CodecTypes['pg/text@1']['output'];
@@ -667,12 +711,14 @@ export namespace Models {
     id: CodecTypes['pg/uuid@1']['output'];
     minutosPorVisita: CodecTypes['pg/int4@1']['output'];
     partidaCidadeId: CodecTypes['pg/uuid@1']['output'];
+    rotaPolyline: CodecTypes['pg/text@1']['output'] | null;
     updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     itens: public_ItemRota[];
     partidaCidade: public_Cidade;
     readonly [RelationKeys]?: 'itens' | 'partidaCidade';
   };
   export type public_Foto = {
+    compraId: CodecTypes['pg/uuid@1']['output'] | null;
     contatoId: CodecTypes['pg/uuid@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     id: CodecTypes['pg/uuid@1']['output'];
@@ -681,8 +727,9 @@ export namespace Models {
     tipo: CodecTypes['pg/text@1']['output'] | null;
     updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     url: CodecTypes['pg/text@1']['output'];
+    compra: public_Compra | null;
     contato: public_Contato;
-    readonly [RelationKeys]?: 'contato';
+    readonly [RelationKeys]?: 'compra' | 'contato';
   };
   export type public_ItemRota = {
     concluido: CodecTypes['pg/bool@1']['output'];
@@ -893,6 +940,15 @@ type ContractBase = Omit<
             };
             readonly contatos: {
               columns: {
+                readonly autorizou_foto: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                };
                 readonly ciclo_recompra_meses: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -922,6 +978,16 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-temporal@1';
                   readonly nullable: false;
                 };
+                readonly data_avaliacao: {
+                  readonly nativeType: 'date';
+                  readonly codecId: 'pg/date-temporal@1';
+                  readonly nullable: true;
+                };
+                readonly data_primeiro_contato: {
+                  readonly nativeType: 'date';
+                  readonly codecId: 'pg/date-temporal@1';
+                  readonly nullable: true;
+                };
                 readonly deleted_at: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-temporal@1';
@@ -932,10 +998,30 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: true;
                 };
+                readonly geo_fonte: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly geo_place_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly id: {
                   readonly nativeType: 'uuid';
                   readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
+                };
+                readonly lat: {
+                  readonly nativeType: 'numeric';
+                  readonly codecId: 'pg/numeric@1';
+                  readonly nullable: true;
+                };
+                readonly lng: {
+                  readonly nativeType: 'numeric';
+                  readonly codecId: 'pg/numeric@1';
+                  readonly nullable: true;
                 };
                 readonly motivo_perda: {
                   readonly nativeType: 'text';
@@ -1109,6 +1195,11 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                 };
+                readonly rota_polyline: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly updated_at: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-temporal@1';
@@ -1142,6 +1233,11 @@ type ContractBase = Omit<
             };
             readonly fotos: {
               columns: {
+                readonly compra_id: {
+                  readonly nativeType: 'uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: true;
+                };
                 readonly contato_id: {
                   readonly nativeType: 'uuid';
                   readonly codecId: 'pg/uuid@1';
@@ -1191,6 +1287,12 @@ type ContractBase = Omit<
               uniques: readonly [];
               indexes: readonly [
                 {
+                  readonly name: 'fotos_compra_id_idx_b246fef9';
+                  readonly prefix: 'fotos_compra_id_idx';
+                  readonly columns: readonly ['compra_id'];
+                  readonly unique: false;
+                },
+                {
                   readonly name: 'fotos_contato_id_idx_f7fc9452';
                   readonly prefix: 'fotos_contato_id_idx';
                   readonly columns: readonly ['contato_id'];
@@ -1207,6 +1309,18 @@ type ContractBase = Omit<
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'contatos';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'fotos';
+                    readonly columns: readonly ['compra_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'compras';
                     readonly columns: readonly ['id'];
                   };
                 },
@@ -1498,6 +1612,14 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['id'];
                 };
               };
+              readonly fotos: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Foto' };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['compraId'];
+                };
+              };
               readonly visita: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -1536,6 +1658,10 @@ type ContractBase = Omit<
           };
           readonly Contato: {
             readonly fields: {
+              readonly autorizouFoto: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
               readonly cicloRecompraMeses: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -1559,6 +1685,14 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-temporal@1';
                 };
               };
+              readonly dataAvaliacao: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-temporal@1' };
+              };
+              readonly dataPrimeiroContato: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-temporal@1' };
+              };
               readonly deletedAt: {
                 readonly nullable: true;
                 readonly type: {
@@ -1570,9 +1704,25 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly geoFonte: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly geoPlaceId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
+              readonly lat: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
+              };
+              readonly lng: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
               };
               readonly motivoPerda: {
                 readonly nullable: true;
@@ -1666,14 +1816,21 @@ type ContractBase = Omit<
               readonly table: 'contatos';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly autorizouFoto: { readonly column: 'autorizou_foto' };
                 readonly cicloRecompraMeses: { readonly column: 'ciclo_recompra_meses' };
                 readonly cidadeId: { readonly column: 'cidade_id' };
                 readonly comprimentoCm: { readonly column: 'comprimento_cm' };
                 readonly cor: { readonly column: 'cor' };
                 readonly createdAt: { readonly column: 'created_at' };
+                readonly dataAvaliacao: { readonly column: 'data_avaliacao' };
+                readonly dataPrimeiroContato: { readonly column: 'data_primeiro_contato' };
                 readonly deletedAt: { readonly column: 'deleted_at' };
                 readonly endereco: { readonly column: 'endereco' };
+                readonly geoFonte: { readonly column: 'geo_fonte' };
+                readonly geoPlaceId: { readonly column: 'geo_place_id' };
                 readonly id: { readonly column: 'id' };
+                readonly lat: { readonly column: 'lat' };
+                readonly lng: { readonly column: 'lng' };
                 readonly motivoPerda: { readonly column: 'motivo_perda' };
                 readonly natural: { readonly column: 'natural' };
                 readonly nome: { readonly column: 'nome' };
@@ -1740,6 +1897,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
+              readonly rotaPolyline: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly updatedAt: {
                 readonly nullable: false;
                 readonly type: {
@@ -1789,12 +1950,17 @@ type ContractBase = Omit<
                 readonly id: { readonly column: 'id' };
                 readonly minutosPorVisita: { readonly column: 'minutos_por_visita' };
                 readonly partidaCidadeId: { readonly column: 'partida_cidade_id' };
+                readonly rotaPolyline: { readonly column: 'rota_polyline' };
                 readonly updatedAt: { readonly column: 'updated_at' };
               };
             };
           };
           readonly Foto: {
             readonly fields: {
+              readonly compraId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
               readonly contatoId: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
@@ -1835,6 +2001,18 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
+              readonly compra: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Compra';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: true;
+                readonly on: {
+                  readonly localFields: readonly ['compraId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
               readonly contato: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -1852,6 +2030,7 @@ type ContractBase = Omit<
               readonly table: 'fotos';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly compraId: { readonly column: 'compra_id' };
                 readonly contatoId: { readonly column: 'contato_id' };
                 readonly createdAt: { readonly column: 'created_at' };
                 readonly id: { readonly column: 'id' };

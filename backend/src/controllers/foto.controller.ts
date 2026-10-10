@@ -20,6 +20,7 @@ export class FotoController {
     } | null = null;
 
     let tipo: string | undefined;
+    let compraId: string | undefined;
 
     for await (const part of request.parts()) {
       if (part.type === "file") {
@@ -28,6 +29,7 @@ export class FotoController {
             error: "Envie apenas uma foto por requisição",
           });
         }
+        
 
         arquivo = {
           buffer: await part.toBuffer(),
@@ -35,6 +37,11 @@ export class FotoController {
         };
       } else if (part.fieldname === "tipo") {
         tipo = String(part.value);
+      }
+      else if (part.fieldname === "tipo") {
+        tipo = String(part.value);
+      } else if (part.fieldname === "compraId") {
+        compraId = String(part.value);
       }
     }
 
@@ -45,20 +52,53 @@ export class FotoController {
     }
 
     try {
-        const foto = await this.fotoService.upload({
-          contatoId: request.params.contatoId,
-          buffer: arquivo.buffer,
-          mimetype: arquivo.mimetype,
-          ...(tipo !== undefined ? { tipo } : {}),
-        });
+        const resultado =
+  await this.fotoService.upload({
+    contatoId:
+      request.params.contatoId,
 
-      if (!foto) {
-        return reply.status(404).send({
-          error: "Contato não encontrado",
-        });
-      }
+    buffer: arquivo.buffer,
+    mimetype: arquivo.mimetype,
 
-      return reply.status(201).send(foto);
+    ...(tipo !== undefined
+      ? { tipo }
+      : {}),
+
+    ...(compraId !== undefined
+      ? { compraId }
+      : {}),
+  });
+
+if (
+  resultado.tipo ===
+  "contato_nao_encontrado"
+) {
+  return reply.status(404).send({
+    error: "Contato não encontrado",
+  });
+}
+
+if (
+  resultado.tipo ===
+  "compra_invalida"
+) {
+  return reply.status(409).send({
+    error:
+      "A compra informada não pertence a este contato",
+  });
+}
+if (
+  resultado.tipo ===
+  "foto_nao_autorizada"
+) {
+  return reply.status(403).send({
+    error:
+      "A cliente não autorizou o armazenamento de fotos",
+  });
+}
+return reply
+  .status(201)
+  .send(resultado.foto);
     } catch (error) {
       const message =
         error instanceof Error

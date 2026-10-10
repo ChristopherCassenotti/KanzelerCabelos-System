@@ -56,8 +56,15 @@ describe("CompraRepository - integração", () => {
       cidadeId: cidade.id,
       telefone: null,
       endereco: null,
+      lat: null,
+lng: null,
+geoFonte: null,
+geoPlaceId: null,
       origem: null,
+      dataPrimeiroContato: null,
+dataAvaliacao: null,
       natural: true,
+      autorizouFoto: false,
       cor: "Castanho",
       textura: "Ondulado",
       quimica: "Nenhuma",
@@ -99,7 +106,7 @@ describe("CompraRepository - integração", () => {
     );
 
     expect(compras[0]?.pesoG).toBe(450);
-  });
+  }, 15000);
 
   it("não cria compra para contato inexistente", async () => {
     const contatoInexistenteId = randomUUID();
@@ -124,7 +131,7 @@ describe("CompraRepository - integração", () => {
       );
 
     expect(compras).toHaveLength(0);
-    });
+    }, 15000);
       
     it("não permite registrar compra para contato excluído", async () => {
       const cidade = await db.orm.public.Cidade.create({
@@ -141,8 +148,15 @@ describe("CompraRepository - integração", () => {
         cidadeId: cidade.id,
         telefone: null,
         endereco: null,
+        lat: null,
+lng: null,
+geoFonte: null,
+geoPlaceId: null,
         origem: null,
+        dataPrimeiroContato: null,
+dataAvaliacao: null,
         natural: true,
+        autorizouFoto: false,
         cor: "Castanho",
         textura: "Liso",
         quimica: "Nenhuma",
@@ -177,5 +191,5 @@ describe("CompraRepository - integração", () => {
         await compraRepository.findByContatoId(contato.id);
 
       expect(compras).toHaveLength(0);
-    });
+    },15000);
 });

@@ -51,7 +51,9 @@ export class VisitaRotaService {
     const hoje = Temporal.Now.plainDateISO(
       "America/Sao_Paulo",
     );
-
+const deveRegistrarDataAvaliacao =
+  contato.status === "lead" &&
+  contato.dataAvaliacao === null;
     const visitas =
       await this.itemRotaRepository
         .findVisitasAbertasByContatoId(
@@ -73,7 +75,12 @@ export class VisitaRotaService {
 
         alterarStatusParaAvaliacao:
           contato.status === "lead",
-
+...(deveRegistrarDataAvaliacao
+  ? {
+      dataAvaliacao:
+        diaRota.data,
+    }
+  : {}),
         ...(visitaFutura !== undefined
           ? {
               visitaExistenteId:
