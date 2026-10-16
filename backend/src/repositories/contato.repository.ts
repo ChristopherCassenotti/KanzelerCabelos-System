@@ -208,6 +208,18 @@ async hardDelete(
     },
   );
 }
+async findAllComCidade() {
+  return db.orm.public.Contato
+    .include("cidade")
+    .where({
+      deletedAt: null,
+    })
+    .orderBy(
+      (contato) =>
+        contato.nome.asc(),
+    )
+    .all();
+}
 }
 
 

@@ -1,4 +1,6 @@
-import type { FastifyInstance } from "fastify";
+import type {
+  FastifyInstance,
+} from "fastify";
 
 import { ItemRotaController } from "../controllers/item-rota.controller";
 
@@ -23,20 +25,20 @@ export async function itemRotaRoutes(
     },
   );
 
-    app.delete<{
-      Params: {
-        diaRotaId: string;
-        itemId: string;
-      };
-    }>(
-      "/:diaRotaId/itens/:itemId",
-      (request, reply) => {
-        return itemRotaController.remover(
-          request,
-          reply,
-        );
-      },
-    );
+  app.delete<{
+    Params: {
+      diaRotaId: string;
+      itemId: string;
+    };
+  }>(
+    "/:diaRotaId/itens/:itemId",
+    (request, reply) => {
+      return itemRotaController.remover(
+        request,
+        reply,
+      );
+    },
+  );
 
   app.patch<{
     Params: {
@@ -49,6 +51,21 @@ export async function itemRotaRoutes(
         request,
         reply,
       );
+    },
+  );
+
+  app.post<{
+    Params: {
+      diaRotaId: string;
+    };
+  }>(
+    "/:diaRotaId/itens/organizar-menor-distancia",
+    (request, reply) => {
+      return itemRotaController
+        .organizarMenorDistancia(
+          request,
+          reply,
+        );
     },
   );
 }

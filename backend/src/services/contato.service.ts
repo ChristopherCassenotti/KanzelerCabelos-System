@@ -8,6 +8,30 @@ import { RecompraService } from "./recompra.service";
 import { CidadeRepository } from "../repositories/cidade.repository";
 import { GeocodingService } from "./geocoding.service";
 
+function normalizarBusca(
+  valor: string | null | undefined,
+) {
+  return (valor ?? "")
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      "",
+    )
+    .toLocaleLowerCase(
+      "pt-BR",
+    )
+    .trim();
+}
+
+function somenteDigitos(
+  valor: string | null | undefined,
+) {
+  return (valor ?? "").replace(
+    /\D/g,
+    "",
+  );
+}
+
 export class ContatoService {
   constructor(
     private readonly contatoRepository = new ContatoRepository(),
@@ -373,6 +397,125 @@ if (
     .hardDelete(
       id,
     );
+}
+
+async buscar(
+  termo: string,
+) {
+  const busca =
+    normalizarBusca(
+      termo,
+    );
+
+  const buscaTelefone =
+    somenteDigitos(
+      termo,
+    );
+
+  const contatos =
+    await this.contatoRepository
+      .findAllComCidade();
+
+  const encontrados =
+    contatos.filter(
+      (contato) => {
+        const nome =
+          normalizarBusca(
+            contato.nome,
+          );
+
+        const cidade =
+          normalizarBusca(
+            contato.cidade.nome,
+          );
+
+        const endereco =
+          normalizarBusca(
+            contato.endereco,
+          );
+
+        const telefone =
+          somenteDigitos(
+            contato.telefone,
+          );
+
+        const encontrouTexto =
+          nome.includes(busca) ||
+          cidade.includes(busca) ||
+          endereco.includes(busca);
+
+        const encontrouTelefone =
+          buscaTelefone.length > 0 &&
+          telefone.includes(
+            buscaTelefone,
+          );
+
+        return (
+          encontrouTexto ||
+          encontrouTelefone
+        );
+      },
+    );
+
+  encontrados.sort(
+    (a, b) => {
+      const nomeA =
+        normalizarBusca(
+          a.nome,
+        );
+
+      const nomeB =
+        normalizarBusca(
+          b.nome,
+        );
+
+      const prioridadeA =
+        nomeA === busca
+          ? 0
+          : nomeA.startsWith(
+                busca,
+              )
+            ? 1
+            : nomeA.includes(
+                  busca,
+                )
+              ? 2
+              : 3;
+
+      const prioridadeB =
+        nomeB === busca
+          ? 0
+          : nomeB.startsWith(
+                busca,
+              )
+            ? 1
+            : nomeB.includes(
+                  busca,
+                )
+              ? 2
+              : 3;
+
+      if (
+        prioridadeA !==
+        prioridadeB
+      ) {
+        return (
+          prioridadeA -
+          prioridadeB
+        );
+      }
+
+      return a.nome.localeCompare(
+        b.nome,
+        "pt-BR",
+      );
+    },
+  );
+
+  return encontrados.slice(
+    0,
+    20,
+  );
 }
 }
 

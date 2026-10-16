@@ -17,16 +17,16 @@ export class RelatorioController {
   constructor(
     private readonly relatorioService =
       new RelatorioService(),
-    
+
     private readonly resultadoViagemService =
       new ResultadoViagemService(),
 
     private readonly comprasRelatorioService =
       new ComprasRelatorioService(),
-    
+
     private readonly precoMedioRelatorioService =
       new PrecoMedioRelatorioService(),
-      
+
     private readonly origemPerdasRelatorioService =
       new OrigemPerdasRelatorioService(),
 
@@ -34,8 +34,8 @@ export class RelatorioController {
       new ConversaoCidadeRelatorioService(),
 
     private readonly previsaoRecompraRelatorioService =
-      new PrevisaoRecompraRelatorioService(),  
-    
+      new PrevisaoRecompraRelatorioService(),
+
     private readonly detalhamentoComprasRelatorioService =
       new DetalhamentoComprasRelatorioService(),
   ) {}
@@ -55,8 +55,7 @@ export class RelatorioController {
 
     if (!resultadoSchema.success) {
       return reply.status(400).send({
-        error:
-          "Período inválido",
+        error: "Período inválido",
         details:
           resultadoSchema.error.flatten(),
       });
@@ -70,185 +69,226 @@ export class RelatorioController {
     return reply.send(resultado);
   }
 
+  async viagens(
+    request: FastifyRequest<{
+      Querystring: {
+        periodo?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultadoSchema =
+      relatorioIndicadoresQuerySchema.safeParse(
+        request.query,
+      );
+
+    if (!resultadoSchema.success) {
+      return reply.status(400).send({
+        error: "Período inválido",
+        details:
+          resultadoSchema.error.flatten(),
+      });
+    }
+
+    const resultado =
+      await this.resultadoViagemService.listar(
+        resultadoSchema.data.periodo,
+      );
+
+    return reply.send(
+      resultado,
+    );
+  }
+
   async viagem(
-  request: FastifyRequest<{
-    Params: {
-      diaRotaId: string;
-    };
-  }>,
-  reply: FastifyReply,
-) {
-  const resultado =
-    await this.resultadoViagemService.buscar(
-      request.params.diaRotaId,
-    );
+    request: FastifyRequest<{
+      Params: {
+        diaRotaId: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultado =
+      await this.resultadoViagemService.buscar(
+        request.params.diaRotaId,
+      );
 
-  if (!resultado) {
-    return reply.status(404).send({
-      error:
-        "Rota não encontrada",
-    });
+    if (!resultado) {
+      return reply.status(404).send({
+        error:
+          "Rota não encontrada",
+      });
+    }
+
+    return reply.send(
+      resultado,
+    );
   }
 
-  return reply.send(
-    resultado,
-  );
-}
+  async compras(
+    request: FastifyRequest<{
+      Querystring: {
+        periodo?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultadoSchema =
+      relatorioIndicadoresQuerySchema.safeParse(
+        request.query,
+      );
 
-async compras(
-  request: FastifyRequest<{
-    Querystring: {
-      periodo?: string;
-    };
-  }>,
-  reply: FastifyReply,
-) {
-  const resultadoSchema =
-    relatorioIndicadoresQuerySchema.safeParse(
-      request.query,
+    if (!resultadoSchema.success) {
+      return reply.status(400).send({
+        error: "Período inválido",
+        details:
+          resultadoSchema.error.flatten(),
+      });
+    }
+
+    const resultado =
+      await this.comprasRelatorioService.buscar(
+        resultadoSchema.data.periodo,
+      );
+
+    return reply.send(
+      resultado,
     );
-
-  if (!resultadoSchema.success) {
-    return reply.status(400).send({
-      error: "Período inválido",
-      details:
-        resultadoSchema.error.flatten(),
-    });
   }
 
-  const resultado =
-    await this.comprasRelatorioService.buscar(
-      resultadoSchema.data.periodo,
+  async precoMedio(
+    request: FastifyRequest<{
+      Querystring: {
+        periodo?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultadoSchema =
+      relatorioIndicadoresQuerySchema.safeParse(
+        request.query,
+      );
+
+    if (!resultadoSchema.success) {
+      return reply.status(400).send({
+        error: "Período inválido",
+        details:
+          resultadoSchema.error.flatten(),
+      });
+    }
+
+    const resultado =
+      await this.precoMedioRelatorioService.buscar(
+        resultadoSchema.data.periodo,
+      );
+
+    return reply.send(
+      resultado,
     );
-
-  return reply.send(resultado);
-}
-
-async precoMedio(
-  request: FastifyRequest<{
-    Querystring: {
-      periodo?: string;
-    };
-  }>,
-  reply: FastifyReply,
-) {
-  const resultadoSchema =
-    relatorioIndicadoresQuerySchema.safeParse(
-      request.query,
-    );
-
-  if (!resultadoSchema.success) {
-    return reply.status(400).send({
-      error: "Período inválido",
-      details:
-        resultadoSchema.error.flatten(),
-    });
   }
 
-  const resultado =
-    await this.precoMedioRelatorioService.buscar(
-      resultadoSchema.data.periodo,
+  async origemPerdas(
+    request: FastifyRequest<{
+      Querystring: {
+        periodo?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultadoSchema =
+      relatorioIndicadoresQuerySchema.safeParse(
+        request.query,
+      );
+
+    if (!resultadoSchema.success) {
+      return reply.status(400).send({
+        error: "Período inválido",
+        details:
+          resultadoSchema.error.flatten(),
+      });
+    }
+
+    const resultado =
+      await this.origemPerdasRelatorioService.buscar(
+        resultadoSchema.data.periodo,
+      );
+
+    return reply.send(
+      resultado,
     );
-
-  return reply.send(resultado);
-}
-
-async origemPerdas(
-  request: FastifyRequest<{
-    Querystring: {
-      periodo?: string;
-    };
-  }>,
-  reply: FastifyReply,
-) {
-  const resultadoSchema =
-    relatorioIndicadoresQuerySchema.safeParse(
-      request.query,
-    );
-
-  if (!resultadoSchema.success) {
-    return reply.status(400).send({
-      error: "Período inválido",
-      details:
-        resultadoSchema.error.flatten(),
-    });
   }
 
-  const resultado =
-    await this.origemPerdasRelatorioService.buscar(
-      resultadoSchema.data.periodo,
+  async conversaoCidade(
+    request: FastifyRequest<{
+      Querystring: {
+        periodo?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultadoSchema =
+      relatorioIndicadoresQuerySchema.safeParse(
+        request.query,
+      );
+
+    if (!resultadoSchema.success) {
+      return reply.status(400).send({
+        error: "Período inválido",
+        details:
+          resultadoSchema.error.flatten(),
+      });
+    }
+
+    const resultado =
+      await this.conversaoCidadeRelatorioService.buscar(
+        resultadoSchema.data.periodo,
+      );
+
+    return reply.send(
+      resultado,
     );
-
-  return reply.send(resultado);
-}
-
-async conversaoCidade(
-  request: FastifyRequest<{
-    Querystring: {
-      periodo?: string;
-    };
-  }>,
-  reply: FastifyReply,
-) {
-  const resultadoSchema =
-    relatorioIndicadoresQuerySchema.safeParse(
-      request.query,
-    );
-
-  if (!resultadoSchema.success) {
-    return reply.status(400).send({
-      error: "Período inválido",
-      details:
-        resultadoSchema.error.flatten(),
-    });
   }
 
-  const resultado =
-    await this.conversaoCidadeRelatorioService.buscar(
-      resultadoSchema.data.periodo,
+  async previsaoRecompra(
+    _request: FastifyRequest,
+    reply: FastifyReply,
+  ) {
+    const resultado =
+      await this.previsaoRecompraRelatorioService.buscar();
+
+    return reply.send(
+      resultado,
     );
-
-  return reply.send(resultado);
-}
-
-async previsaoRecompra(
-  _request: FastifyRequest,
-  reply: FastifyReply,
-) {
-  const resultado =
-    await this.previsaoRecompraRelatorioService.buscar();
-
-  return reply.send(resultado);
-}
-
-async detalhamentoCompras(
-  request: FastifyRequest<{
-    Querystring: {
-      periodo?: string;
-    };
-  }>,
-  reply: FastifyReply,
-) {
-  const resultadoSchema =
-    relatorioIndicadoresQuerySchema.safeParse(
-      request.query,
-    );
-
-  if (!resultadoSchema.success) {
-    return reply.status(400).send({
-      error: "Período inválido",
-      details:
-        resultadoSchema.error.flatten(),
-    });
   }
 
-  const resultado =
-    await this.detalhamentoComprasRelatorioService.buscar(
-      resultadoSchema.data.periodo,
-    );
+  async detalhamentoCompras(
+    request: FastifyRequest<{
+      Querystring: {
+        periodo?: string;
+      };
+    }>,
+    reply: FastifyReply,
+  ) {
+    const resultadoSchema =
+      relatorioIndicadoresQuerySchema.safeParse(
+        request.query,
+      );
 
-  return reply.send(
-    resultado,
-  );
-}
+    if (!resultadoSchema.success) {
+      return reply.status(400).send({
+        error: "Período inválido",
+        details:
+          resultadoSchema.error.flatten(),
+      });
+    }
+
+    const resultado =
+      await this.detalhamentoComprasRelatorioService.buscar(
+        resultadoSchema.data.periodo,
+      );
+
+    return reply.send(
+      resultado,
+    );
+  }
 }

@@ -1,6 +1,8 @@
 import { DiaRotaRepository } from "../repositories/dia-rota.repository";
 import { CompraRepository } from "../repositories/compra.repository";
 
+import type { PeriodoRelatorio } from "./relatorio.service";
+
 function arredondar(
   valor: number,
   casas = 2,
@@ -9,6 +11,15 @@ function arredondar(
     valor.toFixed(casas),
   );
 }
+
+type RotaDetalhada =
+  NonNullable<
+    Awaited<
+      ReturnType<
+        DiaRotaRepository["findDetailedById"]
+      >
+    >
+  >;
 
 export class ResultadoViagemService {
   constructor(
@@ -19,18 +30,9 @@ export class ResultadoViagemService {
       new CompraRepository(),
   ) {}
 
-  async buscar(
-    diaRotaId: string,
+  private async calcular(
+    rota: RotaDetalhada,
   ) {
-    const rota =
-      await this.diaRotaRepository.findDetailedById(
-        diaRotaId,
-      );
-
-    if (!rota) {
-      return null;
-    }
-
     const visitas =
       rota.itens.filter(
         (item) =>
@@ -128,7 +130,9 @@ export class ResultadoViagemService {
 
     return {
       diaRotaId: rota.id,
-      data: rota.data.toString(),
+
+      data:
+        rota.data.toString(),
 
       cidades,
 
@@ -146,7 +150,9 @@ export class ResultadoViagemService {
         ),
 
       custos:
-        arredondar(custos),
+        arredondar(
+          custos,
+        ),
 
       custoPorGrama:
         arredondar(
@@ -165,6 +171,101 @@ export class ResultadoViagemService {
 
       quantidadeRevendidas,
       quantidadeARevender,
+    };
+  }
+
+  async buscar(
+    diaRotaId: string,
+  ) {
+    const rota =
+      await this.diaRotaRepository
+        .findDetailedById(
+          diaRotaId,
+        );
+
+    if (!rota) {
+      return null;
+    }
+
+    return this.calcular(
+      rota,
+    );
+  }
+
+  async listar(
+    periodo: PeriodoRelatorio,
+    hoje =
+      Temporal.Now.plainDateISO(
+        "America/Sao_Paulo",
+      ),
+  ) {
+    let rotas;
+
+    if (periodo === "todo") {
+      rotas =
+        await this.diaRotaRepository
+          .findAllDetailed();
+    } else {
+      let de: Temporal.PlainDate;
+
+      switch (periodo) {
+        case "mes_atual":
+          de = hoje.with({
+            day: 1,
+          });
+          break;
+
+        case "30":
+          de = hoje.subtract({
+            days: 29,
+          });
+          break;
+
+        case "90":
+          de = hoje.subtract({
+            days: 89,
+          });
+          break;
+
+        case "365":
+          de = hoje.subtract({
+            days: 364,
+          });
+          break;
+      }
+
+      rotas =
+        await this.diaRotaRepository
+          .findDetailedByPeriod(
+            de,
+            hoje,
+          );
+    }
+
+    const rotasComVisitas =
+      rotas.filter(
+        (rota) =>
+          rota.itens.some(
+            (item) =>
+              item.tipo ===
+              "visita",
+          ),
+      );
+
+    const viagens =
+      await Promise.all(
+        rotasComVisitas.map(
+          (rota) =>
+            this.calcular(
+              rota,
+            ),
+        ),
+      );
+
+    return {
+      periodo,
+      total: viagens.length,
+      viagens,
     };
   }
 }

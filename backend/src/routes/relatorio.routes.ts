@@ -25,83 +25,98 @@ export async function relatorioRoutes(
   );
 
   app.get<{
-  Params: {
-    diaRotaId: string;
-  };
-}>(
-  "/viagens/:diaRotaId",
-  (request, reply) => {
-    return relatorioController.viagem(
-      request,
-      reply,
-    );
-  },
-);
-app.get<{
-  Querystring: {
-    periodo?: string;
-  };
-}>(
-  "/compras",
-  (request, reply) => {
-    return relatorioController.compras(
-      request,
-      reply,
-    );
-  },
-);
-
-app.get<{
-  Querystring: {
-    periodo?: string;
-  };
-}>(
-  "/preco-medio",
-  (request, reply) => {
-    return relatorioController.precoMedio(
-      request,
-      reply,
-    );
-  },
-);
-
-app.get<{
-  Querystring: {
-    periodo?: string;
-  };
-}>(
-  "/origens-perdas",
-  (request, reply) => {
-    return relatorioController.origemPerdas(
-      request,
-      reply,
-    );
-  },
-);
-
-app.get<{
-  Querystring: {
-    periodo?: string;
-  };
-}>(
-  "/conversao-cidade",
-  (request, reply) => {
-    return relatorioController
-      .conversaoCidade(
+    Querystring: {
+      periodo?: string;
+    };
+  }>(
+    "/viagens",
+    (request, reply) => {
+      return relatorioController.viagens(
         request,
         reply,
       );
-  },
-);
+    },
+  );
 
-app.get(
-  "/previsao-recompra",
-  (request, reply) => {
-    return relatorioController
-      .previsaoRecompra(
+  app.get<{
+    Params: {
+      diaRotaId: string;
+    };
+  }>(
+    "/viagens/:diaRotaId",
+    (request, reply) => {
+      return relatorioController.viagem(
         request,
         reply,
       );
-  },
-);
+    },
+  );
+
+  app.get<{
+    Querystring: {
+      periodo?: string;
+    };
+  }>(
+    "/compras",
+    (request, reply) => {
+      return relatorioController.compras(
+        request,
+        reply,
+      );
+    },
+  );
+
+  app.get<{
+    Querystring: {
+      periodo?: string;
+    };
+  }>(
+    "/preco-medio",
+    (request, reply) => {
+      return relatorioController.precoMedio(
+        request,
+        reply,
+      );
+    },
+  );
+
+  app.get<{
+    Querystring: {
+      periodo?: string;
+    };
+  }>(
+    "/origens-perdas",
+    (request, reply) => {
+      return relatorioController.origemPerdas(
+        request,
+        reply,
+      );
+    },
+  );
+
+  app.get<{
+    Querystring: {
+      periodo?: string;
+    };
+  }>(
+    "/conversao-cidade",
+    (request, reply) => {
+      return relatorioController
+        .conversaoCidade(
+          request,
+          reply,
+        );
+    },
+  );
+
+  app.get(
+    "/previsao-recompra",
+    (request, reply) => {
+      return relatorioController
+        .previsaoRecompra(
+          request,
+          reply,
+        );
+    },
+  );
 }

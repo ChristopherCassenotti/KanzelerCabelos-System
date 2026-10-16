@@ -134,4 +134,49 @@ async atualizarMetricas(
       rotaPolyline,
     });
 }
+
+async findAllDetailed() {
+  return db.orm.public.DiaRota
+    .include("partidaCidade")
+    .include("itens", (itens) =>
+      itens
+        .include("contato", (contato) =>
+          contato.include("cidade"),
+        )
+        .orderBy((item) =>
+          item.ordem.asc(),
+        ),
+    )
+    .orderBy((rota) =>
+      rota.data.desc(),
+    )
+    .all();
+}
+
+async findDetailedByPeriod(
+  de: Temporal.PlainDate,
+  ate: Temporal.PlainDate,
+) {
+  return db.orm.public.DiaRota
+    .include("partidaCidade")
+    .include("itens", (itens) =>
+      itens
+        .include("contato", (contato) =>
+          contato.include("cidade"),
+        )
+        .orderBy((item) =>
+          item.ordem.asc(),
+        ),
+    )
+    .where((rota) =>
+      rota.data.gte(de),
+    )
+    .where((rota) =>
+      rota.data.lte(ate),
+    )
+    .orderBy((rota) =>
+      rota.data.desc(),
+    )
+    .all();
+}
 }
