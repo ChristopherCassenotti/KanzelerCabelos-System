@@ -11,7 +11,7 @@ export interface CriarContatoModel {
   geoPlaceId: string | null;
 
   origem: string | null;
-
+  indicadoPor: string | null;
   dataPrimeiroContato:
     Temporal.PlainDate | null;
 
@@ -45,7 +45,7 @@ export interface AtualizarContatoModel {
   geoPlaceId?: string | null;
 
   origem?: string | null;
-
+  indicadoPor?: string | null;
   dataPrimeiroContato?:
     Temporal.PlainDate | null;
 

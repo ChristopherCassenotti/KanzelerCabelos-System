@@ -34,6 +34,7 @@ const resultado =
   await this.compraService.registrar(
     request.params.contatoId,
     result.data,
+    request.usuarioId,
   );
 
 if (

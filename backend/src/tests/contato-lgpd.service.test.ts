@@ -14,6 +14,7 @@ import type { StorageService } from "../services/storage.service";
 import type { RecompraService } from "../services/recompra.service";
 import type { CidadeRepository } from "../repositories/cidade.repository";
 import type { GeocodingService } from "../services/geocoding.service";
+import type { AuditoriaRepository } from "../repositories/auditoria.repository";
 
 describe(
   "ContatoService - LGPD",
@@ -26,10 +27,20 @@ describe(
             id: "contato-1",
           });
 
+        const auditoriaCreate =
+          vi.fn().mockResolvedValue({
+            id: "auditoria-1",
+          });
+
         const deleteImages =
           vi.fn().mockResolvedValue(
             undefined,
           );
+
+        const auditoriaRepository = {
+          create:
+            auditoriaCreate,
+        } as unknown as AuditoriaRepository;
 
         const service =
           new ContatoService(
@@ -37,7 +48,10 @@ describe(
               findByIdIncludingDeleted:
                 vi.fn()
                   .mockResolvedValue({
-                    id: "contato-1",
+                    id:
+                      "contato-1",
+                    nome:
+                      "Contato Teste",
                   }),
 
               hardDelete,
@@ -48,12 +62,14 @@ describe(
                 vi.fn()
                   .mockResolvedValue([
                     {
-                      id: "foto-1",
+                      id:
+                        "foto-1",
                       url:
                         "contato-1/a.jpg",
                     },
                     {
-                      id: "foto-2",
+                      id:
+                        "foto-2",
                       url:
                         "contato-1/b.jpg",
                     },
@@ -71,6 +87,8 @@ describe(
             {} as CidadeRepository,
 
             {} as GeocodingService,
+
+            auditoriaRepository,
           );
 
         const resultado =
@@ -92,6 +110,27 @@ describe(
           "contato-1",
         );
 
+        expect(
+          auditoriaCreate,
+        ).toHaveBeenCalledOnce();
+
+        expect(
+          auditoriaCreate,
+        ).toHaveBeenCalledWith({
+          usuarioId: null,
+          acao:
+            "contato_excluido_definitivo",
+          entidade:
+            "contato",
+          entidadeId:
+            "contato-1",
+          detalhes:
+            JSON.stringify({
+              nome:
+                "Contato Teste",
+            }),
+        });
+
         expect(resultado).toEqual({
           id: "contato-1",
         });
@@ -106,6 +145,14 @@ describe(
 
         const hardDelete =
           vi.fn();
+
+        const auditoriaCreate =
+          vi.fn();
+
+        const auditoriaRepository = {
+          create:
+            auditoriaCreate,
+        } as unknown as AuditoriaRepository;
 
         const service =
           new ContatoService(
@@ -135,6 +182,8 @@ describe(
             {} as CidadeRepository,
 
             {} as GeocodingService,
+
+            auditoriaRepository,
           );
 
         const resultado =
@@ -143,7 +192,9 @@ describe(
               "inexistente",
             );
 
-        expect(resultado).toBeNull();
+        expect(
+          resultado,
+        ).toBeNull();
 
         expect(
           deleteImages,
@@ -151,6 +202,10 @@ describe(
 
         expect(
           hardDelete,
+        ).not.toHaveBeenCalled();
+
+        expect(
+          auditoriaCreate,
         ).not.toHaveBeenCalled();
       },
     );

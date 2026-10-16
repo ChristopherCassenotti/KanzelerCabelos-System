@@ -15,8 +15,10 @@ export class ContatoRepository {
       geoFonte: data.geoFonte,
       geoPlaceId: data.geoPlaceId,
       
-      origem: data.origem,
-      dataPrimeiroContato:
+origem: data.origem,
+indicadoPor: data.indicadoPor,
+
+dataPrimeiroContato:
   data.dataPrimeiroContato,
 
 dataAvaliacao:
@@ -211,6 +213,28 @@ async hardDelete(
 async findAllComCidade() {
   return db.orm.public.Contato
     .include("cidade")
+    .where({
+      deletedAt: null,
+    })
+    .orderBy(
+      (contato) =>
+        contato.nome.asc(),
+    )
+    .all();
+}
+
+async findAllParaExportacao() {
+  return db.orm.public.Contato
+    .include("cidade")
+    .include("fotos")
+    .include(
+      "compras",
+      (compras) =>
+        compras.orderBy(
+          (compra) =>
+            compra.dataCorte.desc(),
+        ),
+    )
     .where({
       deletedAt: null,
     })

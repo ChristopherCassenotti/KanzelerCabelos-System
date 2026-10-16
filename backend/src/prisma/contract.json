@@ -4,6 +4,10 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
+    "auditoria": {
+      "model": "Auditoria",
+      "namespace": "public"
+    },
     "cidades": {
       "model": "Cidade",
       "namespace": "public"
@@ -69,6 +73,87 @@
           }
         },
         "models": {
+          "Auditoria": {
+            "fields": {
+              "acao": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "detalhes": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "entidade": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "entidadeId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              },
+              "usuarioId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/uuid@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "acao": {
+                  "column": "acao"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "detalhes": {
+                  "column": "detalhes"
+                },
+                "entidade": {
+                  "column": "entidade"
+                },
+                "entidadeId": {
+                  "column": "entidade_id"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "usuarioId": {
+                  "column": "usuario_id"
+                }
+              },
+              "namespaceId": "public",
+              "table": "auditoria"
+            }
+          },
           "Cidade": {
             "fields": {
               "id": {
@@ -473,6 +558,13 @@
                   "kind": "scalar"
                 }
               },
+              "indicadoPor": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "lat": {
                 "nullable": true,
                 "type": {
@@ -661,6 +753,9 @@
                 },
                 "id": {
                   "column": "id"
+                },
+                "indicadoPor": {
+                  "column": "indicado_por"
                 },
                 "lat": {
                   "column": "lat"
@@ -1210,6 +1305,11 @@
       "public": {
         "entries": {
           "rls": {
+            "auditoria": {
+              "kind": "rls",
+              "namespaceId": "public",
+              "tableName": "auditoria"
+            },
             "cidades": {
               "kind": "rls",
               "namespaceId": "public",
@@ -1242,6 +1342,71 @@
             }
           },
           "table": {
+            "auditoria": {
+              "columns": {
+                "acao": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "detalhes": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "entidade": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "entidade_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": false
+                },
+                "usuario_id": {
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
+                  "nullable": true
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [
+                {
+                  "columns": [
+                    "entidade",
+                    "entidade_id"
+                  ],
+                  "name": "auditoria_entidade_entidade_id_idx_7217251b",
+                  "prefix": "auditoria_entidade_entidade_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "usuario_id"
+                  ],
+                  "name": "auditoria_usuario_id_idx_65b6616a",
+                  "prefix": "auditoria_usuario_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "cidades": {
               "columns": {
                 "id": {
@@ -1503,6 +1668,11 @@
                   "codecId": "pg/uuid@1",
                   "nativeType": "uuid",
                   "nullable": false
+                },
+                "indicado_por": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "lat": {
                   "codecId": "pg/numeric@1",
@@ -2037,12 +2207,34 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "002ac354c51802f80afa5074f50626470da1b844bc60801a0ba4704a0a1b5180"
+    "storageHash": "75e96bf614b7660eb8b37c8b33bcac4739b65928ea9f0e106bfaf724abc2de92"
   },
   "execution": {
-    "executionHash": "ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f",
+    "executionHash": "8e188037a214f8797b49d5b506ce5dcc7dac2c846093ca2b3af0d8ab1b7076fa",
     "mutations": {
       "defaults": [
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "auditoria",
+            "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "auditoria",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
         {
           "onCreate": {
             "id": "uuidv4",

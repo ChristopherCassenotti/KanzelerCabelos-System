@@ -23,6 +23,12 @@ export const criarContatoSchema = z.object({
   geoPlaceId: z.string().optional(),
 
   origem: z.string().optional(),
+  indicadoPor: z
+  .string()
+  .trim()
+  .max(150)
+  .nullable()
+  .optional(),
 dataPrimeiroContato: z
   .string()
   .regex(

@@ -15,6 +15,8 @@ import { aAgendarRoutes } from "./a-agendar.routes";
 import { requireAuth } from "../middlewares/auth.middleware";
 import { painelRoutes } from "./painel.routes";
 import { relatorioRoutes } from "./relatorio.routes";
+import { mapaGlobalRoutes } from "./mapa-global.routes";
+import { exportRoutes } from "./export.routes";
 
 export async function routes(app: FastifyInstance) {
   app.addHook(
@@ -82,6 +84,20 @@ export async function routes(app: FastifyInstance) {
     relatorioRoutes,
     {
       prefix: "/relatorios",
+    },
+  );
+
+  await app.register(
+    mapaGlobalRoutes,
+    {
+      prefix: "/mapa",
+    },
+  );
+
+  await app.register(
+    exportRoutes,
+    {
+      prefix: "/export",
     },
   );
 }

@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'002ac354c51802f80afa5074f50626470da1b844bc60801a0ba4704a0a1b5180'>;
+  StorageHashBase<'75e96bf614b7660eb8b37c8b33bcac4739b65928ea9f0e106bfaf724abc2de92'>;
 export type ExecutionHash =
-  ExecutionHashBase<'ed38e01f5a827a54071af298939cb118bc1dcd6d88243b578cb539232f338d0f'>;
+  ExecutionHashBase<'8e188037a214f8797b49d5b506ce5dcc7dac2c846093ca2b3af0d8ab1b7076fa'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -250,6 +250,15 @@ type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyo
 
 export type FieldOutputTypes = {
   readonly public: {
+    readonly Auditoria: {
+      readonly acao: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly detalhes: CodecTypes['pg/text@1']['output'] | null;
+      readonly entidade: CodecTypes['pg/text@1']['output'];
+      readonly entidadeId: CodecTypes['pg/uuid@1']['output'];
+      readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly usuarioId: CodecTypes['pg/uuid@1']['output'] | null;
+    };
     readonly Cidade: {
       readonly id: CodecTypes['pg/uuid@1']['output'];
       readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
@@ -289,6 +298,7 @@ export type FieldOutputTypes = {
       readonly geoFonte: CodecTypes['pg/text@1']['output'] | null;
       readonly geoPlaceId: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly indicadoPor: CodecTypes['pg/text@1']['output'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['output'] | null;
       readonly motivoPerda: CodecTypes['pg/text@1']['output'] | null;
@@ -346,6 +356,15 @@ export type FieldOutputTypes = {
 };
 export type FieldInputTypes = {
   readonly public: {
+    readonly Auditoria: {
+      readonly acao: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly detalhes: CodecTypes['pg/text@1']['input'] | null;
+      readonly entidade: CodecTypes['pg/text@1']['input'];
+      readonly entidadeId: CodecTypes['pg/uuid@1']['input'];
+      readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly usuarioId: CodecTypes['pg/uuid@1']['input'] | null;
+    };
     readonly Cidade: {
       readonly id: CodecTypes['pg/uuid@1']['input'];
       readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
@@ -385,6 +404,7 @@ export type FieldInputTypes = {
       readonly geoFonte: CodecTypes['pg/text@1']['input'] | null;
       readonly geoPlaceId: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly indicadoPor: CodecTypes['pg/text@1']['input'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['input'] | null;
       readonly motivoPerda: CodecTypes['pg/text@1']['input'] | null;
@@ -442,6 +462,15 @@ export type FieldInputTypes = {
 };
 export type StorageColumnTypes = {
   readonly public: {
+    readonly auditoria: {
+      readonly acao: CodecTypes['pg/text@1']['output'];
+      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly detalhes: CodecTypes['pg/text@1']['output'] | null;
+      readonly entidade: CodecTypes['pg/text@1']['output'];
+      readonly entidade_id: CodecTypes['pg/uuid@1']['output'];
+      readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly usuario_id: CodecTypes['pg/uuid@1']['output'] | null;
+    };
     readonly cidades: {
       readonly id: CodecTypes['pg/uuid@1']['output'];
       readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
@@ -481,6 +510,7 @@ export type StorageColumnTypes = {
       readonly geo_fonte: CodecTypes['pg/text@1']['output'] | null;
       readonly geo_place_id: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly indicado_por: CodecTypes['pg/text@1']['output'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['output'] | null;
       readonly motivo_perda: CodecTypes['pg/text@1']['output'] | null;
@@ -538,6 +568,15 @@ export type StorageColumnTypes = {
 };
 export type StorageColumnInputTypes = {
   readonly public: {
+    readonly auditoria: {
+      readonly acao: CodecTypes['pg/text@1']['input'];
+      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly detalhes: CodecTypes['pg/text@1']['input'] | null;
+      readonly entidade: CodecTypes['pg/text@1']['input'];
+      readonly entidade_id: CodecTypes['pg/uuid@1']['input'];
+      readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly usuario_id: CodecTypes['pg/uuid@1']['input'] | null;
+    };
     readonly cidades: {
       readonly id: CodecTypes['pg/uuid@1']['input'];
       readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
@@ -577,6 +616,7 @@ export type StorageColumnInputTypes = {
       readonly geo_fonte: CodecTypes['pg/text@1']['input'] | null;
       readonly geo_place_id: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly indicado_por: CodecTypes['pg/text@1']['input'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['input'] | null;
       readonly motivo_perda: CodecTypes['pg/text@1']['input'] | null;
@@ -634,6 +674,16 @@ export type StorageColumnInputTypes = {
 };
 
 export namespace Models {
+  export type public_Auditoria = {
+    acao: CodecTypes['pg/text@1']['output'];
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    detalhes: CodecTypes['pg/text@1']['output'] | null;
+    entidade: CodecTypes['pg/text@1']['output'];
+    entidadeId: CodecTypes['pg/uuid@1']['output'];
+    id: CodecTypes['pg/uuid@1']['output'];
+    usuarioId: CodecTypes['pg/uuid@1']['output'] | null;
+    readonly [RelationKeys]?: never;
+  };
   export type public_Cidade = {
     id: CodecTypes['pg/uuid@1']['output'];
     lat: CodecTypes['pg/numeric@1']['output'] | null;
@@ -680,6 +730,7 @@ export namespace Models {
     geoFonte: CodecTypes['pg/text@1']['output'] | null;
     geoPlaceId: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/uuid@1']['output'];
+    indicadoPor: CodecTypes['pg/text@1']['output'] | null;
     lat: CodecTypes['pg/numeric@1']['output'] | null;
     lng: CodecTypes['pg/numeric@1']['output'] | null;
     motivoPerda: CodecTypes['pg/text@1']['output'] | null;
@@ -752,6 +803,7 @@ export namespace Models {
 
 export declare const models: {
   public: {
+    Auditoria: Models.public_Auditoria;
     Cidade: Models.public_Cidade;
     Compra: Models.public_Compra;
     Contato: Models.public_Contato;
@@ -779,6 +831,62 @@ type ContractBase = Omit<
         readonly kind: 'postgres-schema';
         readonly entries: {
           readonly table: {
+            readonly auditoria: {
+              columns: {
+                readonly acao: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly created_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                };
+                readonly detalhes: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly entidade: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly entidade_id: {
+                  readonly nativeType: 'uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: false;
+                };
+                readonly usuario_id: {
+                  readonly nativeType: 'uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: true;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'auditoria_entidade_entidade_id_idx_7217251b';
+                  readonly prefix: 'auditoria_entidade_entidade_id_idx';
+                  readonly columns: readonly ['entidade', 'entidade_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'auditoria_usuario_id_idx_65b6616a';
+                  readonly prefix: 'auditoria_usuario_id_idx';
+                  readonly columns: readonly ['usuario_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [];
+            };
             readonly cidades: {
               columns: {
                 readonly id: {
@@ -1012,6 +1120,11 @@ type ContractBase = Omit<
                   readonly nativeType: 'uuid';
                   readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
+                };
+                readonly indicado_por: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                 };
                 readonly lat: {
                   readonly nativeType: 'numeric';
@@ -1456,6 +1569,7 @@ type ContractBase = Omit<
   readonly target: 'postgres';
   readonly targetFamily: 'sql';
   readonly roots: {
+    readonly auditoria: { readonly namespace: 'public' & NamespaceId; readonly model: 'Auditoria' };
     readonly cidades: { readonly namespace: 'public' & NamespaceId; readonly model: 'Cidade' };
     readonly compras: { readonly namespace: 'public' & NamespaceId; readonly model: 'Compra' };
     readonly contatos: { readonly namespace: 'public' & NamespaceId; readonly model: 'Contato' };
@@ -1467,6 +1581,55 @@ type ContractBase = Omit<
     readonly namespaces: {
       readonly public: {
         readonly models: {
+          readonly Auditoria: {
+            readonly fields: {
+              readonly acao: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly detalhes: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly entidade: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly entidadeId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
+              readonly usuarioId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'auditoria';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly acao: { readonly column: 'acao' };
+                readonly createdAt: { readonly column: 'created_at' };
+                readonly detalhes: { readonly column: 'detalhes' };
+                readonly entidade: { readonly column: 'entidade' };
+                readonly entidadeId: { readonly column: 'entidade_id' };
+                readonly id: { readonly column: 'id' };
+                readonly usuarioId: { readonly column: 'usuario_id' };
+              };
+            };
+          };
           readonly Cidade: {
             readonly fields: {
               readonly id: {
@@ -1716,6 +1879,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
+              readonly indicadoPor: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly lat: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/numeric@1' };
@@ -1829,6 +1996,7 @@ type ContractBase = Omit<
                 readonly geoFonte: { readonly column: 'geo_fonte' };
                 readonly geoPlaceId: { readonly column: 'geo_place_id' };
                 readonly id: { readonly column: 'id' };
+                readonly indicadoPor: { readonly column: 'indicado_por' };
                 readonly lat: { readonly column: 'lat' };
                 readonly lng: { readonly column: 'lng' };
                 readonly motivoPerda: { readonly column: 'motivo_perda' };
@@ -2197,6 +2365,22 @@ type ContractBase = Omit<
     readonly executionHash: ExecutionHash;
     readonly mutations: {
       readonly defaults: readonly [
+        {
+          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'auditoria';
+            readonly field: 'created_at';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'uuidv4'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'auditoria';
+            readonly field: 'id';
+            readonly namespace: 'public';
+          };
+        },
         {
           readonly onCreate: { readonly id: 'uuidv4'; readonly kind: 'generator' };
           readonly ref: {

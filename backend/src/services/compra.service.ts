@@ -3,6 +3,7 @@ import type { RegistrarCompraModel } from "../models/compra.model";
 import { CompraRepository } from "../repositories/compra.repository";
 import { ContatoRepository } from "../repositories/contato.repository";
 import { ItemRotaRepository } from "../repositories/item-rota.repository";
+import { AuditoriaRepository } from "../repositories/auditoria.repository";
 
 export class CompraService {
   constructor(
@@ -14,11 +15,15 @@ export class CompraService {
 
     private readonly itemRotaRepository =
       new ItemRotaRepository(),
+
+    private readonly auditoriaRepository =
+      new AuditoriaRepository(),
   ) {}
   
 async registrar(
   contatoId: string,
   data: RegistrarCompraInput,
+  usuarioId: string | null = null,
 ) {
   if (data.visitaId !== undefined) {
     const visita =
@@ -81,6 +86,27 @@ async registrar(
       tipo: "contato_nao_encontrado" as const,
     };
   }
+  await this.auditoriaRepository.create({
+  usuarioId,
+
+  acao:
+    "compra_registrada",
+
+  entidade:
+    "compra",
+
+  entidadeId:
+    registrada.id,
+
+detalhes:
+  JSON.stringify({
+    contatoId,
+    dataCorte:
+      data.dataCorte.toString(),
+    valorPago:
+      String(data.valorPago),
+  }),
+});
 
   return {
     tipo: "sucesso" as const,

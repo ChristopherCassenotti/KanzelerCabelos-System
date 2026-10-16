@@ -7,6 +7,7 @@ import { CompraRepository } from "../repositories/compra.repository";
 import { RecompraService } from "./recompra.service";
 import { CidadeRepository } from "../repositories/cidade.repository";
 import { GeocodingService } from "./geocoding.service";
+import { AuditoriaRepository } from "../repositories/auditoria.repository";
 
 function normalizarBusca(
   valor: string | null | undefined,
@@ -41,6 +42,7 @@ export class ContatoService {
     private readonly recompraService = new RecompraService(),
     private readonly cidadeRepository = new CidadeRepository(),
     private readonly geocodingService = new GeocodingService(),
+    private readonly auditoriaRepository = new AuditoriaRepository(),
   ) {}
 
 async create(data: CriarContatoInput) {
@@ -113,8 +115,12 @@ const hoje =
     geoFonte,
     geoPlaceId,
 
-    origem:
-      data.origem ?? null,
+origem:
+  data.origem ?? null,
+
+indicadoPor:
+  data.indicadoPor ?? null,
+
 dataPrimeiroContato:
   data.dataPrimeiroContato !== undefined
     ? Temporal.PlainDate.from(
@@ -232,7 +238,12 @@ if (
   if (data.origem !== undefined) {
     contato.origem = data.origem;
   }
-
+if (
+  data.indicadoPor !== undefined
+) {
+  contato.indicadoPor =
+    data.indicadoPor;
+}
   if (data.natural !== undefined) {
     contato.natural = data.natural;
   }
@@ -360,18 +371,38 @@ if (
   );
 }
 
-  async delete(id: string) {
-    return this.contatoRepository.softDelete(id);
-  }
-
-  async deleteDefinitivo(
+async delete(
   id: string,
+  usuarioId: string | null = null,
 ) {
   const contato =
     await this.contatoRepository
-      .findByIdIncludingDeleted(
-        id,
-      );
+      .softDelete(id);
+
+  if (!contato) {
+    return null;
+  }
+
+  await this.auditoriaRepository.create({
+    usuarioId,
+    acao: "contato_excluido",
+    entidade: "contato",
+    entidadeId: id,
+    detalhes: JSON.stringify({
+      nome: contato.nome,
+    }),
+  });
+
+  return contato;
+}
+
+async deleteDefinitivo(
+  id: string,
+  usuarioId: string | null = null,
+) {
+  const contato =
+    await this.contatoRepository
+      .findByIdIncludingDeleted(id);
 
   if (!contato) {
     return null;
@@ -379,9 +410,7 @@ if (
 
   const fotos =
     await this.fotoRepository
-      .findByContatoId(
-        id,
-      );
+      .findByContatoId(id);
 
   const paths =
     fotos.map(
@@ -389,14 +418,28 @@ if (
     );
 
   await this.storageService
-    .deleteImages(
-      paths,
-    );
+    .deleteImages(paths);
 
-  return this.contatoRepository
-    .hardDelete(
-      id,
-    );
+  const excluido =
+    await this.contatoRepository
+      .hardDelete(id);
+
+  if (!excluido) {
+    return null;
+  }
+
+  await this.auditoriaRepository.create({
+    usuarioId,
+    acao:
+      "contato_excluido_definitivo",
+    entidade: "contato",
+    entidadeId: id,
+    detalhes: JSON.stringify({
+      nome: contato.nome,
+    }),
+  });
+
+  return excluido;
 }
 
 async buscar(
@@ -517,5 +560,6 @@ async buscar(
     20,
   );
 }
+
 }
 

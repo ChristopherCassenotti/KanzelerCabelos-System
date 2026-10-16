@@ -160,8 +160,9 @@ export class ContatoController {
   ) {
     const contato =
       await this.contatoService.delete(
-        request.params.id,
-      );
+      request.params.id,
+      request.usuarioId,
+    );
 
     if (!contato) {
       return reply.status(404).send({
@@ -184,10 +185,11 @@ export class ContatoController {
     reply: FastifyReply,
   ) {
     const contato =
-      await this.contatoService
-        .deleteDefinitivo(
-          request.params.id,
-        );
+    await this.contatoService
+    .deleteDefinitivo(
+      request.params.id,
+      request.usuarioId,
+    );
 
     if (!contato) {
       return reply.status(404).send({

@@ -44,4 +44,6 @@ export async function requireAuth(
         "Sessão inválida ou expirada",
     });
   }
+  request.usuarioId =
+  usuario.id;
 }

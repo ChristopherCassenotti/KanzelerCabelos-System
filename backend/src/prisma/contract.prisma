@@ -28,9 +28,10 @@ model Contato {
   geoPlaceId String? @map("geo_place_id")
   status               String    @default("lead")
   motivoPerda String? @map("motivo_perda")
-  origem String?
+origem      String?
+indicadoPor String? @map("indicado_por")
 
-  dataPrimeiroContato Date? @map("data_primeiro_contato")
+dataPrimeiroContato Date? @map("data_primeiro_contato")
   dataAvaliacao Date? @map("data_avaliacao")
 autorizouFoto Boolean
   @default(false)
@@ -216,5 +217,25 @@ model ItemRota {
   @@index([diaRotaId])
   @@index([contatoId])
   @@map("itens_rota")
+  @@rls
+}
+
+model Auditoria {
+  id Uuid @id @default(uuid())
+
+  usuarioId Uuid? @map("usuario_id")
+
+  acao      String
+  entidade  String
+  entidadeId Uuid @map("entidade_id")
+
+  detalhes String?
+
+  createdAt temporal.createdAt() @map("created_at")
+
+  @@index([usuarioId])
+  @@index([entidade, entidadeId])
+
+  @@map("auditoria")
   @@rls
 }

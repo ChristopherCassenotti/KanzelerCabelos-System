@@ -6,9 +6,9 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:test:dry": "dotenv run -f .env.test -- prisma db update --dry-run",
-    "db:test:update": "dotenv run -f .env.test -- prisma db update",
-    "db:test:verify": "dotenv run -f .env.test -- prisma db verify --schema-only",
+    "db:test:dry": "dotenv -e .env.test -- prisma db update --dry-run",
+    "db:test:update": "dotenv -e .env.test -- prisma db update",
+    "db:test:verify": "dotenv -e .env.test -- prisma db verify --schema-only",
     "postinstall": "prisma skills sync || exit 0",
     "contract:emit": "prisma contract emit",
     "dev": "tsx watch src/server.ts",
@@ -26,6 +26,7 @@
     "@prisma/orm-postgres": "^8.0.0-rc.13",
     "@supabase/supabase-js": "^2.117.2",
     "dotenv": "^18.0.4",
+    "exceljs": "^4.4.0",
     "fastify": "^5.12.5",
     "temporal-polyfill": "^1.0.5",
     "zod": "^4.6.5"

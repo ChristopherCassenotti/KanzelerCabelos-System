@@ -119,4 +119,19 @@ export async function relatorioRoutes(
         );
     },
   );
+
+  app.get<{
+  Querystring: {
+    periodo?: string;
+  };
+}>(
+  "/detalhamento-compras",
+  (request, reply) => {
+    return relatorioController
+      .detalhamentoCompras(
+        request,
+        reply,
+      );
+  },
+);
 }
