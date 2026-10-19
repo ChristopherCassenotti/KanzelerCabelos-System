@@ -29,4 +29,34 @@ export async function exportRoutes(
         );
     },
   );
+
+app.get<{
+  Querystring: {
+    periodo?: string;
+  };
+}>(
+  "/relatorios",
+  (request, reply) => {
+    return exportController
+      .relatorios(
+        request,
+        reply,
+      );
+  },
+);
+
+app.get<{
+  Params: {
+    diaRotaId: string;
+  };
+}>(
+  "/rota/:diaRotaId",
+  (request, reply) => {
+    return exportController
+      .rota(
+        request,
+        reply,
+      );
+  },
+);
 }
