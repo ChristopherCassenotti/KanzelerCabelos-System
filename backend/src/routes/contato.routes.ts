@@ -58,6 +58,17 @@ export async function contatoRoutes(
     },
   );
 
+  // Cadastro operacional: contato + compra na mesma transação.
+  app.post(
+    "/com-compra",
+    (request, reply) => {
+      return contatoController.createComCompra(
+        request,
+        reply,
+      );
+    },
+  );
+
   app.patch<{
     Params: {
       id: string;

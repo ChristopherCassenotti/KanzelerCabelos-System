@@ -53,7 +53,13 @@ export class StorageService {
       .createSignedUrl(path, expiresIn);
 
     if (error) {
-      throw new Error(`Erro ao gerar URL da foto: ${error.message}`);
+      // Nunca registrar tokens, URLs assinadas ou objetos de requisicao.
+      console.error("[STORAGE] Falha ao assinar foto", {
+        bucket: BUCKET,
+        path,
+        status: "status" in error ? error.status : undefined,
+      });
+      throw new Error("Erro ao gerar URL da foto");
     }
 
     return data.signedUrl;

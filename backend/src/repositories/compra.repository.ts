@@ -1,5 +1,52 @@
 import { db } from "../prisma/db";
-import type { RegistrarCompraModel } from "../models/compra.model";
+import type {
+  DadosCompraModel,
+  RegistrarCompraModel,
+} from "../models/compra.model";
+
+interface CaracteristicasCabelo {
+  comprimentoCm: number | null;
+  cor: string | null;
+  textura: string | null;
+  quimica: string | null;
+}
+
+/**
+ * Colunas da compra. Características do cabelo não informadas na compra
+ * herdam as do contato (retrato do cabelo no momento do corte).
+ */
+export function montarCompra(
+  data: DadosCompraModel,
+  contato: CaracteristicasCabelo,
+) {
+  return {
+    dataCorte: Temporal.PlainDate.from(data.dataCorte),
+
+    pesoG: data.pesoG ?? null,
+
+    comprimentoCm:
+      data.comprimentoCm ?? contato.comprimentoCm,
+
+    cor:
+      data.cor ?? contato.cor,
+
+    textura:
+      data.textura ?? contato.textura,
+
+    quimica:
+      data.quimica ?? contato.quimica,
+
+    valorPago: data.valorPago,
+    formaPagamento: data.formaPagamento,
+
+    valorRevenda: data.valorRevenda ?? null,
+    dataRevenda:
+      data.dataRevenda !== undefined
+        ? Temporal.PlainDate.from(data.dataRevenda)
+        : null,
+    comprador: data.comprador ?? null,
+  };
+}
 
 export class CompraRepository {
   async registrar(data: RegistrarCompraModel) {
@@ -17,34 +64,12 @@ export class CompraRepository {
       }
 
       const compra = await tx.orm.public.Compra.create({
+        ...montarCompra(data, contato),
         contatoId: data.contatoId,
 
         ...(data.visitaId !== undefined
-        ? { visitaId: data.visitaId }
-        : {}),
-        
-        dataCorte: Temporal.PlainDate.from(data.dataCorte),
-
-        pesoG: data.pesoG ?? null,
-
-        comprimentoCm:
-          data.comprimentoCm ?? contato.comprimentoCm,
-
-        cor:
-          data.cor ?? contato.cor,
-
-        textura:
-          data.textura ?? contato.textura,
-
-        quimica:
-          data.quimica ?? contato.quimica,
-
-        valorPago: data.valorPago,
-        formaPagamento: data.formaPagamento,
-
-        valorRevenda: null,
-        dataRevenda: null,
-        comprador: null,
+          ? { visitaId: data.visitaId }
+          : {}),
       });
 
       await tx.orm.public.Contato

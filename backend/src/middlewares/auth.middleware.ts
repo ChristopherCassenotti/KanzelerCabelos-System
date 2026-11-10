@@ -33,17 +33,30 @@ export async function requireAuth(
     });
   }
 
-  const usuario =
+  const resultado =
     await authService.validarToken(
       token,
     );
 
-  if (!usuario) {
+  if (resultado.tipo === "indisponivel") {
+    // Não responder 401: o frontend trataria como sessão perdida.
+    return reply
+      .status(503)
+      .header("Retry-After", "5")
+      .send({
+        error:
+          "Serviço de autenticação indisponível. Tente novamente em instantes.",
+        code: "auth_indisponivel",
+      });
+  }
+
+  if (resultado.tipo === "invalido") {
     return reply.status(401).send({
       error:
         "Sessão inválida ou expirada",
     });
   }
+
   request.usuarioId =
-  usuario.id;
+    resultado.dados.id;
 }

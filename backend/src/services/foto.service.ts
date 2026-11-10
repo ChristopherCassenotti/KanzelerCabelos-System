@@ -128,18 +128,10 @@ if (!contato.autorizouFoto) {
       );
 
     return Promise.all(
-      fotos.map(async (foto) => {
-        const signedUrl =
-          await this.storageService.createSignedUrl(
-            foto.url,
-            3600,
-          );
-
-        return {
-          ...foto,
-          signedUrl,
-        };
-      }),
+      fotos.map(async (foto) => ({
+        ...foto,
+        signedUrl: await this.storageService.createSignedUrl(foto.url, 3600),
+      })),
     );
   }
 

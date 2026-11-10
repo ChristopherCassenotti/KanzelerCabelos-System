@@ -3,30 +3,43 @@ import type {
   FastifyRequest,
 } from "fastify";
 
+import {
+  AUTH_COOKIE_MAX_AGE_SEGUNDOS,
+  AUTH_COOKIE_NAME,
+  lerOpcoesCookieAuth,
+} from "../config/auth-cookie";
 import { loginSchema } from "../schemas/auth.schema";
 import { AuthService } from "../services/auth.service";
-
-const COOKIE_NAME =
-  "kanzler_refresh_token";
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure:
-    process.env["NODE_ENV"] ===
-    "production",
-
-  sameSite: "lax" as const,
-  path: "/",
-
-  maxAge:
-    60 * 60 * 24 * 30,
-};
 
 export class AuthController {
   constructor(
     private readonly authService =
       new AuthService(),
+    private readonly opcoesCookie =
+      lerOpcoesCookieAuth(),
   ) {}
+
+  private gravarCookie(
+    reply: FastifyReply,
+    refreshToken: string,
+  ) {
+    reply.setCookie(
+      AUTH_COOKIE_NAME,
+      refreshToken,
+      {
+        ...this.opcoesCookie,
+        maxAge: AUTH_COOKIE_MAX_AGE_SEGUNDOS,
+      },
+    );
+  }
+
+  private limparCookie(reply: FastifyReply) {
+    // Mesmos atributos da gravação; senão o navegador não remove o cookie.
+    reply.clearCookie(
+      AUTH_COOKIE_NAME,
+      this.opcoesCookie,
+    );
+  }
 
   async login(
     request: FastifyRequest,
@@ -58,10 +71,9 @@ export class AuthController {
       });
     }
 
-    reply.setCookie(
-      COOKIE_NAME,
+    this.gravarCookie(
+      reply,
       resultado.refreshToken,
-      COOKIE_OPTIONS,
     );
 
     return reply.send({
@@ -81,7 +93,7 @@ export class AuthController {
   ) {
     const refreshToken =
       request.cookies[
-        COOKIE_NAME
+        AUTH_COOKIE_NAME
       ];
 
     if (!refreshToken) {
@@ -96,13 +108,24 @@ export class AuthController {
         refreshToken,
       );
 
-    if (!resultado) {
-      reply.clearCookie(
-        COOKIE_NAME,
-        {
-          path: "/",
-        },
+    if (resultado.tipo === "indisponivel") {
+      // Falha temporária do provedor: a sessão continua válida no cookie.
+      request.log.warn(
+        "auth: refresh indisponível temporariamente",
       );
+
+      return reply
+        .status(503)
+        .header("Retry-After", "5")
+        .send({
+          error:
+            "Serviço de autenticação indisponível. Tente novamente em instantes.",
+          code: "auth_indisponivel",
+        });
+    }
+
+    if (resultado.tipo === "invalido") {
+      this.limparCookie(reply);
 
       return reply.status(401).send({
         error:
@@ -110,22 +133,21 @@ export class AuthController {
       });
     }
 
-    // Supabase pode rotacionar
-    // o refresh token.
-    reply.setCookie(
-      COOKIE_NAME,
-      resultado.refreshToken,
-      COOKIE_OPTIONS,
+    // Supabase rotaciona o refresh token; a validade do cookie é renovada
+    // a cada uso (sessão deslizante).
+    this.gravarCookie(
+      reply,
+      resultado.dados.refreshToken,
     );
 
     return reply.send({
-      usuario: resultado.usuario,
+      usuario: resultado.dados.usuario,
 
       accessToken:
-        resultado.accessToken,
+        resultado.dados.accessToken,
 
       expiresIn:
-        resultado.expiresIn,
+        resultado.dados.expiresIn,
     });
   }
 
@@ -133,12 +155,7 @@ export class AuthController {
     _request: FastifyRequest,
     reply: FastifyReply,
   ) {
-    reply.clearCookie(
-      COOKIE_NAME,
-      {
-        path: "/",
-      },
-    );
+    this.limparCookie(reply);
 
     return reply
       .status(204)

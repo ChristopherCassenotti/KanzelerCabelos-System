@@ -1,0 +1,19 @@
+# Dependências e build
+node_modules/
+dist/
+
+# Variáveis de ambiente (manter apenas os .env.example)
+.env
+.env.*
+!.env.example
+
+# Arquivos compactados / backups
+*.zip
+
+# Resultados de execuções de teste
+audit-*.json
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+*.log

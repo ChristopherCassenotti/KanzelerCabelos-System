@@ -17,6 +17,7 @@ import { painelRoutes } from "./painel.routes";
 import { relatorioRoutes } from "./relatorio.routes";
 import { mapaGlobalRoutes } from "./mapa-global.routes";
 import { exportRoutes } from "./export.routes";
+import { assistenteRoutes } from "./assistente.routes";
 
 export async function routes(app: FastifyInstance) {
   app.addHook(
@@ -100,5 +101,11 @@ export async function routes(app: FastifyInstance) {
       prefix: "/export",
     },
   );
-}
 
+  await app.register(
+    assistenteRoutes,
+    {
+      prefix: "/assistente",
+    },
+  );
+}

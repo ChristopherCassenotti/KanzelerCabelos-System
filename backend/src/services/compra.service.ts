@@ -74,6 +74,18 @@ async registrar(
     ...(data.quimica !== undefined
       ? { quimica: data.quimica }
       : {}),
+
+    ...(data.valorRevenda !== undefined
+      ? { valorRevenda: data.valorRevenda }
+      : {}),
+
+    ...(data.dataRevenda !== undefined
+      ? { dataRevenda: data.dataRevenda }
+      : {}),
+
+    ...(data.comprador !== undefined
+      ? { comprador: data.comprador }
+      : {}),
   };
 
   const registrada =

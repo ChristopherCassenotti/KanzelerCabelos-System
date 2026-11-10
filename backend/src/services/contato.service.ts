@@ -1,4 +1,4 @@
-import type { CriarContatoInput, AtualizarContatoInput } from "../schemas/contato.schema";
+import type { CriarContatoInput, AtualizarContatoInput, CriarContatoComCompraInput } from "../schemas/contato.schema";
 import { ContatoRepository } from "../repositories/contato.repository";
 import type { CriarContatoModel, AtualizarContatoModel } from "../models/contato.model";
 import { FotoRepository } from "../repositories/foto.repository";
@@ -46,6 +46,30 @@ export class ContatoService {
   ) {}
 
 async create(data: CriarContatoInput) {
+  return this.contatoRepository.create(
+    await this.prepararContato(data),
+  );
+}
+
+/**
+ * Fluxo operacional: cria contato + compra em uma transação. O contato já
+ * nasce como "comprado" e a recompra passa a ser calculada pela compra.
+ */
+async createComCompra(
+  data: CriarContatoComCompraInput,
+  usuarioId: string | null = null,
+) {
+  return this.contatoRepository.createComCompra(
+    await this.prepararContato(data.contato),
+    data.compra,
+    usuarioId,
+  );
+}
+
+/** Regras de criação compartilhadas (geocoding e valores padrão). */
+private async prepararContato(
+  data: CriarContatoInput,
+): Promise<CriarContatoModel> {
   let lat =
     data.lat !== undefined
       ? String(data.lat)
@@ -154,9 +178,7 @@ autorizouFoto:
       data.observacoes ?? null,
   };
 
-  return this.contatoRepository.create(
-    contato,
-  );
+  return contato;
 }
 
   async findAll() {
@@ -185,14 +207,10 @@ autorizouFoto:
     const fotosComUrl = await Promise.all(
       fotos.map(async (foto) => ({
         ...foto,
-        signedUrl: await this.storageService.createSignedUrl(
-          foto.url,
-          3600,
-        ),
+        signedUrl: await this.storageService.createSignedUrl(foto.url, 3600),
       })),
     );
-    
-  
+
     return {
       ...contato,
       fotos: fotosComUrl,

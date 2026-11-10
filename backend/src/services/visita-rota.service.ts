@@ -16,10 +16,13 @@ export class VisitaRotaService {
       new ContatoRepository(),
   ) {}
 
-  async agendar(
-    diaRotaId: string,
-    data: AgendarVisitaInput,
-  ) {
+async agendar(
+  diaRotaId: string,
+  data: AgendarVisitaInput,
+  hoje = Temporal.Now.plainDateISO(
+    "America/Sao_Paulo",
+  ),
+) {
     const diaRota =
       await this.diaRotaRepository.findById(
         diaRotaId,
@@ -48,9 +51,7 @@ export class VisitaRotaService {
       };
     }
 
-    const hoje = Temporal.Now.plainDateISO(
-      "America/Sao_Paulo",
-    );
+
 const deveRegistrarDataAvaliacao =
   contato.status === "lead" &&
   contato.dataAvaliacao === null;

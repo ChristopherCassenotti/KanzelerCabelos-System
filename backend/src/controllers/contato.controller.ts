@@ -5,17 +5,21 @@ import type {
 
 import {
   criarContatoSchema,
+  criarContatoComCompraSchema,
   atualizarContatoSchema,
 } from "../schemas/contato.schema";
 
 import { buscaContatoQuerySchema } from "../schemas/busca-contato.schema";
 
 import { ContatoService } from "../services/contato.service";
+import { CidadeService } from "../services/cidade.service";
 
 export class ContatoController {
   constructor(
     private readonly contatoService =
       new ContatoService(),
+    private readonly cidadeService =
+      new CidadeService(),
   ) {}
 
   async create(
@@ -43,6 +47,46 @@ export class ContatoController {
     return reply
       .status(201)
       .send(contato);
+  }
+
+  async createComCompra(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) {
+    const result =
+      criarContatoComCompraSchema.safeParse(
+        request.body,
+      );
+
+    if (!result.success) {
+      return reply.status(400).send({
+        error: "Dados inválidos",
+        details:
+          result.error.flatten(),
+      });
+    }
+
+    const cidade =
+      await this.cidadeService.findById(
+        result.data.contato.cidadeId,
+      );
+
+    if (!cidade) {
+      return reply.status(422).send({
+        error:
+          "Cidade não encontrada",
+      });
+    }
+
+    const criado =
+      await this.contatoService.createComCompra(
+        result.data,
+        request.usuarioId,
+      );
+
+    return reply
+      .status(201)
+      .send(criado);
   }
 
   async index(

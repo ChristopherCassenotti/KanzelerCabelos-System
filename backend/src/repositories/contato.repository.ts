@@ -1,38 +1,100 @@
 import { db } from "../prisma/db";
 import type { CriarContatoModel, AtualizarContatoModel } from "../models/contato.model";
 
+import { montarCompra } from "./compra.repository";
+import type { DadosCompraModel } from "../models/compra.model";
+import { STATUS_CONTATO } from "../services/contato-status.rules";
+
+function colunasContato(data: CriarContatoModel) {
+  return {
+    nome: data.nome,
+    cidadeId: data.cidadeId,
+
+    telefone: data.telefone,
+    endereco: data.endereco,
+
+    lat: data.lat,
+    lng: data.lng,
+    geoFonte: data.geoFonte,
+    geoPlaceId: data.geoPlaceId,
+
+    origem: data.origem,
+    indicadoPor: data.indicadoPor,
+
+    dataPrimeiroContato:
+      data.dataPrimeiroContato,
+
+    dataAvaliacao:
+      data.dataAvaliacao,
+    natural: data.natural,
+    autorizouFoto:
+      data.autorizouFoto,
+    cor: data.cor,
+    textura: data.textura,
+    quimica: data.quimica,
+
+    comprimentoCm: data.comprimentoCm,
+
+    observacoes: data.observacoes,
+  };
+}
+
 export class ContatoRepository {
   async create(data: CriarContatoModel) {
-    return db.orm.public.Contato.create({
-      nome: data.nome,
-      cidadeId: data.cidadeId,
-      
-      telefone: data.telefone,
-      endereco: data.endereco,
-      
-      lat: data.lat,
-      lng: data.lng,
-      geoFonte: data.geoFonte,
-      geoPlaceId: data.geoPlaceId,
-      
-origem: data.origem,
-indicadoPor: data.indicadoPor,
+    return db.orm.public.Contato.create(
+      colunasContato(data),
+    );
+  }
 
-dataPrimeiroContato:
-  data.dataPrimeiroContato,
+  /**
+   * Cadastro operacional em uma única transação: contato já como
+   * "comprado", a compra e a auditoria. Se qualquer passo falhar, nada fica
+   * gravado (não existe contato sem a compra correspondente).
+   */
+  async createComCompra(
+    contatoData: CriarContatoModel,
+    compraData: DadosCompraModel,
+    usuarioId: string | null,
+  ) {
+    return db.transaction(async (tx) => {
+      const contato =
+        await tx.orm.public.Contato.create({
+          ...colunasContato(contatoData),
+          status: STATUS_CONTATO.COMPRADO,
+        });
 
-dataAvaliacao:
-  data.dataAvaliacao,
-      natural: data.natural,
-      autorizouFoto:
-  data.autorizouFoto,
-      cor: data.cor,
-      textura: data.textura,
-      quimica: data.quimica,
-      
-      comprimentoCm: data.comprimentoCm,
-      
-      observacoes: data.observacoes,
+      const compra =
+        await tx.orm.public.Compra.create({
+          ...montarCompra(compraData, contatoData),
+          contatoId: contato.id,
+        });
+
+      await tx.orm.public.Auditoria.create({
+        usuarioId,
+        acao: "contato_criado_com_compra",
+        entidade: "contato",
+        entidadeId: contato.id,
+        detalhes: JSON.stringify({
+          compraId: compra.id,
+        }),
+      });
+
+      await tx.orm.public.Auditoria.create({
+        usuarioId,
+        acao: "compra_registrada",
+        entidade: "compra",
+        entidadeId: compra.id,
+        detalhes: JSON.stringify({
+          contatoId: contato.id,
+          dataCorte: compraData.dataCorte,
+          valorPago: compraData.valorPago,
+        }),
+      });
+
+      return {
+        contato,
+        compra,
+      };
     });
   }
 

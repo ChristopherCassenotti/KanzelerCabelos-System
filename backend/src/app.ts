@@ -5,14 +5,42 @@ import cookie from "@fastify/cookie";
 
 import { routes } from "./routes";
 import { authRoutes } from "./routes/auth.routes";
+import { lerOrigensFrontend } from "./config/auth-cookie";
 
 export const app = Fastify({
   logger: true,
 });
 
+const origensFrontend = lerOrigensFrontend();
+
 app.register(cors, {
-  origin: true,
+
+  origin:
+    origensFrontend.length > 0
+      ? origensFrontend
+      : true,
   credentials: true,
+
+  methods: [
+    "GET",
+    "HEAD",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+  ],
+
+  exposedHeaders: [
+    "Content-Disposition",
+    "X-Total-Registros",
+    "Retry-After",
+  ],
 });
 
 app.register(cookie);

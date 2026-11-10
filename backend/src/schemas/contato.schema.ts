@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { dadosCompraSchema } from "./compra.schema";
 
 export const criarContatoSchema = z.object({
   nome: z.string().min(2),
@@ -80,3 +81,17 @@ export const atualizarContatoSchema =
 
 export type AtualizarContatoInput =
   z.infer<typeof atualizarContatoSchema>;
+
+/**
+ * Cadastro operacional: a cliente só é cadastrada quando o cabelo é
+ * comprado. Contato e compra são criados juntos, em uma transação.
+ */
+export const criarContatoComCompraSchema = z
+  .object({
+    contato: criarContatoSchema,
+    compra: dadosCompraSchema,
+  })
+  .strict();
+
+export type CriarContatoComCompraInput =
+  z.infer<typeof criarContatoComCompraSchema>;
