@@ -22,6 +22,7 @@ async agendar(
   hoje = Temporal.Now.plainDateISO(
     "America/Sao_Paulo",
   ),
+  futuroCorteId?: string,
 ) {
     const diaRota =
       await this.diaRotaRepository.findById(
@@ -82,6 +83,9 @@ const deveRegistrarDataAvaliacao =
         diaRota.data,
     }
   : {}),
+        ...(futuroCorteId !== undefined
+          ? { futuroCorteId }
+          : {}),
         ...(visitaFutura !== undefined
           ? {
               visitaExistenteId:

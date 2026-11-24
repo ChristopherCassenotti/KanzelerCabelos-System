@@ -18,6 +18,10 @@ import { relatorioRoutes } from "./relatorio.routes";
 import { mapaGlobalRoutes } from "./mapa-global.routes";
 import { exportRoutes } from "./export.routes";
 import { assistenteRoutes } from "./assistente.routes";
+import {
+  contatoFuturoCorteRoutes,
+  futuroCorteRoutes,
+} from "./futuro-corte.routes";
 
 export async function routes(app: FastifyInstance) {
   app.addHook(
@@ -47,6 +51,14 @@ export async function routes(app: FastifyInstance) {
 
   await app.register(contatoStatusRoutes, {
     prefix: "/contatos",
+  });
+
+  await app.register(contatoFuturoCorteRoutes, {
+    prefix: "/contatos",
+  });
+
+  await app.register(futuroCorteRoutes, {
+    prefix: "/futuros-cortes",
   });
 
   await app.register(diaRotaRoutes, {

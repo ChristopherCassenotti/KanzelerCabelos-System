@@ -2,6 +2,7 @@ import { ContatoRepository } from "../repositories/contato.repository";
 import { DiaRotaRepository } from "../repositories/dia-rota.repository";
 
 import { AAgendarService } from "./a-agendar.service";
+import { FuturoCorteService } from "./futuro-corte.service";
 
 export class PainelService {
   constructor(
@@ -13,6 +14,9 @@ export class PainelService {
 
     private readonly diaRotaRepository =
       new DiaRotaRepository(),
+
+    private readonly futuroCorteService =
+      new FuturoCorteService(),
   ) {}
 
   async resumo(
@@ -29,6 +33,7 @@ export class PainelService {
       contatos,
       aAgendar,
       proximasRotas,
+      futurosCortes,
     ] = await Promise.all([
       this.contatoRepository.findAll(),
 
@@ -39,6 +44,10 @@ export class PainelService {
       this.diaRotaRepository.findByPeriod(
         hoje,
         ate,
+      ),
+
+      this.futuroCorteService.resumir(
+        hoje,
       ),
     ]);
 
@@ -85,6 +94,8 @@ export class PainelService {
         proximas30Dias:
           proximasRotas.length,
       },
+
+      futurosCortes,
     };
   }
 }

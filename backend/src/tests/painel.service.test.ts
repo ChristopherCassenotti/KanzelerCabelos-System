@@ -12,6 +12,7 @@ import { PainelService } from "../services/painel.service";
 import type { ContatoRepository } from "../repositories/contato.repository";
 import type { DiaRotaRepository } from "../repositories/dia-rota.repository";
 import type { AAgendarService } from "../services/a-agendar.service";
+import type { FuturoCorteService } from "../services/futuro-corte.service";
 
 describe("PainelService", () => {
   it("monta o resumo do painel", async () => {
@@ -66,6 +67,14 @@ describe("PainelService", () => {
               { id: "rota-2" },
             ]),
         } as unknown as DiaRotaRepository,
+
+        {
+          resumir:
+            vi.fn().mockResolvedValue({
+              totalAtivos: 4,
+              proximos30Dias: 2,
+            }),
+        } as unknown as FuturoCorteService,
       );
 
     const resultado =
@@ -98,6 +107,11 @@ describe("PainelService", () => {
 
       rotas: {
         proximas30Dias: 2,
+      },
+
+      futurosCortes: {
+        totalAtivos: 4,
+        proximos30Dias: 2,
       },
     });
   });

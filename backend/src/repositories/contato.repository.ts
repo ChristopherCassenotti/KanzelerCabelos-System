@@ -262,6 +262,21 @@ async hardDelete(
           .delete();
       }
 
+      const futurosCortes =
+        await tx.orm.public.FuturoCorte
+          .where({
+            contatoId: id,
+          })
+          .all();
+
+      for (const futuroCorte of futurosCortes) {
+        await tx.orm.public.FuturoCorte
+          .where({
+            id: futuroCorte.id,
+          })
+          .delete();
+      }
+
       await tx.orm.public.Contato
         .where({
           id,

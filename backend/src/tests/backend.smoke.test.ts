@@ -61,6 +61,7 @@ describe(
           "/contatos",
           "/cidades",
           "/a-agendar",
+          "/futuros-cortes",
           "/painel/resumo",
           "/mapa",
           "/relatorios/indicadores?periodo=30",

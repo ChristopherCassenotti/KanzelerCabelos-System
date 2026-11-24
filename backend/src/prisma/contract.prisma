@@ -51,6 +51,7 @@ autorizouFoto Boolean
   fotos  Foto[]
   compras Compra[]
   itensRota ItemRota[]
+  futurosCortes FuturoCorte[]
   
   @@index([status])
   @@map("contatos")
@@ -217,6 +218,60 @@ model ItemRota {
   @@index([diaRotaId])
   @@index([contatoId])
   @@map("itens_rota")
+  @@rls
+}
+
+enum PrioridadeFuturoCorte {
+  @@type("pg/text@1")
+
+  Baixa = "baixa"
+  Media = "media"
+  Alta  = "alta"
+}
+
+enum StatusFuturoCorte {
+  @@type("pg/text@1")
+
+  Acompanhando = "acompanhando"
+  Agendado     = "agendado"
+  Convertido   = "convertido"
+  Descartado   = "descartado"
+}
+
+model FuturoCorte {
+  id Uuid @id @default(uuid())
+
+  contatoId Uuid @map("contato_id")
+
+  dataPrevista       Date? @map("data_prevista")
+  dataProximoContato Date  @map("data_proximo_contato")
+
+  comprimentoAtualCm    Int? @map("comprimento_atual_cm")
+  comprimentoDesejadoCm Int? @map("comprimento_desejado_cm")
+
+  cor         String?
+  textura     String?
+  quimica     String?
+  natural     Boolean?
+  observacoes String?
+
+  prioridade PrioridadeFuturoCorte @default(Media)
+  status     StatusFuturoCorte     @default(Acompanhando)
+
+  ultimoContatoEm DateTime? @map("ultimo_contato_em")
+
+  createdAt temporal.createdAt() @map("created_at")
+  updatedAt temporal.updatedAt() @map("updated_at")
+
+  contato Contato @relation(
+    fields: [contatoId],
+    references: [id]
+  )
+
+  @@index([contatoId])
+  @@index([contatoId], unique: true, where: "(status = ANY (ARRAY['acompanhando'::text, 'agendado'::text]))", name: "futuros_cortes_um_ativo")
+  @@index([dataProximoContato])
+  @@map("futuros_cortes")
   @@rls
 }
 

@@ -1,0 +1,1542 @@
+[
+  {
+    "id": "table.auditoria",
+    "label": "Create table \"auditoria\"",
+    "summary": "Creates table \"auditoria\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "auditoria"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"auditoria\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditoria\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"auditoria\"",
+        "sql": "CREATE TABLE \"public\".\"auditoria\" (\n  \"acao\" text NOT NULL,\n  \"created_at\" timestamptz NOT NULL,\n  \"detalhes\" text,\n  \"entidade\" text NOT NULL,\n  \"entidade_id\" uuid NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"usuario_id\" uuid,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"auditoria\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditoria\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.compras",
+    "label": "Create table \"compras\"",
+    "summary": "Creates table \"compras\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "compras"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"compras\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"compras\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"compras\"",
+        "sql": "CREATE TABLE \"public\".\"compras\" (\n  \"comprador\" text,\n  \"comprimento_cm\" int4,\n  \"contato_id\" uuid NOT NULL,\n  \"cor\" text,\n  \"created_at\" timestamptz NOT NULL,\n  \"data_corte\" date NOT NULL,\n  \"data_revenda\" date,\n  \"forma_pagamento\" text NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"peso_g\" int4,\n  \"quimica\" text,\n  \"textura\" text,\n  \"updated_at\" timestamptz NOT NULL,\n  \"valor_pago\" numeric NOT NULL,\n  \"valor_revenda\" numeric,\n  \"visita_id\" uuid,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"compras\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"compras\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.dias_rota",
+    "label": "Create table \"dias_rota\"",
+    "summary": "Creates table \"dias_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "dias_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"dias_rota\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dias_rota\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"dias_rota\"",
+        "sql": "CREATE TABLE \"public\".\"dias_rota\" (\n  \"created_at\" timestamptz NOT NULL,\n  \"custo_alimentacao\" numeric DEFAULT '0'::numeric NOT NULL,\n  \"custo_combustivel\" numeric DEFAULT '0'::numeric NOT NULL,\n  \"custo_hospedagem\" numeric DEFAULT '0'::numeric NOT NULL,\n  \"custo_outros\" numeric DEFAULT '0'::numeric NOT NULL,\n  \"data\" date NOT NULL,\n  \"distancia_km\" numeric,\n  \"duracao_min\" int4,\n  \"hora_saida\" time DEFAULT ('08:00:00'::time) NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"minutos_por_visita\" int4 DEFAULT 40 NOT NULL,\n  \"partida_cidade_id\" uuid NOT NULL,\n  \"rota_polyline\" text,\n  \"updated_at\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"dias_rota\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dias_rota\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.fotos",
+    "label": "Create table \"fotos\"",
+    "summary": "Creates table \"fotos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "fotos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"fotos\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fotos\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"fotos\"",
+        "sql": "CREATE TABLE \"public\".\"fotos\" (\n  \"compra_id\" uuid,\n  \"contato_id\" uuid NOT NULL,\n  \"created_at\" timestamptz NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"ordem\" int4 DEFAULT 0 NOT NULL,\n  \"thumb_url\" text,\n  \"tipo\" text,\n  \"updated_at\" timestamptz NOT NULL,\n  \"url\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"fotos\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fotos\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.itens_rota",
+    "label": "Create table \"itens_rota\"",
+    "summary": "Creates table \"itens_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "itens_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"itens_rota\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"itens_rota\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"itens_rota\"",
+        "sql": "CREATE TABLE \"public\".\"itens_rota\" (\n  \"concluido\" bool DEFAULT false NOT NULL,\n  \"contato_id\" uuid,\n  \"created_at\" timestamptz NOT NULL,\n  \"dia_rota_id\" uuid NOT NULL,\n  \"hora\" time,\n  \"id\" uuid NOT NULL,\n  \"ordem\" int4 DEFAULT 0 NOT NULL,\n  \"resultado\" text,\n  \"tipo\" text NOT NULL,\n  \"titulo\" text,\n  \"updated_at\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"itens_rota_resultado_check_49039db2\" CHECK (\"resultado\" IN ('comprou', 'nao_comprou', 'nao_atendeu', 'remarcar')),\n  CONSTRAINT \"itens_rota_tipo_check_c6f966b0\" CHECK (\"tipo\" IN ('visita', 'tarefa'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"itens_rota\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"itens_rota\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.autorizou_foto",
+    "label": "Add column \"autorizou_foto\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "autorizou_foto",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"autorizou_foto\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "autorizou_foto"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"autorizou_foto\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"autorizou_foto\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"autorizou_foto\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "autorizou_foto"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.data_avaliacao",
+    "label": "Add column \"data_avaliacao\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "data_avaliacao",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"data_avaliacao\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "data_avaliacao"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"data_avaliacao\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"data_avaliacao\" date"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"data_avaliacao\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "data_avaliacao"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.data_primeiro_contato",
+    "label": "Add column \"data_primeiro_contato\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "data_primeiro_contato",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"data_primeiro_contato\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "data_primeiro_contato"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"data_primeiro_contato\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"data_primeiro_contato\" date"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"data_primeiro_contato\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "data_primeiro_contato"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.geo_fonte",
+    "label": "Add column \"geo_fonte\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "geo_fonte",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"geo_fonte\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "geo_fonte"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"geo_fonte\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"geo_fonte\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"geo_fonte\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "geo_fonte"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.geo_place_id",
+    "label": "Add column \"geo_place_id\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "geo_place_id",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"geo_place_id\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "geo_place_id"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"geo_place_id\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"geo_place_id\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"geo_place_id\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "geo_place_id"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.indicado_por",
+    "label": "Add column \"indicado_por\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "indicado_por",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"indicado_por\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "indicado_por"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"indicado_por\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"indicado_por\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"indicado_por\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "indicado_por"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.lat",
+    "label": "Add column \"lat\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "lat",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"lat\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "lat"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"lat\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"lat\" numeric"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"lat\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "lat"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.lng",
+    "label": "Add column \"lng\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "lng",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"lng\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "lng"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"lng\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"lng\" numeric"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"lng\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "lng"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.motivo_perda",
+    "label": "Add column \"motivo_perda\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "motivo_perda",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"motivo_perda\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "motivo_perda"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"motivo_perda\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"motivo_perda\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"motivo_perda\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "motivo_perda"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterType.cidades.uf",
+    "label": "Alter type of \"cidades\".\"uf\" to text",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "uf",
+        "table": "cidades"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"uf\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "cidades",
+          "uf"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "alter type of \"uf\"",
+        "sql": "ALTER TABLE \"public\".\"cidades\" ALTER COLUMN \"uf\" TYPE text USING \"uf\"::text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"uf\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "cidades",
+          "uf",
+          "text"
+        ]
+      }
+    ],
+    "meta": {
+      "warning": "TABLE_REWRITE"
+    }
+  },
+  {
+    "id": "unique.dias_rota.dias_rota_data_key",
+    "label": "Add unique constraint on \"dias_rota\" (data)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "dias_rota_data_key",
+        "table": "dias_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"dias_rota_data_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dias_rota_data_key",
+          "public",
+          "\"public\".\"dias_rota\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"dias_rota_data_key\"",
+        "sql": "ALTER TABLE \"public\".\"dias_rota\" ADD CONSTRAINT \"dias_rota_data_key\" UNIQUE (\"data\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"dias_rota_data_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dias_rota_data_key",
+          "public",
+          "\"public\".\"dias_rota\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditoria.auditoria_entidade_entidade_id_idx_7217251b",
+    "label": "Create index \"auditoria_entidade_entidade_id_idx_7217251b\" on \"auditoria\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditoria_entidade_entidade_id_idx_7217251b",
+        "table": "auditoria"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditoria_entidade_entidade_id_idx_7217251b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditoria_entidade_entidade_id_idx_7217251b\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditoria_entidade_entidade_id_idx_7217251b\"",
+        "sql": "CREATE INDEX \"auditoria_entidade_entidade_id_idx_7217251b\" ON \"public\".\"auditoria\" (\"entidade\", \"entidade_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditoria_entidade_entidade_id_idx_7217251b\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditoria_entidade_entidade_id_idx_7217251b\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditoria.auditoria_usuario_id_idx_65b6616a",
+    "label": "Create index \"auditoria_usuario_id_idx_65b6616a\" on \"auditoria\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditoria_usuario_id_idx_65b6616a",
+        "table": "auditoria"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditoria_usuario_id_idx_65b6616a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditoria_usuario_id_idx_65b6616a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditoria_usuario_id_idx_65b6616a\"",
+        "sql": "CREATE INDEX \"auditoria_usuario_id_idx_65b6616a\" ON \"public\".\"auditoria\" (\"usuario_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditoria_usuario_id_idx_65b6616a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditoria_usuario_id_idx_65b6616a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.compras.compras_contato_id_idx_f7fc9452",
+    "label": "Create index \"compras_contato_id_idx_f7fc9452\" on \"compras\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "compras_contato_id_idx_f7fc9452",
+        "table": "compras"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"compras_contato_id_idx_f7fc9452\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"compras_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"compras_contato_id_idx_f7fc9452\"",
+        "sql": "CREATE INDEX \"compras_contato_id_idx_f7fc9452\" ON \"public\".\"compras\" (\"contato_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"compras_contato_id_idx_f7fc9452\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"compras_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.compras.compras_visita_id_idx_04fe9ae3",
+    "label": "Create index \"compras_visita_id_idx_04fe9ae3\" on \"compras\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "compras_visita_id_idx_04fe9ae3",
+        "table": "compras"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"compras_visita_id_idx_04fe9ae3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"compras_visita_id_idx_04fe9ae3\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"compras_visita_id_idx_04fe9ae3\"",
+        "sql": "CREATE INDEX \"compras_visita_id_idx_04fe9ae3\" ON \"public\".\"compras\" (\"visita_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"compras_visita_id_idx_04fe9ae3\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"compras_visita_id_idx_04fe9ae3\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.contatos.contatos_status_idx_e98638ab",
+    "label": "Create index \"contatos_status_idx_e98638ab\" on \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "contatos_status_idx_e98638ab",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"contatos_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"contatos_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"contatos_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"contatos_status_idx_e98638ab\" ON \"public\".\"contatos\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"contatos_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"contatos_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.dias_rota.dias_rota_partida_cidade_id_idx_27c2e9f5",
+    "label": "Create index \"dias_rota_partida_cidade_id_idx_27c2e9f5\" on \"dias_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "dias_rota_partida_cidade_id_idx_27c2e9f5",
+        "table": "dias_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"dias_rota_partida_cidade_id_idx_27c2e9f5\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dias_rota_partida_cidade_id_idx_27c2e9f5\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"dias_rota_partida_cidade_id_idx_27c2e9f5\"",
+        "sql": "CREATE INDEX \"dias_rota_partida_cidade_id_idx_27c2e9f5\" ON \"public\".\"dias_rota\" (\"partida_cidade_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"dias_rota_partida_cidade_id_idx_27c2e9f5\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dias_rota_partida_cidade_id_idx_27c2e9f5\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.fotos.fotos_compra_id_idx_b246fef9",
+    "label": "Create index \"fotos_compra_id_idx_b246fef9\" on \"fotos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "fotos_compra_id_idx_b246fef9",
+        "table": "fotos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"fotos_compra_id_idx_b246fef9\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fotos_compra_id_idx_b246fef9\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"fotos_compra_id_idx_b246fef9\"",
+        "sql": "CREATE INDEX \"fotos_compra_id_idx_b246fef9\" ON \"public\".\"fotos\" (\"compra_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"fotos_compra_id_idx_b246fef9\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fotos_compra_id_idx_b246fef9\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.fotos.fotos_contato_id_idx_f7fc9452",
+    "label": "Create index \"fotos_contato_id_idx_f7fc9452\" on \"fotos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "fotos_contato_id_idx_f7fc9452",
+        "table": "fotos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"fotos_contato_id_idx_f7fc9452\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fotos_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"fotos_contato_id_idx_f7fc9452\"",
+        "sql": "CREATE INDEX \"fotos_contato_id_idx_f7fc9452\" ON \"public\".\"fotos\" (\"contato_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"fotos_contato_id_idx_f7fc9452\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"fotos_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.itens_rota.itens_rota_contato_id_idx_f7fc9452",
+    "label": "Create index \"itens_rota_contato_id_idx_f7fc9452\" on \"itens_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "itens_rota_contato_id_idx_f7fc9452",
+        "table": "itens_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"itens_rota_contato_id_idx_f7fc9452\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"itens_rota_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"itens_rota_contato_id_idx_f7fc9452\"",
+        "sql": "CREATE INDEX \"itens_rota_contato_id_idx_f7fc9452\" ON \"public\".\"itens_rota\" (\"contato_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"itens_rota_contato_id_idx_f7fc9452\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"itens_rota_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.itens_rota.itens_rota_dia_rota_id_idx_4abc0932",
+    "label": "Create index \"itens_rota_dia_rota_id_idx_4abc0932\" on \"itens_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "itens_rota_dia_rota_id_idx_4abc0932",
+        "table": "itens_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"itens_rota_dia_rota_id_idx_4abc0932\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"itens_rota_dia_rota_id_idx_4abc0932\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"itens_rota_dia_rota_id_idx_4abc0932\"",
+        "sql": "CREATE INDEX \"itens_rota_dia_rota_id_idx_4abc0932\" ON \"public\".\"itens_rota\" (\"dia_rota_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"itens_rota_dia_rota_id_idx_4abc0932\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"itens_rota_dia_rota_id_idx_4abc0932\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.compras.compras_contato_id_fkey",
+    "label": "Add foreign key \"compras_contato_id_fkey\" on \"compras\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "compras_contato_id_fkey",
+        "table": "compras"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"compras_contato_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "compras_contato_id_fkey",
+          "public",
+          "\"public\".\"compras\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"compras_contato_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"compras\"\nADD CONSTRAINT \"compras_contato_id_fkey\"\nFOREIGN KEY (\"contato_id\")\nREFERENCES \"public\".\"contatos\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"compras_contato_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "compras_contato_id_fkey",
+          "public",
+          "\"public\".\"compras\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.compras.compras_visita_id_fkey",
+    "label": "Add foreign key \"compras_visita_id_fkey\" on \"compras\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "compras_visita_id_fkey",
+        "table": "compras"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"compras_visita_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "compras_visita_id_fkey",
+          "public",
+          "\"public\".\"compras\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"compras_visita_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"compras\"\nADD CONSTRAINT \"compras_visita_id_fkey\"\nFOREIGN KEY (\"visita_id\")\nREFERENCES \"public\".\"itens_rota\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"compras_visita_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "compras_visita_id_fkey",
+          "public",
+          "\"public\".\"compras\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.dias_rota.dias_rota_partida_cidade_id_fkey",
+    "label": "Add foreign key \"dias_rota_partida_cidade_id_fkey\" on \"dias_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "dias_rota_partida_cidade_id_fkey",
+        "table": "dias_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"dias_rota_partida_cidade_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dias_rota_partida_cidade_id_fkey",
+          "public",
+          "\"public\".\"dias_rota\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"dias_rota_partida_cidade_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"dias_rota\"\nADD CONSTRAINT \"dias_rota_partida_cidade_id_fkey\"\nFOREIGN KEY (\"partida_cidade_id\")\nREFERENCES \"public\".\"cidades\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"dias_rota_partida_cidade_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dias_rota_partida_cidade_id_fkey",
+          "public",
+          "\"public\".\"dias_rota\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.fotos.fotos_contato_id_fkey",
+    "label": "Add foreign key \"fotos_contato_id_fkey\" on \"fotos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "fotos_contato_id_fkey",
+        "table": "fotos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"fotos_contato_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fotos_contato_id_fkey",
+          "public",
+          "\"public\".\"fotos\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"fotos_contato_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"fotos\"\nADD CONSTRAINT \"fotos_contato_id_fkey\"\nFOREIGN KEY (\"contato_id\")\nREFERENCES \"public\".\"contatos\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"fotos_contato_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fotos_contato_id_fkey",
+          "public",
+          "\"public\".\"fotos\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.fotos.fotos_compra_id_fkey",
+    "label": "Add foreign key \"fotos_compra_id_fkey\" on \"fotos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "fotos_compra_id_fkey",
+        "table": "fotos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"fotos_compra_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fotos_compra_id_fkey",
+          "public",
+          "\"public\".\"fotos\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"fotos_compra_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"fotos\"\nADD CONSTRAINT \"fotos_compra_id_fkey\"\nFOREIGN KEY (\"compra_id\")\nREFERENCES \"public\".\"compras\" (\"id\")\nON DELETE SET NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"fotos_compra_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "fotos_compra_id_fkey",
+          "public",
+          "\"public\".\"fotos\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.itens_rota.itens_rota_dia_rota_id_fkey",
+    "label": "Add foreign key \"itens_rota_dia_rota_id_fkey\" on \"itens_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "itens_rota_dia_rota_id_fkey",
+        "table": "itens_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"itens_rota_dia_rota_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "itens_rota_dia_rota_id_fkey",
+          "public",
+          "\"public\".\"itens_rota\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"itens_rota_dia_rota_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"itens_rota\"\nADD CONSTRAINT \"itens_rota_dia_rota_id_fkey\"\nFOREIGN KEY (\"dia_rota_id\")\nREFERENCES \"public\".\"dias_rota\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"itens_rota_dia_rota_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "itens_rota_dia_rota_id_fkey",
+          "public",
+          "\"public\".\"itens_rota\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.itens_rota.itens_rota_contato_id_fkey",
+    "label": "Add foreign key \"itens_rota_contato_id_fkey\" on \"itens_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "itens_rota_contato_id_fkey",
+        "table": "itens_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"itens_rota_contato_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "itens_rota_contato_id_fkey",
+          "public",
+          "\"public\".\"itens_rota\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"itens_rota_contato_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"itens_rota\"\nADD CONSTRAINT \"itens_rota_contato_id_fkey\"\nFOREIGN KEY (\"contato_id\")\nREFERENCES \"public\".\"contatos\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"itens_rota_contato_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "itens_rota_contato_id_fkey",
+          "public",
+          "\"public\".\"itens_rota\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.auditoria",
+    "label": "Enable row-level security on \"auditoria\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "auditoria"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"auditoria\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "auditoria"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"auditoria\"",
+        "sql": "ALTER TABLE \"public\".\"auditoria\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"auditoria\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "auditoria"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.compras",
+    "label": "Enable row-level security on \"compras\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "compras"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"compras\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "compras"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"compras\"",
+        "sql": "ALTER TABLE \"public\".\"compras\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"compras\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "compras"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.dias_rota",
+    "label": "Enable row-level security on \"dias_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "dias_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"dias_rota\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "dias_rota"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"dias_rota\"",
+        "sql": "ALTER TABLE \"public\".\"dias_rota\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"dias_rota\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "dias_rota"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.fotos",
+    "label": "Enable row-level security on \"fotos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "fotos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"fotos\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "fotos"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"fotos\"",
+        "sql": "ALTER TABLE \"public\".\"fotos\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"fotos\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "fotos"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.itens_rota",
+    "label": "Enable row-level security on \"itens_rota\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "itens_rota"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"itens_rota\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "itens_rota"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"itens_rota\"",
+        "sql": "ALTER TABLE \"public\".\"itens_rota\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"itens_rota\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "itens_rota"
+        ]
+      }
+    ]
+  }
+]

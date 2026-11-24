@@ -1,0 +1,239 @@
+[
+  {
+    "id": "table.futuros_cortes",
+    "label": "Create table \"futuros_cortes\"",
+    "summary": "Creates table \"futuros_cortes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "futuros_cortes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"futuros_cortes\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"futuros_cortes\"",
+        "sql": "CREATE TABLE \"public\".\"futuros_cortes\" (\n  \"comprimento_atual_cm\" int4,\n  \"comprimento_desejado_cm\" int4,\n  \"contato_id\" uuid NOT NULL,\n  \"cor\" text,\n  \"created_at\" timestamptz NOT NULL,\n  \"data_prevista\" date,\n  \"data_proximo_contato\" date NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"natural\" bool,\n  \"observacoes\" text,\n  \"prioridade\" text DEFAULT 'media' NOT NULL,\n  \"quimica\" text,\n  \"status\" text DEFAULT 'acompanhando' NOT NULL,\n  \"textura\" text,\n  \"ultimo_contato_em\" timestamptz,\n  \"updated_at\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"futuros_cortes_prioridade_check_51e8ba68\" CHECK (\"prioridade\" IN ('baixa', 'media', 'alta')),\n  CONSTRAINT \"futuros_cortes_status_check_80816cde\" CHECK (\"status\" IN ('acompanhando', 'agendado', 'convertido', 'descartado'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"futuros_cortes\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.futuros_cortes.futuros_cortes_contato_id_idx_f7fc9452",
+    "label": "Create index \"futuros_cortes_contato_id_idx_f7fc9452\" on \"futuros_cortes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "futuros_cortes_contato_id_idx_f7fc9452",
+        "table": "futuros_cortes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"futuros_cortes_contato_id_idx_f7fc9452\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"futuros_cortes_contato_id_idx_f7fc9452\"",
+        "sql": "CREATE INDEX \"futuros_cortes_contato_id_idx_f7fc9452\" ON \"public\".\"futuros_cortes\" (\"contato_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"futuros_cortes_contato_id_idx_f7fc9452\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes_contato_id_idx_f7fc9452\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.futuros_cortes.futuros_cortes_data_proximo_contato_idx_56e482cd",
+    "label": "Create index \"futuros_cortes_data_proximo_contato_idx_56e482cd\" on \"futuros_cortes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "futuros_cortes_data_proximo_contato_idx_56e482cd",
+        "table": "futuros_cortes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"futuros_cortes_data_proximo_contato_idx_56e482cd\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes_data_proximo_contato_idx_56e482cd\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"futuros_cortes_data_proximo_contato_idx_56e482cd\"",
+        "sql": "CREATE INDEX \"futuros_cortes_data_proximo_contato_idx_56e482cd\" ON \"public\".\"futuros_cortes\" (\"data_proximo_contato\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"futuros_cortes_data_proximo_contato_idx_56e482cd\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes_data_proximo_contato_idx_56e482cd\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.futuros_cortes.futuros_cortes_um_ativo_f9fe83a7",
+    "label": "Create index \"futuros_cortes_um_ativo_f9fe83a7\" on \"futuros_cortes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "futuros_cortes_um_ativo_f9fe83a7",
+        "table": "futuros_cortes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"futuros_cortes_um_ativo_f9fe83a7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes_um_ativo_f9fe83a7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"futuros_cortes_um_ativo_f9fe83a7\"",
+        "sql": "CREATE UNIQUE INDEX \"futuros_cortes_um_ativo_f9fe83a7\" ON \"public\".\"futuros_cortes\" (\"contato_id\") WHERE ((status = ANY (ARRAY['acompanhando'::text, 'agendado'::text])))",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"futuros_cortes_um_ativo_f9fe83a7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"futuros_cortes_um_ativo_f9fe83a7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.futuros_cortes.futuros_cortes_contato_id_fkey",
+    "label": "Add foreign key \"futuros_cortes_contato_id_fkey\" on \"futuros_cortes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "futuros_cortes_contato_id_fkey",
+        "table": "futuros_cortes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"futuros_cortes_contato_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "futuros_cortes_contato_id_fkey",
+          "public",
+          "\"public\".\"futuros_cortes\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"futuros_cortes_contato_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"futuros_cortes\"\nADD CONSTRAINT \"futuros_cortes_contato_id_fkey\"\nFOREIGN KEY (\"contato_id\")\nREFERENCES \"public\".\"contatos\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"futuros_cortes_contato_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "futuros_cortes_contato_id_fkey",
+          "public",
+          "\"public\".\"futuros_cortes\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rowLevelSecurity.public.futuros_cortes",
+    "label": "Enable row-level security on \"futuros_cortes\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "rowLevelSecurity",
+        "name": "futuros_cortes"
+      }
+    },
+    "precheck": [
+      {
+        "description": "check RLS is not already enabled on \"futuros_cortes\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND NOT (\"c\".\"relrowsecurity\"))) AS \"result\"",
+        "params": [
+          "public",
+          "futuros_cortes"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "enable row-level security on \"futuros_cortes\"",
+        "sql": "ALTER TABLE \"public\".\"futuros_cortes\" ENABLE ROW LEVEL SECURITY"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify row-level security is enabled on \"futuros_cortes\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"c\".\"relrowsecurity\")) AS \"result\"",
+        "params": [
+          "public",
+          "futuros_cortes"
+        ]
+      }
+    ]
+  }
+]

@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'75e96bf614b7660eb8b37c8b33bcac4739b65928ea9f0e106bfaf724abc2de92'>;
+  StorageHashBase<'bd60ac491bcc221e19218b34eb9bff99adf86ace0347ed2a5ddeab375fc6c3e8'>;
 export type ExecutionHash =
-  ExecutionHashBase<'8e188037a214f8797b49d5b506ce5dcc7dac2c846093ca2b3af0d8ab1b7076fa'>;
+  ExecutionHashBase<'21088b6ce934ce6ae4cbabe55534bdee95c48942e2633d8f63540f540758cef6'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -339,6 +339,24 @@ export type FieldOutputTypes = {
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly url: CodecTypes['pg/text@1']['output'];
     };
+    readonly FuturoCorte: {
+      readonly comprimentoAtualCm: CodecTypes['pg/int4@1']['output'] | null;
+      readonly comprimentoDesejadoCm: CodecTypes['pg/int4@1']['output'] | null;
+      readonly contatoId: CodecTypes['pg/uuid@1']['output'];
+      readonly cor: CodecTypes['pg/text@1']['output'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly dataPrevista: CodecTypes['pg/date-temporal@1']['output'] | null;
+      readonly dataProximoContato: CodecTypes['pg/date-temporal@1']['output'];
+      readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly natural: CodecTypes['pg/bool@1']['output'] | null;
+      readonly observacoes: CodecTypes['pg/text@1']['output'] | null;
+      readonly prioridade: 'baixa' | 'media' | 'alta';
+      readonly quimica: CodecTypes['pg/text@1']['output'] | null;
+      readonly status: 'acompanhando' | 'agendado' | 'convertido' | 'descartado';
+      readonly textura: CodecTypes['pg/text@1']['output'] | null;
+      readonly ultimoContatoEm: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
     readonly ItemRota: {
       readonly concluido: CodecTypes['pg/bool@1']['output'];
       readonly contatoId: CodecTypes['pg/uuid@1']['output'] | null;
@@ -444,6 +462,24 @@ export type FieldInputTypes = {
       readonly tipo: CodecTypes['pg/text@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly url: CodecTypes['pg/text@1']['input'];
+    };
+    readonly FuturoCorte: {
+      readonly comprimentoAtualCm: CodecTypes['pg/int4@1']['input'] | null;
+      readonly comprimentoDesejadoCm: CodecTypes['pg/int4@1']['input'] | null;
+      readonly contatoId: CodecTypes['pg/uuid@1']['input'];
+      readonly cor: CodecTypes['pg/text@1']['input'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly dataPrevista: CodecTypes['pg/date-temporal@1']['input'] | null;
+      readonly dataProximoContato: CodecTypes['pg/date-temporal@1']['input'];
+      readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly natural: CodecTypes['pg/bool@1']['input'] | null;
+      readonly observacoes: CodecTypes['pg/text@1']['input'] | null;
+      readonly prioridade: 'baixa' | 'media' | 'alta';
+      readonly quimica: CodecTypes['pg/text@1']['input'] | null;
+      readonly status: 'acompanhando' | 'agendado' | 'convertido' | 'descartado';
+      readonly textura: CodecTypes['pg/text@1']['input'] | null;
+      readonly ultimoContatoEm: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly ItemRota: {
       readonly concluido: CodecTypes['pg/bool@1']['input'];
@@ -551,6 +587,24 @@ export type StorageColumnTypes = {
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly url: CodecTypes['pg/text@1']['output'];
     };
+    readonly futuros_cortes: {
+      readonly comprimento_atual_cm: CodecTypes['pg/int4@1']['output'] | null;
+      readonly comprimento_desejado_cm: CodecTypes['pg/int4@1']['output'] | null;
+      readonly contato_id: CodecTypes['pg/uuid@1']['output'];
+      readonly cor: CodecTypes['pg/text@1']['output'] | null;
+      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly data_prevista: CodecTypes['pg/date-temporal@1']['output'] | null;
+      readonly data_proximo_contato: CodecTypes['pg/date-temporal@1']['output'];
+      readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly natural: CodecTypes['pg/bool@1']['output'] | null;
+      readonly observacoes: CodecTypes['pg/text@1']['output'] | null;
+      readonly prioridade: 'baixa' | 'media' | 'alta';
+      readonly quimica: CodecTypes['pg/text@1']['output'] | null;
+      readonly status: 'acompanhando' | 'agendado' | 'convertido' | 'descartado';
+      readonly textura: CodecTypes['pg/text@1']['output'] | null;
+      readonly ultimo_contato_em: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
     readonly itens_rota: {
       readonly concluido: CodecTypes['pg/bool@1']['output'];
       readonly contato_id: CodecTypes['pg/uuid@1']['output'] | null;
@@ -657,6 +711,24 @@ export type StorageColumnInputTypes = {
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly url: CodecTypes['pg/text@1']['input'];
     };
+    readonly futuros_cortes: {
+      readonly comprimento_atual_cm: CodecTypes['pg/int4@1']['input'] | null;
+      readonly comprimento_desejado_cm: CodecTypes['pg/int4@1']['input'] | null;
+      readonly contato_id: CodecTypes['pg/uuid@1']['input'];
+      readonly cor: CodecTypes['pg/text@1']['input'] | null;
+      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly data_prevista: CodecTypes['pg/date-temporal@1']['input'] | null;
+      readonly data_proximo_contato: CodecTypes['pg/date-temporal@1']['input'];
+      readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly natural: CodecTypes['pg/bool@1']['input'] | null;
+      readonly observacoes: CodecTypes['pg/text@1']['input'] | null;
+      readonly prioridade: 'baixa' | 'media' | 'alta';
+      readonly quimica: CodecTypes['pg/text@1']['input'] | null;
+      readonly status: 'acompanhando' | 'agendado' | 'convertido' | 'descartado';
+      readonly textura: CodecTypes['pg/text@1']['input'] | null;
+      readonly ultimo_contato_em: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
+      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
     readonly itens_rota: {
       readonly concluido: CodecTypes['pg/bool@1']['input'];
       readonly contato_id: CodecTypes['pg/uuid@1']['input'] | null;
@@ -746,8 +818,9 @@ export namespace Models {
     cidade: public_Cidade;
     compras: public_Compra[];
     fotos: public_Foto[];
+    futurosCortes: public_FuturoCorte[];
     itensRota: public_ItemRota[];
-    readonly [RelationKeys]?: 'cidade' | 'compras' | 'fotos' | 'itensRota';
+    readonly [RelationKeys]?: 'cidade' | 'compras' | 'fotos' | 'futurosCortes' | 'itensRota';
   };
   export type public_DiaRota = {
     createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
@@ -782,6 +855,26 @@ export namespace Models {
     contato: public_Contato;
     readonly [RelationKeys]?: 'compra' | 'contato';
   };
+  export type public_FuturoCorte = {
+    comprimentoAtualCm: CodecTypes['pg/int4@1']['output'] | null;
+    comprimentoDesejadoCm: CodecTypes['pg/int4@1']['output'] | null;
+    contatoId: CodecTypes['pg/uuid@1']['output'];
+    cor: CodecTypes['pg/text@1']['output'] | null;
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    dataPrevista: CodecTypes['pg/date-temporal@1']['output'] | null;
+    dataProximoContato: CodecTypes['pg/date-temporal@1']['output'];
+    id: CodecTypes['pg/uuid@1']['output'];
+    natural: CodecTypes['pg/bool@1']['output'] | null;
+    observacoes: CodecTypes['pg/text@1']['output'] | null;
+    prioridade: 'baixa' | 'media' | 'alta';
+    quimica: CodecTypes['pg/text@1']['output'] | null;
+    status: 'acompanhando' | 'agendado' | 'convertido' | 'descartado';
+    textura: CodecTypes['pg/text@1']['output'] | null;
+    ultimoContatoEm: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    contato: public_Contato;
+    readonly [RelationKeys]?: 'contato';
+  };
   export type public_ItemRota = {
     concluido: CodecTypes['pg/bool@1']['output'];
     contatoId: CodecTypes['pg/uuid@1']['output'] | null;
@@ -809,6 +902,7 @@ export declare const models: {
     Contato: Models.public_Contato;
     DiaRota: Models.public_DiaRota;
     Foto: Models.public_Foto;
+    FuturoCorte: Models.public_FuturoCorte;
     ItemRota: Models.public_ItemRota;
   };
 };
@@ -1439,6 +1533,135 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly futuros_cortes: {
+              columns: {
+                readonly comprimento_atual_cm: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                };
+                readonly comprimento_desejado_cm: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                };
+                readonly contato_id: {
+                  readonly nativeType: 'uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: false;
+                };
+                readonly cor: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly created_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                };
+                readonly data_prevista: {
+                  readonly nativeType: 'date';
+                  readonly codecId: 'pg/date-temporal@1';
+                  readonly nullable: true;
+                };
+                readonly data_proximo_contato: {
+                  readonly nativeType: 'date';
+                  readonly codecId: 'pg/date-temporal@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: false;
+                };
+                readonly natural: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: true;
+                };
+                readonly observacoes: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly prioridade: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'media'>;
+                  };
+                };
+                readonly quimica: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'acompanhando'>;
+                  };
+                };
+                readonly textura: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly ultimo_contato_em: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: true;
+                };
+                readonly updated_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'futuros_cortes_contato_id_idx_f7fc9452';
+                  readonly prefix: 'futuros_cortes_contato_id_idx';
+                  readonly columns: readonly ['contato_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'futuros_cortes_data_proximo_contato_idx_56e482cd';
+                  readonly prefix: 'futuros_cortes_data_proximo_contato_idx';
+                  readonly columns: readonly ['data_proximo_contato'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'futuros_cortes_um_ativo_f9fe83a7';
+                  readonly prefix: 'futuros_cortes_um_ativo';
+                  readonly columns: readonly ['contato_id'];
+                  readonly where: "(status = ANY (ARRAY['acompanhando'::text, 'agendado'::text]))";
+                  readonly unique: true;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'futuros_cortes';
+                    readonly columns: readonly ['contato_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'contatos';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly itens_rota: {
               columns: {
                 readonly concluido: {
@@ -1550,9 +1773,17 @@ type ContractBase = Omit<
             };
           };
           readonly valueSet: {
+            readonly PrioridadeFuturoCorte: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['baixa', 'media', 'alta'];
+            };
             readonly ResultadoItemRota: {
               readonly kind: 'valueSet';
               readonly values: readonly ['comprou', 'nao_comprou', 'nao_atendeu', 'remarcar'];
+            };
+            readonly StatusFuturoCorte: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['acompanhando', 'agendado', 'convertido', 'descartado'];
             };
             readonly TipoItemRota: {
               readonly kind: 'valueSet';
@@ -1575,6 +1806,10 @@ type ContractBase = Omit<
     readonly contatos: { readonly namespace: 'public' & NamespaceId; readonly model: 'Contato' };
     readonly dias_rota: { readonly namespace: 'public' & NamespaceId; readonly model: 'DiaRota' };
     readonly fotos: { readonly namespace: 'public' & NamespaceId; readonly model: 'Foto' };
+    readonly futuros_cortes: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'FuturoCorte';
+    };
     readonly itens_rota: { readonly namespace: 'public' & NamespaceId; readonly model: 'ItemRota' };
   };
   readonly domain: {
@@ -1967,6 +2202,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['contatoId'];
                 };
               };
+              readonly futurosCortes: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'FuturoCorte';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['contatoId'];
+                };
+              };
               readonly itensRota: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -2210,6 +2456,119 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly FuturoCorte: {
+            readonly fields: {
+              readonly comprimentoAtualCm: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly comprimentoDesejadoCm: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly contatoId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
+              readonly cor: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly dataPrevista: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-temporal@1' };
+              };
+              readonly dataProximoContato: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/date-temporal@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
+              };
+              readonly natural: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly observacoes: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly prioridade: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly quimica: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly textura: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly ultimoContatoEm: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly contato: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Contato';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['contatoId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'futuros_cortes';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly comprimentoAtualCm: { readonly column: 'comprimento_atual_cm' };
+                readonly comprimentoDesejadoCm: { readonly column: 'comprimento_desejado_cm' };
+                readonly contatoId: { readonly column: 'contato_id' };
+                readonly cor: { readonly column: 'cor' };
+                readonly createdAt: { readonly column: 'created_at' };
+                readonly dataPrevista: { readonly column: 'data_prevista' };
+                readonly dataProximoContato: { readonly column: 'data_proximo_contato' };
+                readonly id: { readonly column: 'id' };
+                readonly natural: { readonly column: 'natural' };
+                readonly observacoes: { readonly column: 'observacoes' };
+                readonly prioridade: { readonly column: 'prioridade' };
+                readonly quimica: { readonly column: 'quimica' };
+                readonly status: { readonly column: 'status' };
+                readonly textura: { readonly column: 'textura' };
+                readonly ultimoContatoEm: { readonly column: 'ultimo_contato_em' };
+                readonly updatedAt: { readonly column: 'updated_at' };
+              };
+            };
+          };
           readonly ItemRota: {
             readonly fields: {
               readonly concluido: {
@@ -2320,6 +2679,14 @@ type ContractBase = Omit<
           };
         };
         readonly enum: {
+          readonly PrioridadeFuturoCorte: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'Baixa'; readonly value: 'baixa' },
+              { readonly name: 'Media'; readonly value: 'media' },
+              { readonly name: 'Alta'; readonly value: 'alta' },
+            ];
+          };
           readonly ResultadoItemRota: {
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
@@ -2327,6 +2694,15 @@ type ContractBase = Omit<
               { readonly name: 'NaoComprou'; readonly value: 'nao_comprou' },
               { readonly name: 'NaoAtendeu'; readonly value: 'nao_atendeu' },
               { readonly name: 'Remarcar'; readonly value: 'remarcar' },
+            ];
+          };
+          readonly StatusFuturoCorte: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'Acompanhando'; readonly value: 'acompanhando' },
+              { readonly name: 'Agendado'; readonly value: 'agendado' },
+              { readonly name: 'Convertido'; readonly value: 'convertido' },
+              { readonly name: 'Descartado'; readonly value: 'descartado' },
             ];
           };
           readonly TipoItemRota: {
@@ -2485,6 +2861,31 @@ type ContractBase = Omit<
           readonly onUpdate: { readonly id: 'instantNow'; readonly kind: 'generator' };
           readonly ref: {
             readonly entry: 'fotos';
+            readonly field: 'updated_at';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'futuros_cortes';
+            readonly field: 'created_at';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'uuidv4'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'futuros_cortes';
+            readonly field: 'id';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
+          readonly onUpdate: { readonly id: 'instantNow'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'futuros_cortes';
             readonly field: 'updated_at';
             readonly namespace: 'public';
           };

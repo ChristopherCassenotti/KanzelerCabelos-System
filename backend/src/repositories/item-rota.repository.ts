@@ -1,4 +1,5 @@
 import { db } from "../prisma/db";
+import { STATUS_FUTURO_CORTE_ATIVOS } from "../services/futuro-corte.rules";
 
 interface SalvarVisitaInput {
   diaRotaId: string;
@@ -7,6 +8,7 @@ interface SalvarVisitaInput {
   hora?: Temporal.PlainTime;
   alterarStatusParaAvaliacao: boolean;
   dataAvaliacao?: Temporal.PlainDate;
+  futuroCorteId?: string;
 }
 
 interface CriarTarefaInput {
@@ -90,6 +92,28 @@ if (
         : {}),
     });
 }
+
+      if (data.futuroCorteId !== undefined) {
+        const futuroCorte =
+          await tx.orm.public.FuturoCorte
+            .where({
+              id: data.futuroCorteId,
+            })
+            .where((item) =>
+              item.status.in([
+                ...STATUS_FUTURO_CORTE_ATIVOS,
+              ]),
+            )
+            .update({
+              status: "agendado",
+            });
+
+        if (!futuroCorte) {
+          throw new Error(
+            "Futuro corte encerrado durante o agendamento",
+          );
+        }
+      }
 
       return visita;
     });

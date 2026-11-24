@@ -3,6 +3,10 @@ import type {
   DadosCompraModel,
   RegistrarCompraModel,
 } from "../models/compra.model";
+import {
+  compraConverteFuturoCorte,
+  STATUS_FUTURO_CORTE_ATIVOS,
+} from "../services/futuro-corte.rules";
 
 interface CaracteristicasCabelo {
   comprimentoCm: number | null;
@@ -80,6 +84,34 @@ export class CompraRepository {
         .update({
           status: "comprado",
         });
+
+      const futuroCorte =
+        await tx.orm.public.FuturoCorte
+          .where({
+            contatoId: data.contatoId,
+          })
+          .where((item) =>
+            item.status.in([
+              ...STATUS_FUTURO_CORTE_ATIVOS,
+            ]),
+          )
+          .first();
+
+      if (
+        futuroCorte &&
+        compraConverteFuturoCorte(
+          compra.dataCorte,
+          futuroCorte.createdAt,
+        )
+      ) {
+        await tx.orm.public.FuturoCorte
+          .where({
+            id: futuroCorte.id,
+          })
+          .update({
+            status: "convertido",
+          });
+      }
 
       return compra;
     });
