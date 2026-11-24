@@ -65,6 +65,12 @@ export interface DashboardSummary {
   rotas: {
     proximas30Dias: DashboardRoute[];
   };
+  futurosCortes: DashboardFutureCutsSummary;
+}
+
+export interface DashboardFutureCutsSummary {
+  totalAtivos: number;
+  proximos30Dias: number;
 }
 
 export interface ReadyRepurchase {

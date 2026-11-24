@@ -3,6 +3,7 @@ import {
   AlertCircle,
   Bell,
   CalendarDays,
+  CalendarHeart,
   ChevronRight,
   CircleDollarSign,
   RefreshCw,
@@ -19,6 +20,8 @@ import {
   getReadyRepurchases,
   getRoutesBetween,
 } from "../services/dashboard/dashboard.service";
+import { listFutureCuts } from "../services/future-cuts/future-cuts.service";
+import { futureCutBadgeClass, futureCutHair, futureCutLabel } from "../utils/future-cut";
 import type { DashboardRoute, DashboardRouteItem, NumericLike } from "../types/dashboard";
 
 const SAO_PAULO_TIME_ZONE = "America/Sao_Paulo";
@@ -152,8 +155,8 @@ function extractUpcomingVisits(routes: DashboardRoute[]) {
 function PanelSkeleton() {
   return (
     <div className="animate-pulse space-y-4" aria-label="Carregando painel">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        {Array.from({ length: 5 }).map((_, index) => (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className="h-[142px] rounded-[var(--kanzler-radius)] border border-[var(--kanzler-line)] bg-white" />
         ))}
       </div>
@@ -196,7 +199,12 @@ export function DashboardPage() {
     queryFn: () => getRoutesBetween(today, inSevenDays),
   });
 
-  const queries = [summaryQuery, repurchasesQuery, indicatorsQuery, purchasesQuery, routesQuery];
+  const futureCutsQuery = useQuery({
+    queryKey: ["dashboard", "future-cuts", "proximos_30_dias"],
+    queryFn: () => listFutureCuts({ situacao: "proximos_30_dias" }),
+  });
+
+  const queries = [summaryQuery, repurchasesQuery, indicatorsQuery, purchasesQuery, routesQuery, futureCutsQuery];
   const isInitialLoading = queries.some((query) => query.isPending);
   const hasError = queries.some((query) => query.isError);
   const isRefreshing = queries.some((query) => query.isFetching);
@@ -207,6 +215,7 @@ export function DashboardPage() {
   const purchases = purchasesQuery.data;
   const upcomingVisits = useMemo(() => extractUpcomingVisits(routesQuery.data ?? []), [routesQuery.data]);
   const topRepurchases = repurchases.slice(0, 5);
+  const topFutureCuts = (futureCutsQuery.data ?? []).slice(0, 6);
   const topVisits = upcomingVisits.slice(0, 6);
   const purchasesByCity = purchases?.porCidade ?? [];
   const maxCityValue = Math.max(0, ...purchasesByCity.map((item) => toNumber(item.valor)));
@@ -239,7 +248,7 @@ export function DashboardPage() {
         </div>
       )}
 
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <DashboardCard
           icon={UsersRound}
           label="Contatos na base"
@@ -274,6 +283,13 @@ export function DashboardPage() {
           value={String(repurchases.length)}
           footnote="vencidas ou vencendo em até 30 dias"
           tone="amber"
+        />
+        <DashboardCard
+          icon={CalendarHeart}
+          label="Futuros cortes"
+          value={String(summary?.futurosCortes?.totalAtivos ?? 0)}
+          footnote={`${summary?.futurosCortes?.proximos30Dias ?? 0} para contatar nos próximos 30 dias`}
+          tone="blue"
         />
       </section>
 
@@ -401,6 +417,49 @@ export function DashboardPage() {
             </div>
           )}
         </article>
+      </section>
+
+      <section className="overflow-hidden rounded-[var(--kanzler-radius)] border border-[var(--kanzler-line)] bg-white shadow-[var(--kanzler-shadow)]">
+        <div className="flex items-center justify-between gap-3 border-b border-[var(--kanzler-line)] px-4 py-3.5 sm:px-[18px]">
+          <h2 className="kanzler-display text-[14.5px] font-semibold uppercase text-[var(--kanzler-ink)]">Contatar em breve</h2>
+          <button
+            type="button"
+            onClick={() => navigate("/contatos?aba=futuros")}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--kanzler-line)] px-2.5 py-1.5 text-[12px] font-semibold text-[var(--kanzler-ink)] transition hover:bg-[var(--kanzler-canvas)]"
+          >
+            Ver futuros cortes
+            <ChevronRight size={14} />
+          </button>
+        </div>
+
+        {topFutureCuts.length === 0 ? (
+          <div className="px-5 py-14 text-center text-sm text-[var(--kanzler-muted)]">Nenhum contato previsto para os próximos 30 dias.</div>
+        ) : (
+          <div className="divide-y divide-[var(--kanzler-line)] px-2 py-1 sm:px-3">
+            {topFutureCuts.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => navigate(`/contatos?contato=${item.contatoId}`)}
+                className="flex w-full items-center gap-3 rounded-[10px] px-2 py-3 text-left transition hover:bg-[var(--kanzler-canvas)]"
+              >
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--kanzler-blue-soft)] text-[11px] font-bold text-[var(--kanzler-blue)]">
+                  {initials(item.contato.nome)}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13.5px] font-semibold text-[var(--kanzler-ink)]">{item.contato.nome}</span>
+                  <span className="block truncate text-[12px] text-[var(--kanzler-muted)]">
+                    {[item.contato.cidade.nome, futureCutHair(item)].filter(Boolean).join(" · ")}
+                  </span>
+                </span>
+                <span className="shrink-0 text-right">
+                  <span className="block text-[12px] font-semibold">{formatShortDate(item.dataProximoContato)}</span>
+                  <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10.5px] font-semibold ${futureCutBadgeClass(item)}`}>{futureCutLabel(item)}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="overflow-hidden rounded-[var(--kanzler-radius)] border border-[var(--kanzler-line)] bg-white shadow-[var(--kanzler-shadow)]">
