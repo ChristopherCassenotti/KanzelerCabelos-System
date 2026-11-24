@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import { ContactDrawer } from "../components/contacts/ContactDrawer";
 import { ContactFormModal } from "../components/contacts/ContactFormModal";
 import { ContactStatusBadge } from "../components/contacts/ContactStatusBadge";
+import { FutureCutsTab } from "../components/future-cuts/FutureCutsTab";
 import { PurchaseFormModal } from "../components/purchases/PurchaseFormModal";
 import { ConfirmDialog } from "../components/contacts/ConfirmDialog";
 import type { ContactFormValues, ContactWithPurchaseFormValues } from "../schemas/contact.schema";
@@ -41,6 +42,23 @@ import {
   repurchaseLabel,
 } from "../utils/contact";
 import { formValuesToCreateWithPurchasePayload, formValuesToUpdatePayload } from "../utils/contact-form";
+
+const statusTabs: Array<{ key: string; label: string }> = [
+  { key: "", label: "Todos" },
+  { key: "lead", label: "Leads" },
+  { key: "avaliacao_agendada", label: "Avaliações" },
+  { key: "comprado", label: "Comprados" },
+  { key: "perdido", label: "Perdidos" },
+];
+
+function tabClass(active: boolean) {
+  return [
+    "shrink-0 border-b-2 px-3 py-2.5 text-[13px] font-semibold transition",
+    active
+      ? "border-[var(--kanzler-blue)] text-[var(--kanzler-blue)]"
+      : "border-transparent text-[var(--kanzler-muted)] hover:text-[var(--kanzler-ink)]",
+  ].join(" ");
+}
 
 function numberToBRL(value: number | null) {
   if (value === null) return "-";
@@ -73,6 +91,7 @@ export function ContactsPage() {
   const selectedId = searchParams.get("contato");
   const isCreateOpen = searchParams.get("novo") === "1";
   const isPurchaseOpen = Boolean(selectedId) && searchParams.get("compra") === "1";
+  const isFutureCutsTab = searchParams.get("aba") === "futuros";
   const purchaseVisitId = searchParams.get("visita");
 
   const [editingContact, setEditingContact] = useState<ContactDetail | null>(null);
@@ -219,6 +238,17 @@ export function ContactsPage() {
     setActionError(null);
   }
 
+  function selectTab(tab: string) {
+    const next = new URLSearchParams(searchParams);
+    if (tab === "futuros") {
+      next.set("aba", "futuros");
+    } else {
+      next.delete("aba");
+      setStatusFilter(tab);
+    }
+    setSearchParams(next, { replace: true });
+  }
+
   function closeContact() {
     const next = new URLSearchParams(searchParams);
     next.delete("contato");
@@ -296,18 +326,28 @@ export function ContactsPage() {
         </div>
       )}
 
+      <div className="flex overflow-x-auto border-b border-[var(--kanzler-line)]" role="tablist">
+        {statusTabs.map(({ key, label }) => {
+          const active = !isFutureCutsTab && statusFilter === key;
+          return (
+            <button key={label} type="button" role="tab" aria-selected={active} onClick={() => selectTab(key)} className={tabClass(active)}>
+              {label}
+            </button>
+          );
+        })}
+        <button type="button" role="tab" aria-selected={isFutureCutsTab} onClick={() => selectTab("futuros")} className={tabClass(isFutureCutsTab)}>
+          Futuros cortes
+        </button>
+      </div>
+
+      {isFutureCutsTab && <FutureCutsTab cities={cities} onOpenContact={openContact} />}
+
+      {!isFutureCutsTab && (
+      <>
       <div className="flex flex-wrap items-center gap-2.5">
         <select value={cityFilter} onChange={(event) => setCityFilter(event.target.value)} className="rounded-[10px] border border-[var(--kanzler-line)] bg-white px-3 py-2.5 text-[13px] font-medium outline-none focus:border-[var(--kanzler-blue)]">
           <option value="">Todas as cidades</option>
           {cities.map((city) => <option key={city.id} value={city.id}>{city.nome}</option>)}
-        </select>
-
-        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="rounded-[10px] border border-[var(--kanzler-line)] bg-white px-3 py-2.5 text-[13px] font-medium outline-none focus:border-[var(--kanzler-blue)]">
-          <option value="">Todos os status</option>
-          <option value="lead">Lead</option>
-          <option value="avaliacao_agendada">Avaliação agendada</option>
-          <option value="comprado">Comprado</option>
-          <option value="perdido">Perdido</option>
         </select>
 
         <select value={originFilter} onChange={(event) => setOriginFilter(event.target.value)} className="rounded-[10px] border border-[var(--kanzler-line)] bg-white px-3 py-2.5 text-[13px] font-medium outline-none focus:border-[var(--kanzler-blue)]">
@@ -448,6 +488,8 @@ export function ContactsPage() {
           </>
         )}
       </section>
+      </>
+      )}
 
       <ContactFormModal
         open={isCreateOpen}
