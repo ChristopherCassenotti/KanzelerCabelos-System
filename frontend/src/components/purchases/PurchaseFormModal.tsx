@@ -12,6 +12,7 @@ import {
   createPurchaseFormValues,
   purchaseFormToPayload,
 } from "../../utils/purchase";
+import { chemicals, colors, textures } from "../../utils/hair-options";
 
 interface PurchaseFormModalProps {
   open: boolean;
@@ -22,9 +23,6 @@ interface PurchaseFormModalProps {
   onSuccess?: (purchase: ContactPurchase) => void | Promise<void>;
 }
 
-const colors = ["Preto", "Castanho escuro", "Castanho", "Castanho claro", "Loiro", "Ruivo", "Grisalho"];
-const textures = ["Liso", "Ondulado", "Cacheado", "Crespo"];
-const chemicals = ["Nenhuma", "Tintura", "Luzes/mechas", "Progressiva", "Alisamento"];
 
 function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (

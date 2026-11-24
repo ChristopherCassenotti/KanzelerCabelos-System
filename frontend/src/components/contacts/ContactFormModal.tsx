@@ -11,6 +11,7 @@ import type { City, ContactDetail } from "../../types/contact";
 import { formatCurrency } from "../../utils/contact";
 import { contactToFormValues, createEmptyContactWithPurchaseFormValues } from "../../utils/contact-form";
 import { calculatePurchasePricePerGram } from "../../utils/purchase";
+import { chemicals, colors, textures } from "../../utils/hair-options";
 
 interface ContactFormModalProps {
   open: boolean;
@@ -25,9 +26,6 @@ interface ContactFormModalProps {
 }
 
 const origins = ["Anúncio Meta", "Indicação", "Perfil Instagram", "Van na rua", "WhatsApp direto", "Outro"];
-const colors = ["Preto", "Castanho escuro", "Castanho", "Castanho claro", "Loiro", "Ruivo", "Grisalho"];
-const textures = ["Liso", "Ondulado", "Cacheado", "Crespo"];
-const chemicals = ["Nenhuma", "Tintura", "Luzes/mechas", "Progressiva", "Alisamento"];
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (

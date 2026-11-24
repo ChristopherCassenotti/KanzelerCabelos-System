@@ -21,6 +21,7 @@ import {
   statusLabels,
 } from "../../utils/contact";
 import { ContactStatusBadge } from "./ContactStatusBadge";
+import { FutureCutSection } from "../future-cuts/FutureCutSection";
 import { ContactPhotosSection } from "./ContactPhotosSection";
 
 interface ContactDrawerProps {
@@ -174,6 +175,8 @@ export function ContactDrawer({
                   <Detail label="Comprimento" value={contact.comprimentoCm === null ? "-" : `${contact.comprimentoCm} cm`} />
                 </dl>
               </section>
+
+              <FutureCutSection key={contact.id} contact={contact} />
 
               <section className="border-b border-[var(--kanzler-line)] py-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">

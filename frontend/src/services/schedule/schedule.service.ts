@@ -1,4 +1,5 @@
 import { http } from "../api/http";
+import type { City } from "../../types/contact";
 import type {
   AddVisitPayload,
   CompleteItemPayload,
@@ -58,6 +59,26 @@ export async function getRoute(routeId: string) {
 export async function createRoute(payload: CreateRoutePayload) {
   const response = await http.post<RouteDay>("/rotas", payload);
   return response.data;
+}
+
+/** Rota do dia, criada com a cidade de partida padrão se ainda não existir. */
+export async function ensureRouteForDate(date: string, cities: City[]) {
+  const existing = (await listRoutes(date, date)).find((route) => route.data === date);
+  if (existing) return existing;
+
+  const defaultCity = cities.find((city) => city.nome === "União da Vitória") ?? cities[0];
+  if (!defaultCity) throw new Error("Nenhuma cidade cadastrada para criar a rota.");
+
+  return createRoute({
+    data: date,
+    partidaCidadeId: defaultCity.id,
+    horaSaida: "08:00",
+    minutosPorVisita: 40,
+    custoCombustivel: "0.00",
+    custoAlimentacao: "0.00",
+    custoHospedagem: "0.00",
+    custoOutros: "0.00",
+  });
 }
 
 export async function updateRoute(routeId: string, payload: UpdateRoutePayload) {
