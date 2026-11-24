@@ -18,6 +18,7 @@ import { RouteMapCard } from "../components/schedule/RouteMapCard";
 import { RouteSettingsCard } from "../components/schedule/RouteSettingsCard";
 import { VisitResultDialog } from "../components/schedule/VisitResultDialog";
 import { getContact, listCities } from "../services/contacts/contacts.service";
+import { scheduleFutureCut } from "../services/future-cuts/future-cuts.service";
 import {
   addVisit,
   calculateRouteTimes,
@@ -254,7 +255,12 @@ export function AgendaPage() {
     try {
       await withBusy(`add:${contactId}`, async () => {
         const targetRoute = await ensureRouteForDate(date);
-        await addVisit(targetRoute.id, { contatoId: contactId });
+        const futureCut = candidates.find((candidate) => candidate.id === contactId)?.futuroCorte;
+        if (futureCut) {
+          await scheduleFutureCut(futureCut.id, { diaRotaId: targetRoute.id });
+        } else {
+          await addVisit(targetRoute.id, { contatoId: contactId });
+        }
         await invalidateAgenda();
       }, date === selectedDate ? "Cliente adicionada à rota." : "Cliente movida para o dia selecionado.");
       if (date !== selectedDate) selectDate(date);

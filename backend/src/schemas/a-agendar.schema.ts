@@ -8,6 +8,7 @@ export const aAgendarQuerySchema = z.object({
       "lead",
       "avaliacao",
       "recompra",
+      "futuro",
     ])
     .optional(),
 });

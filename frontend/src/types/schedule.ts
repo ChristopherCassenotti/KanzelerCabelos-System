@@ -1,6 +1,7 @@
 import type { City, ContactRepurchase, ContactStatus } from "./contact";
+import type { FutureCut } from "./future-cut";
 
-export type ScheduleCandidateType = "lead" | "avaliacao" | "recompra";
+export type ScheduleCandidateType = "lead" | "avaliacao" | "recompra" | "futuro";
 export type RouteItemType = "visita" | "tarefa";
 export type VisitResult = "comprou" | "nao_comprou" | "nao_atendeu" | "remarcar";
 
@@ -20,12 +21,14 @@ export interface ScheduleCandidateContact {
 export interface ScheduleCandidate extends ScheduleCandidateContact {
   tipoAgendamento: ScheduleCandidateType;
   recompra: ContactRepurchase | null;
+  futuroCorte?: FutureCut | null;
 }
 
 export interface ScheduleCandidateNested {
   contato: ScheduleCandidateContact;
   tipoAgendamento: ScheduleCandidateType;
   recompra: ContactRepurchase | null;
+  futuroCorte?: FutureCut | null;
 }
 
 export type ScheduleCandidateApi = ScheduleCandidate | ScheduleCandidateNested;
@@ -44,6 +47,7 @@ export interface ScheduleSummary {
     lead: number;
     avaliacao: number;
     recompra: number;
+    futuro?: number;
   };
   cidades: ScheduleSummaryCity[];
 }

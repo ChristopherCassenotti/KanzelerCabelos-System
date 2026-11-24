@@ -1,6 +1,7 @@
 import { ContatoRepository } from "../repositories/contato.repository";
 import { ItemRotaRepository } from "../repositories/item-rota.repository";
 import { RecompraService } from "./recompra.service";
+import { FuturoCorteService } from "./futuro-corte.service";
 import type { AAgendarQuery } from "../schemas/a-agendar.schema";
 
 export class AAgendarService {
@@ -13,6 +14,9 @@ export class AAgendarService {
 
     private readonly recompraService =
       new RecompraService(),
+
+    private readonly futuroCorteService =
+      new FuturoCorteService(),
   ) {}
 
     async listar(
@@ -21,7 +25,12 @@ export class AAgendarService {
       ),
       filtros: AAgendarQuery = {},
     ) {
-    const [contatos, visitas, recompras] =
+    const [
+      contatos,
+      visitas,
+      recompras,
+      futurosCortes,
+    ] =
       await Promise.all([
         this.contatoRepository
           .findAtivosParaAgendar(),
@@ -31,6 +40,9 @@ export class AAgendarService {
 
         this.recompraService
           .listarProntas(hoje),
+
+        this.futuroCorteService
+          .listar({}, hoje),
       ]);
 
     const contatosComVisitaFutura =
@@ -61,6 +73,15 @@ export class AAgendarService {
       ]),
     );
 
+    const futuroCortePorContato = new Map(
+      futurosCortes.map(
+        ({ contato: _contato, ...futuroCorte }) => [
+          futuroCorte.contatoId,
+          futuroCorte,
+        ],
+      ),
+    );
+
     const resultado = contatos
   .filter((contato) => {
     if (
@@ -71,8 +92,23 @@ export class AAgendarService {
       return false;
     }
 
-    if (contato.status === "lead") {
+    if (contato.status === "perdido") {
+      return false;
+    }
+
+    const futuroCorte =
+      futuroCortePorContato.get(
+        contato.id,
+      );
+
+    if (futuroCorte?.prontoParaContato) {
       return true;
+    }
+
+    // Lead que só precisa de contato mais à frente fica fora da fila.
+    if (contato.status === "lead") {
+      return futuroCorte?.status !==
+        "acompanhando";
     }
 
     if (
@@ -98,11 +134,22 @@ export class AAgendarService {
         contato.id,
       );
 
+    const ativo =
+      futuroCortePorContato.get(
+        contato.id,
+      );
+
+    const futuroCorte =
+      ativo?.prontoParaContato
+        ? ativo
+        : null;
+
     return {
       ...contato,
 
-      tipoAgendamento:
-        contato.status === "comprado"
+      tipoAgendamento: futuroCorte
+        ? ("futuro" as const)
+        : contato.status === "comprado"
           ? ("recompra" as const)
           : contato.status ===
               "avaliacao_agendada"
@@ -110,6 +157,7 @@ export class AAgendarService {
             : ("lead" as const),
 
       recompra: recompra ?? null,
+      futuroCorte,
     };
   });
 
@@ -145,6 +193,7 @@ return resultado.filter((item) => {
     lead: 0,
     avaliacao: 0,
     recompra: 0,
+    futuro: 0,
   };
 
   const cidades = new Map<

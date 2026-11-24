@@ -4,6 +4,7 @@ import type {
   ScheduleCandidateType,
   ScheduleSummary,
 } from "../../types/schedule";
+import { futureCutLabel } from "../../utils/future-cut";
 
 interface AgendaInboxProps {
   candidates: ScheduleCandidate[];
@@ -29,6 +30,10 @@ function initials(name: string) {
 }
 
 function typeLabel(candidate: ScheduleCandidate) {
+  if (candidate.tipoAgendamento === "futuro") {
+    return candidate.futuroCorte ? futureCutLabel(candidate.futuroCorte) : "Futuro corte";
+  }
+
   if (candidate.tipoAgendamento === "recompra") {
     const days = candidate.recompra?.diasAte;
     if (typeof days === "number") {
@@ -47,6 +52,7 @@ function typeLabel(candidate: ScheduleCandidate) {
 }
 
 function typeClass(type: ScheduleCandidateType) {
+  if (type === "futuro") return "text-[var(--kanzler-red)]";
   if (type === "recompra") return "text-[var(--kanzler-amber)]";
   if (type === "avaliacao") return "text-[var(--kanzler-blue)]";
   return "text-[var(--kanzler-muted)]";
@@ -77,6 +83,7 @@ export function AgendaInbox({
     { key: "lead", label: "Leads", count: summary?.tipos.lead ?? 0 },
     { key: "avaliacao", label: "Avaliações", count: summary?.tipos.avaliacao ?? 0 },
     { key: "recompra", label: "Recompra", count: summary?.tipos.recompra ?? 0 },
+    { key: "futuro", label: "Futuros", count: summary?.tipos.futuro ?? 0 },
   ];
 
   return (

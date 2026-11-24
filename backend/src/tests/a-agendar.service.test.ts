@@ -12,6 +12,7 @@ import { AAgendarService } from "../services/a-agendar.service";
 import type { ContatoRepository } from "../repositories/contato.repository";
 import type { ItemRotaRepository } from "../repositories/item-rota.repository";
 import type { RecompraService } from "../services/recompra.service";
+import type { FuturoCorteService } from "../services/futuro-corte.service";
 
 describe("AAgendarService", () => {
   it("retorna somente contatos disponíveis para agendar", async () => {
@@ -76,6 +77,9 @@ describe("AAgendarService", () => {
         contatoRepository,
         itemRotaRepository,
         recompraService,
+        {
+          listar: vi.fn().mockResolvedValue([]),
+        } as unknown as FuturoCorteService,
       );
 
     const resultado =
@@ -101,12 +105,103 @@ describe("AAgendarService", () => {
     ).toBe("recompra");
   });
 
+  it("mostra como futuro somente os prontos para contato", async () => {
+    const contato = (id: string, status: string) => ({
+      id,
+      status,
+      nome: id,
+      cidadeId: "cidade-1",
+      cidade: { nome: "Videira", uf: "SC" },
+    });
+
+    const futuro = (
+      contatoId: string,
+      prontoParaContato: boolean | null,
+      status = "acompanhando",
+    ) => ({
+      contatoId,
+      status,
+      prontoParaContato,
+      contato: {},
+    });
+
+    const service = new AAgendarService(
+      {
+        findAtivosParaAgendar:
+          vi.fn().mockResolvedValue([
+            contato("lead-pronto", "lead"),
+            contato("lead-distante", "lead"),
+            contato("lead-comum", "lead"),
+            contato("comprado-pronto", "comprado"),
+            contato("comprado-distante", "comprado"),
+            contato("recompra-pronto", "comprado"),
+            contato("recompra-distante", "comprado"),
+            contato("perdido-pronto", "perdido"),
+            contato("com-visita", "lead"),
+            contato("agendado-vencido", "avaliacao_agendada"),
+          ]),
+      } as unknown as ContatoRepository,
+      {
+        findVisitasAbertas:
+          vi.fn().mockResolvedValue([
+            {
+              contatoId: "com-visita",
+              diaRota: {
+                data: Temporal.PlainDate.from("2026-10-20"),
+              },
+            },
+          ]),
+      } as unknown as ItemRotaRepository,
+      {
+        listarProntas:
+          vi.fn().mockResolvedValue([
+            { contatoId: "recompra-pronto" },
+            { contatoId: "recompra-distante" },
+          ]),
+      } as unknown as RecompraService,
+      {
+        listar: vi.fn().mockResolvedValue([
+          futuro("lead-pronto", true),
+          futuro("lead-distante", false),
+          futuro("comprado-pronto", true),
+          futuro("comprado-distante", false),
+          futuro("recompra-pronto", true),
+          futuro("recompra-distante", false),
+          futuro("perdido-pronto", true),
+          futuro("com-visita", true),
+          futuro("agendado-vencido", null, "agendado"),
+        ]),
+      } as unknown as FuturoCorteService,
+    );
+
+    const hoje = Temporal.PlainDate.from("2026-10-07");
+    const resultado = await service.listar(hoje);
+
+    expect(
+      resultado.map((item) => [item.id, item.tipoAgendamento]),
+    ).toEqual([
+      ["lead-pronto", "futuro"],
+      ["lead-comum", "lead"],
+      ["comprado-pronto", "futuro"],
+      ["recompra-pronto", "futuro"],
+      ["recompra-distante", "recompra"],
+      ["agendado-vencido", "avaliacao"],
+    ]);
+
+    expect(
+      await service.listar(hoje, { tipo: "futuro" }),
+    ).toHaveLength(3);
+
+    expect((await service.resumir(hoje)).tipos.futuro).toBe(3);
+  });
+
   it("gera contagens por tipo e cidade", async () => {
   const service =
     new AAgendarService(
       {} as ContatoRepository,
       {} as ItemRotaRepository,
       {} as RecompraService,
+      {} as FuturoCorteService,
     );
 
   vi.spyOn(
@@ -158,6 +253,7 @@ describe("AAgendarService", () => {
     lead: 2,
     avaliacao: 0,
     recompra: 1,
+    futuro: 0,
   });
 
   expect(resultado.cidades).toEqual([

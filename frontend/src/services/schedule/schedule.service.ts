@@ -21,6 +21,7 @@ function normalizeCandidate(item: ScheduleCandidateApi): ScheduleCandidate {
       ...item.contato,
       tipoAgendamento: item.tipoAgendamento,
       recompra: item.recompra,
+      futuroCorte: item.futuroCorte,
     };
   }
 
