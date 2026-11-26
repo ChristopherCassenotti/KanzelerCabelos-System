@@ -7,12 +7,14 @@ import type {
 } from "../schemas/assistente.schema";
 import type { DadosCompraInput } from "../schemas/compra.schema";
 import type { CriarContatoInput } from "../schemas/contato.schema";
+import type { CriarFuturoCorteInput } from "../schemas/futuro-corte.schema";
 
 export type CampoPendente =
   | "nome"
   | "cidade"
   | "valorPago"
-  | "formaPagamento";
+  | "formaPagamento"
+  | "dataProximoContato";
 
 const VALOR_MAXIMO_REAIS = 1_000_000;
 const PESO_MAXIMO_G = 20_000;
@@ -30,8 +32,26 @@ const LIMITES_TEXTO = {
   observacoes: 3000,
 } as const;
 
+const FUTURO_CORTE_VAZIO = {
+  dataPrevista: null,
+  dataProximoContato: null,
+  comprimentoDesejadoCm: null,
+  prioridade: null,
+} as const;
+
+const COMPRA_VAZIA = {
+  dataCorte: null,
+  pesoG: null,
+  valorPago: null,
+  formaPagamento: null,
+  valorRevenda: null,
+  dataRevenda: null,
+  comprador: null,
+} as const;
+
 export function criarRascunhoVazio(): RascunhoContato {
   return {
+    tipoCadastro: "compra",
     nome: null,
     telefone: null,
     cidadeId: null,
@@ -47,6 +67,9 @@ export function criarRascunhoVazio(): RascunhoContato {
     textura: null,
     quimica: null,
     comprimentoCm: null,
+    cabeloDe: null,
+    nomeDonoCabelo: null,
+    idadeDonoCabelo: null,
     observacoes: null,
     autorizouFoto: false,
     dataCorte: null,
@@ -56,6 +79,7 @@ export function criarRascunhoVazio(): RascunhoContato {
     valorRevenda: null,
     dataRevenda: null,
     comprador: null,
+    ...FUTURO_CORTE_VAZIO,
   };
 }
 
@@ -119,6 +143,20 @@ export function aplicarInterpretacao(
   const rascunho: RascunhoContato = { ...atual };
   const avisos: string[] = [];
   let cidadeAlterada = false;
+
+  // Ao trocar o tipo, os dados exclusivos do outro cadastro são descartados.
+  if (
+    campos.tipoCadastro !== null &&
+    campos.tipoCadastro !== rascunho.tipoCadastro
+  ) {
+    rascunho.tipoCadastro = campos.tipoCadastro;
+    Object.assign(
+      rascunho,
+      campos.tipoCadastro === "compra"
+        ? FUTURO_CORTE_VAZIO
+        : COMPRA_VAZIA,
+    );
+  }
 
   for (const campo of camposRemovidos) {
     rascunho[campo] = null;
@@ -217,13 +255,32 @@ export function aplicarInterpretacao(
     }
   }
 
+  if (campos.cabeloDe !== null) rascunho.cabeloDe = campos.cabeloDe;
+
+  const nomeDonoCabelo = textoLimpo(campos.nomeDonoCabelo, LIMITES_TEXTO.nome);
+  if (nomeDonoCabelo !== null) rascunho.nomeDonoCabelo = nomeDonoCabelo;
+
+  if (campos.idadeDonoCabelo !== null) {
+    const idade = Math.round(campos.idadeDonoCabelo);
+
+    if (Number.isFinite(idade) && idade >= 0 && idade <= 120) {
+      rascunho.idadeDonoCabelo = idade;
+    } else {
+      avisos.push("A idade informada não é válida e não foi incluída.");
+    }
+  }
+
   const observacoes = textoLimpo(
     campos.observacoes,
     LIMITES_TEXTO.observacoes,
   );
   if (observacoes !== null) rascunho.observacoes = observacoes;
 
-  aplicarCompra(rascunho, campos, avisos, hoje);
+  if (rascunho.tipoCadastro === "futuro_corte") {
+    aplicarFuturoCorte(rascunho, campos, avisos, hoje);
+  } else {
+    aplicarCompra(rascunho, campos, avisos, hoje);
+  }
 
   return {
     rascunho,
@@ -300,6 +357,54 @@ function aplicarCompra(
   if (comprador !== null) rascunho.comprador = comprador;
 }
 
+function aplicarFuturoCorte(
+  rascunho: RascunhoContato,
+  campos: CamposInterpretados,
+  avisos: string[],
+  hoje: string,
+) {
+  for (const [campo, rotulo] of [
+    ["dataPrevista", "previsão de corte"],
+    ["dataProximoContato", "data do próximo contato"],
+  ] as const) {
+    const valor = campos[campo];
+
+    if (valor === null) continue;
+
+    const data = validarDataISO(valor.trim());
+
+    if (data && data >= hoje) {
+      rascunho[campo] = data;
+    } else {
+      avisos.push(
+        data
+          ? `A ${rotulo} não pode estar no passado e não foi incluída.`
+          : `A ${rotulo} não foi reconhecida e não foi incluída.`,
+      );
+    }
+  }
+
+  if (campos.comprimentoDesejadoCm !== null) {
+    const comprimento = Math.round(campos.comprimentoDesejadoCm);
+
+    if (
+      Number.isFinite(comprimento) &&
+      comprimento > 0 &&
+      comprimento <= 300
+    ) {
+      rascunho.comprimentoDesejadoCm = comprimento;
+    } else {
+      avisos.push(
+        "O comprimento esperado não é válido e não foi incluído.",
+      );
+    }
+  }
+
+  if (campos.prioridade !== null) {
+    rascunho.prioridade = campos.prioridade;
+  }
+}
+
 export function calcularPendencias(
   rascunho: RascunhoContato,
 ): CampoPendente[] {
@@ -311,6 +416,14 @@ export function calcularPendencias(
 
   if (!rascunho.cidadeId) {
     pendencias.push("cidade");
+  }
+
+  if (rascunho.tipoCadastro === "futuro_corte") {
+    if (!rascunho.dataProximoContato) {
+      pendencias.push("dataProximoContato");
+    }
+
+    return pendencias;
   }
 
   if (!rascunho.valorPago) {
@@ -361,6 +474,13 @@ export function rascunhoParaCriarContato(
   if (rascunho.comprimentoCm !== null) {
     payload.comprimentoCm = rascunho.comprimentoCm;
   }
+  if (rascunho.cabeloDe !== null) payload.cabeloDe = rascunho.cabeloDe;
+  if (rascunho.nomeDonoCabelo !== null) {
+    payload.nomeDonoCabelo = rascunho.nomeDonoCabelo;
+  }
+  if (rascunho.idadeDonoCabelo !== null) {
+    payload.idadeDonoCabelo = rascunho.idadeDonoCabelo;
+  }
   if (rascunho.observacoes !== null) payload.observacoes = rascunho.observacoes;
 
   payload.autorizouFoto = rascunho.autorizouFoto;
@@ -397,6 +517,42 @@ export function rascunhoParaCadastroComCompra(
   return {
     contato: rascunhoParaCriarContato(rascunho),
     compra,
+  };
+}
+
+/** Payload de `criarFuturoCorteSchema`. */
+export function rascunhoParaFuturoCorte(
+  rascunho: RascunhoContato,
+): Partial<CriarFuturoCorteInput> {
+  return {
+    ...(rascunho.dataProximoContato !== null
+      ? { dataProximoContato: rascunho.dataProximoContato }
+      : {}),
+    dataPrevista: rascunho.dataPrevista,
+    comprimentoAtualCm: rascunho.comprimentoCm,
+    comprimentoDesejadoCm: rascunho.comprimentoDesejadoCm,
+    cor: rascunho.cor,
+    textura: rascunho.textura,
+    quimica: rascunho.quimica,
+    natural: rascunho.natural,
+    observacoes: rascunho.observacoes,
+    ...(rascunho.prioridade !== null
+      ? { prioridade: rascunho.prioridade }
+      : {}),
+  };
+}
+
+/** Payload de `criarContatoComFuturoCorteSchema`. */
+export function rascunhoParaCadastroComFuturoCorte(
+  rascunho: RascunhoContato,
+) {
+  // As observações da conversa pertencem ao acompanhamento.
+  const { observacoes: _observacoes, ...contato } =
+    rascunhoParaCriarContato(rascunho);
+
+  return {
+    contato,
+    futuroCorte: rascunhoParaFuturoCorte(rascunho),
   };
 }
 

@@ -1,4 +1,4 @@
-import type { City, ContactListItem } from "./contact";
+import type { City, ContactListItem, ContactPayload } from "./contact";
 
 export type FutureCutPriority = "baixa" | "media" | "alta";
 export type FutureCutStatus = "acompanhando" | "agendado" | "convertido" | "descartado";
@@ -42,6 +42,11 @@ export interface FutureCutPayload {
   natural: boolean | null;
   observacoes: string | null;
   prioridade: FutureCutPriority;
+}
+
+export interface CreateContactWithFutureCutPayload {
+  contato: ContactPayload;
+  futuroCorte: FutureCutPayload;
 }
 
 export interface FutureCutContactedPayload {

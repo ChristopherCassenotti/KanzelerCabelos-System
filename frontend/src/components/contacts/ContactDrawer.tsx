@@ -16,6 +16,7 @@ import {
   formatCurrency,
   formatDate,
   formatPhone,
+  hairOwnerLabel,
   initials,
   repurchaseLabel,
   statusLabels,
@@ -109,6 +110,7 @@ export function ContactDrawer({
                   </div>
                   <p className="mt-1 text-[12px] text-[var(--kanzler-muted)]">
                     {contact.cidade.nome} - {contact.cidade.uf} · {formatPhone(contact.telefone)}
+                    {hairOwnerLabel(contact) && <> · {hairOwnerLabel(contact)}</>}
                   </p>
                 </div>
                 <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-lg text-[var(--kanzler-muted)] hover:bg-[var(--kanzler-canvas)]">
@@ -155,6 +157,7 @@ export function ContactDrawer({
                 <h3 className="kanzler-display text-sm font-semibold">Dados da cliente</h3>
                 <dl className="mt-4 grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-3">
                   <Detail label="WhatsApp" value={formatPhone(contact.telefone)} />
+                  <Detail label="Cabelo de" value={hairOwnerLabel(contact) ?? "Da própria pessoa"} />
                   <Detail label="Cidade" value={`${contact.cidade.nome} - ${contact.cidade.uf}`} />
                   <Detail label="Origem" value={contact.origem} />
                   <Detail label="Indicada por" value={contact.indicadoPor} />

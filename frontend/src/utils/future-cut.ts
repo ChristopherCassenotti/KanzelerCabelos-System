@@ -1,6 +1,7 @@
-import type { FutureCutFormValues } from "../schemas/future-cut.schema";
-import type { ContactDetail } from "../types/contact";
-import type { FutureCut, FutureCutPayload, FutureCutPriority } from "../types/future-cut";
+import { hairOwnerPayload } from "./contact-form";
+import type { FutureCutFormValues, NewFutureCutFormValues } from "../schemas/future-cut.schema";
+import type { ContactDetail, ContactOverview } from "../types/contact";
+import type { CreateContactWithFutureCutPayload, FutureCut, FutureCutPayload, FutureCutPriority } from "../types/future-cut";
 
 export const priorityLabels: Record<FutureCutPriority, string> = {
   baixa: "Baixa",
@@ -62,6 +63,75 @@ export function futureCutToFormValues(cut: FutureCut | null, contact: ContactDet
     prioridade: cut?.prioridade ?? "media",
     observacoes: cut?.observacoes ?? "",
   };
+}
+
+export function createEmptyNewFutureCutValues(): NewFutureCutFormValues {
+  return {
+    nome: "",
+    telefone: "",
+    cidadeId: "",
+    origem: "",
+    indicadoPor: "",
+    cabeloDe: "",
+    nomeDonoCabelo: "",
+    idadeDonoCabelo: "",
+    dataPrevista: "",
+    dataProximoContato: "",
+    comprimentoAtualCm: "",
+    comprimentoDesejadoCm: "",
+    cor: "",
+    textura: "",
+    quimica: "",
+    natural: "",
+    prioridade: "media",
+    observacoes: "",
+  };
+}
+
+/** Os dados do cabelo também ficam no contato; as observações, só no acompanhamento. */
+export function formValuesToNewFutureCutPayload(values: NewFutureCutFormValues): CreateContactWithFutureCutPayload {
+  const futuroCorte = formValuesToFutureCutPayload(values);
+
+  return {
+    contato: {
+      nome: values.nome,
+      cidadeId: values.cidadeId,
+      ...(values.telefone ? { telefone: values.telefone } : {}),
+      ...(values.origem ? { origem: values.origem } : {}),
+      ...(values.indicadoPor ? { indicadoPor: values.indicadoPor } : {}),
+      ...hairOwnerPayload(values, false),
+      ...(futuroCorte.cor ? { cor: futuroCorte.cor } : {}),
+      ...(futuroCorte.textura ? { textura: futuroCorte.textura } : {}),
+      ...(futuroCorte.quimica ? { quimica: futuroCorte.quimica } : {}),
+      ...(futuroCorte.natural !== null ? { natural: futuroCorte.natural } : {}),
+      ...(futuroCorte.comprimentoAtualCm ? { comprimentoCm: futuroCorte.comprimentoAtualCm } : {}),
+    },
+    futuroCorte,
+  };
+}
+
+function normalizeName(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLocaleLowerCase("pt-BR");
+}
+
+function phoneKey(value: string | null) {
+  const digits = (value ?? "").replace(/\D/g, "");
+  return digits.length >= 8 ? digits.slice(-8) : null;
+}
+
+/** Mesmo critério do assistente: mesmo telefone, ou mesmo nome na mesma cidade. */
+export function findSimilarContacts(
+  contacts: ContactOverview[],
+  { nome, telefone, cidadeId }: { nome: string; telefone: string; cidadeId: string },
+) {
+  const name = normalizeName(nome);
+  const phone = phoneKey(telefone);
+
+  return contacts
+    .filter((contact) =>
+      (phone !== null && phoneKey(contact.telefone) === phone) ||
+      (name !== "" && cidadeId !== "" && contact.cidadeId === cidadeId && normalizeName(contact.nome) === name))
+    .slice(0, 5);
 }
 
 export function formValuesToFutureCutPayload(values: FutureCutFormValues): FutureCutPayload {

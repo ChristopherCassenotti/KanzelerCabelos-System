@@ -1,4 +1,4 @@
-import type { ContactDetail, ContactOverview, ContactPurchase, ContactStatus } from "../types/contact";
+import type { ContactDetail, ContactOverview, ContactPurchase, ContactStatus, HairOwner } from "../types/contact";
 
 export const statusLabels: Record<ContactStatus, string> = {
   lead: "Lead",
@@ -6,6 +6,26 @@ export const statusLabels: Record<ContactStatus, string> = {
   comprado: "Comprado",
   perdido: "Perdido",
 };
+
+export const hairOwnerOptions: Array<{ value: HairOwner; label: string }> = [
+  { value: "filha", label: "Filha" },
+  { value: "filho", label: "Filho" },
+  { value: "outro", label: "Outra pessoa" },
+];
+
+/** Ex.: "Cabelo da filha Ana, 9 anos". null quando o cabelo é da própria pessoa. */
+export function hairOwnerLabel(owner: {
+  cabeloDe: HairOwner | null;
+  nomeDonoCabelo: string | null;
+  idadeDonoCabelo: number | null;
+}) {
+  if (!owner.cabeloDe) return null;
+
+  const who = owner.cabeloDe === "filha" ? "da filha" : owner.cabeloDe === "filho" ? "do filho" : "de outra pessoa";
+  const age = owner.idadeDonoCabelo === null ? null : `${owner.idadeDonoCabelo} ${owner.idadeDonoCabelo === 1 ? "ano" : "anos"}`;
+
+  return [`Cabelo ${who}${owner.nomeDonoCabelo ? ` ${owner.nomeDonoCabelo}` : ""}`, age].filter(Boolean).join(", ");
+}
 
 export function isKnownContactStatus(status: string): status is ContactStatus {
   return ["lead", "avaliacao_agendada", "comprado", "perdido"].includes(status);

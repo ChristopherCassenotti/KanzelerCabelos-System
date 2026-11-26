@@ -13,7 +13,8 @@ import type {
   AssistantPhoto,
   AssistantStage,
 } from "../types/assistant";
-import { formatCurrency, formatPhone } from "./contact";
+import { formatCurrency, formatPhone, hairOwnerLabel } from "./contact";
+import { priorityLabels } from "./future-cut";
 
 export const ASSISTANT_HISTORY_LIMIT = 10;
 export const ASSISTANT_MESSAGE_MAX_LENGTH = 2000;
@@ -23,12 +24,15 @@ export const ASSISTANT_MAX_PHOTOS = 4;
 export const ASSISTANT_MAX_PHOTO_SIZE = 10 * 1024 * 1024;
 export const ASSISTANT_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
-export const ASSISTANT_WELCOME = `Olá! Eu cadastro a cliente junto com a compra do cabelo.
+export const ASSISTANT_WELCOME = `Olá! Eu cadastro a cliente junto com a compra do cabelo e também futuros cortes.
 
-Preencha as informações abaixo para realizar o cadastro:
+Para um *futuro corte*, escreva por exemplo: "Maria, de Videira, castanho liso 50 cm, quer cortar em março, chamar em 10 de fevereiro".
+
+Para uma *compra*, preencha as informações abaixo:
 
 *DADOS PESSOAIS*
-Nome:
+Nome (quem negocia; pode ser o pai ou a mãe):
+Cabelo de (própria, filha ou filho; nome e idade):
 Email:
 WhatsApp:
 Cidade:
@@ -286,7 +290,7 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         editing: false,
         messages: [
           ...state.messages,
-          assistantMessage(action.id, "Contato e compra cadastrados com sucesso", {
+          assistantMessage(action.id, action.result.futuroCorte ? "Futuro corte cadastrado com sucesso" : "Contato e compra cadastrados com sucesso", {
             tone: "success",
             includeInHistory: false,
             createdContact: action.result.contato,
@@ -457,6 +461,7 @@ export function draftSummaryRows(draft: AssistantContactDraft, photoCount = 0) {
   };
 
   push("Nome", draft.nome);
+  push("Cabelo de", hairOwnerLabel(draft));
   push("Cidade", draft.cidadeNome ? `${draft.cidadeNome}${draft.cidadeUf ? ` - ${draft.cidadeUf}` : ""}` : null);
   push("Telefone", draft.telefone ? formatPhone(draft.telefone) : null);
   push("Endereço", draft.endereco);
@@ -496,6 +501,16 @@ export function draftPurchaseRows(draft: AssistantContactDraft) {
   push("Comprador", draft.comprador);
 
   return rows;
+}
+
+/** Linhas do futuro corte exibidas no card de confirmação. */
+export function draftFutureCutRows(draft: AssistantContactDraft) {
+  return [
+    { label: "Próximo contato", value: draft.dataProximoContato ? formatISODate(draft.dataProximoContato) : "-" },
+    ...(draft.dataPrevista ? [{ label: "Previsão de corte", value: formatISODate(draft.dataPrevista) }] : []),
+    ...(draft.comprimentoDesejadoCm ? [{ label: "Comprimento esperado", value: `${draft.comprimentoDesejadoCm} cm` }] : []),
+    { label: "Prioridade", value: priorityLabels[draft.prioridade ?? "media"] },
+  ];
 }
 
 function formatISODate(iso: string) {

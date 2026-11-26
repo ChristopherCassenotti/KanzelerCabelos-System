@@ -16,6 +16,7 @@ import {
   calcularSituacaoFuturoCorte,
   correspondeSituacao,
   futuroCorteAtivo,
+  prepararFuturoCorte,
   type StatusFuturoCorte,
 } from "./futuro-corte.rules";
 
@@ -126,32 +127,8 @@ export class FuturoCorteService {
 
     const criado =
       await this.futuroCorteRepository.create({
+        ...prepararFuturoCorte(data),
         contatoId,
-
-        dataPrevista:
-          dataOuNull(data.dataPrevista),
-
-        dataProximoContato:
-          Temporal.PlainDate.from(
-            data.dataProximoContato,
-          ),
-
-        comprimentoAtualCm:
-          data.comprimentoAtualCm ?? null,
-
-        comprimentoDesejadoCm:
-          data.comprimentoDesejadoCm ?? null,
-
-        cor: data.cor ?? null,
-        textura: data.textura ?? null,
-        quimica: data.quimica ?? null,
-        natural: data.natural ?? null,
-
-        observacoes:
-          data.observacoes ?? null,
-
-        prioridade:
-          data.prioridade ?? "media",
       });
 
     if (!criado) {

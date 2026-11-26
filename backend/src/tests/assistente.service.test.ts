@@ -18,6 +18,7 @@ import {
 import type { InterpretadorMensagem } from "../services/assistente-interpretador.service";
 import type { CidadeRepository } from "../repositories/cidade.repository";
 import type { ContatoService } from "../services/contato.service";
+import type { FuturoCorteService } from "../services/futuro-corte.service";
 import type { ContatoRepository } from "../repositories/contato.repository";
 import type { AuditoriaRepository } from "../repositories/auditoria.repository";
 
@@ -26,6 +27,7 @@ const PORTO = "22222222-2222-4222-8222-222222222222";
 const BOM_JESUS_SC = "33333333-3333-4333-8333-333333333333";
 const BOM_JESUS_RS = "44444444-4444-4444-8444-444444444444";
 const CONTATO_CRIADO = "99999999-9999-4999-8999-999999999999";
+const FUTURO_CRIADO = "77777777-7777-4777-8777-777777777777";
 const COMPRA_CRIADA = "88888888-8888-4888-8888-888888888888";
 
 /** Dados mínimos de compra, como a IA devolveria. */
@@ -61,6 +63,9 @@ function camposVazios(): CamposInterpretados {
     textura: null,
     quimica: null,
     comprimentoCm: null,
+    cabeloDe: null,
+    nomeDonoCabelo: null,
+    idadeDonoCabelo: null,
     observacoes: null,
     dataCorte: null,
     pesoG: null,
@@ -69,6 +74,11 @@ function camposVazios(): CamposInterpretados {
     valorRevenda: null,
     dataRevenda: null,
     comprador: null,
+    tipoCadastro: null,
+    dataPrevista: null,
+    dataProximoContato: null,
+    comprimentoDesejadoCm: null,
+    prioridade: null,
   };
 }
 
@@ -95,6 +105,7 @@ function montar(
       cidade: { nome: string; uf: string };
     }>;
     createImpl?: () => Promise<unknown>;
+    criarFuturoImpl?: () => Promise<unknown>;
   } = {},
 ) {
   const fila = [...respostasIA];
@@ -134,10 +145,38 @@ function montar(
   );
 
   // O assistente cria contato + compra numa única operação.
-  const contatoService = { createComCompra: create } as unknown as ContatoService;
+  const createFuturo = vi.fn(async (data: { contato: { nome: string } }) => ({
+    contato: { id: CONTATO_CRIADO, nome: data.contato.nome, status: "lead" },
+    futuroCorte: { id: FUTURO_CRIADO },
+  }));
+
+  const contatoService = {
+    createComCompra: create,
+    createComFuturoCorte: createFuturo,
+  } as unknown as ContatoService;
+
+  const criarFuturo = vi.fn(
+    opcoes.criarFuturoImpl ??
+      (async () => ({ tipo: "sucesso", futuroCorte: { id: FUTURO_CRIADO } })),
+  );
+
+  const update = vi.fn(async () => ({}));
 
   const contatoRepository = {
     findAllComCidade: vi.fn(async () => opcoes.contatosExistentes ?? []),
+    findById: vi.fn(async (id: string) => {
+      const contato = opcoes.contatosExistentes?.find((item) => item.id === id);
+
+      return contato
+        ? {
+            ...contato,
+            status: "comprado",
+            autorizouFoto: false,
+            cidade: { id: contato.cidadeId, ...contato.cidade },
+          }
+        : null;
+    }),
+    update,
   } as unknown as ContatoRepository;
 
   const auditoriaCreate = vi.fn(async () => ({ id: "auditoria-1" }));
@@ -152,9 +191,13 @@ function montar(
     contatoService,
     contatoRepository,
     auditoriaRepository,
+    undefined,
+    undefined,
+    undefined,
+    { criar: criarFuturo } as unknown as FuturoCorteService,
   );
 
-  return { service, interpretar, create, auditoriaCreate };
+  return { service, interpretar, create, createFuturo, criarFuturo, update, auditoriaCreate };
 }
 
 function rascunhoBase(
@@ -177,6 +220,243 @@ const IA_COMPLETA = ia("criar_contato", {
   indicadoPor: "Ana",
   ...COMPRA,
   pesoG: 420,
+});
+
+describe("AssistenteService - cabelo de criança", () => {
+  const entrada = (rascunho: RascunhoContato | null) => ({ mensagem: "x", historico: [], rascunho });
+
+  it("cadastra o pai como contato e a filha como dona do cabelo", async () => {
+    const { service, create } = montar([
+      ia("criar_contato", {
+        nome: "Robert",
+        cidade: "Porto União",
+        cabeloDe: "filha",
+        idadeDonoCabelo: 9,
+        cor: "Loiro",
+        comprimentoCm: 60,
+        ...COMPRA,
+      }),
+    ]);
+
+    const resposta = await service.processarMensagem(USUARIO, entrada(null));
+
+    expect(resposta.estado).toBe("aguardando_confirmacao");
+    expect(resposta.rascunho).toMatchObject({
+      nome: "Robert",
+      cabeloDe: "filha",
+      nomeDonoCabelo: null,
+      idadeDonoCabelo: 9,
+    });
+
+    await service.confirmarContato(USUARIO, {
+      idempotencyKey: "12121212-1212-4121-8121-121212121212",
+      rascunho: resposta.rascunho!,
+      ignorarDuplicidade: false,
+      quantidadeFotos: 0,
+    });
+
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        contato: expect.objectContaining({ nome: "Robert", cabeloDe: "filha", idadeDonoCabelo: 9 }),
+      }),
+      USUARIO,
+    );
+  });
+
+  it("explica quando a resposta não preencheu o que faltava, em vez de só repetir", async () => {
+    const { service } = montar([ia("complementar_rascunho")]);
+    const rascunho = rascunhoBase({ cidadeId: PORTO, cidadeNome: "Porto União", ...RASCUNHO_COMPRA });
+
+    const resposta = await service.processarMensagem(USUARIO, entrada(rascunho));
+
+    expect(resposta.pendencias).toEqual(["nome"]);
+    expect(resposta.resposta).toMatch(/^Não consegui identificar essa informação/);
+    expect(resposta.resposta).toMatch(/pai ou da mãe/);
+  });
+
+  it("recusa idade inválida com aviso", async () => {
+    const { service } = montar([ia("criar_contato", { nome: "Robert", idadeDonoCabelo: 400 })]);
+    const resposta = await service.processarMensagem(USUARIO, entrada(null));
+
+    expect(resposta.rascunho?.idadeDonoCabelo).toBeNull();
+    expect(resposta.avisos).toContain("A idade informada não é válida e não foi incluída.");
+  });
+});
+
+describe("AssistenteService - futuro corte", () => {
+  const emDias = (dias: number) =>
+    Temporal.Now.plainDateISO("America/Sao_Paulo").add({ days: dias }).toString();
+
+  const FUTURO = {
+    tipoCadastro: "futuro_corte" as const,
+    nome: "Maria Souza",
+    cidade: "Porto União",
+    cor: "Castanho" as const,
+    textura: "Liso" as const,
+    comprimentoCm: 50,
+    observacoes: "Prefere WhatsApp",
+  };
+
+  const mensagem = (rascunho: RascunhoContato | null = null) => ({
+    mensagem: "texto",
+    historico: [],
+    rascunho,
+  });
+
+  const rascunhoFuturo = () =>
+    rascunhoBase({
+      tipoCadastro: "futuro_corte",
+      nome: "Maria Souza",
+      cidadeId: PORTO,
+      cor: "Castanho",
+      comprimentoCm: 50,
+      observacoes: "Prefere WhatsApp",
+      dataPrevista: emDias(100),
+      dataProximoContato: emDias(70),
+    });
+
+  const existente = {
+    id: "66666666-6666-4666-8666-666666666666",
+    nome: "Maria Souza",
+    telefone: null,
+    cidadeId: PORTO,
+    cidade: { nome: "Porto União", uf: "SC" },
+  };
+
+  const confirmar = (extra: object = {}) => ({
+    idempotencyKey: "55555555-5555-4555-8555-555555555555",
+    rascunho: rascunhoFuturo(),
+    ignorarDuplicidade: false,
+    quantidadeFotos: 0,
+    ...extra,
+  });
+
+  it("não pede dados de compra, só a data do próximo contato", async () => {
+    const { service } = montar([
+      ia("criar_contato", { ...FUTURO, dataPrevista: emDias(100) }),
+      ia("complementar_rascunho", { dataProximoContato: emDias(70) }),
+    ]);
+
+    const primeira = await service.processarMensagem(USUARIO, mensagem());
+    expect(primeira.pendencias).toEqual(["dataProximoContato"]);
+    expect(primeira.estado).toBe("coletando_dados");
+
+    const segunda = await service.processarMensagem(USUARIO, mensagem(primeira.rascunho));
+    expect(segunda.estado).toBe("aguardando_confirmacao");
+    expect(segunda.rascunho).toMatchObject({
+      tipoCadastro: "futuro_corte",
+      cidadeId: PORTO,
+      dataPrevista: emDias(100),
+      dataProximoContato: emDias(70),
+    });
+  });
+
+  it("recusa datas passadas e inválidas com aviso", async () => {
+    const { service } = montar([
+      ia("criar_contato", {
+        ...FUTURO,
+        dataPrevista: "2027-02-31",
+        dataProximoContato: emDias(-1),
+      }),
+    ]);
+
+    const resposta = await service.processarMensagem(USUARIO, mensagem());
+    expect(resposta.avisos).toHaveLength(2);
+    expect(resposta.pendencias).toEqual(["dataProximoContato"]);
+  });
+
+  it("trocar o tipo descarta os dados do outro cadastro", async () => {
+    const { service } = montar([
+      ia("complementar_rascunho", { tipoCadastro: "compra", ...COMPRA }),
+      ia("complementar_rascunho", { tipoCadastro: "futuro_corte" }),
+    ]);
+
+    const compra = await service.processarMensagem(USUARIO, mensagem(rascunhoFuturo()));
+    expect(compra.rascunho).toMatchObject({
+      tipoCadastro: "compra",
+      valorPago: "1850.00",
+      dataProximoContato: null,
+    });
+
+    const futuro = await service.processarMensagem(USUARIO, mensagem(compra.rascunho));
+    expect(futuro.rascunho).toMatchObject({ tipoCadastro: "futuro_corte", valorPago: null });
+  });
+
+  it("confirma criando lead com futuro corte, sem compra", async () => {
+    const { service, create, createFuturo } = montar();
+    const criado = await service.confirmarContato(USUARIO, confirmar());
+
+    expect(create).not.toHaveBeenCalled();
+    expect(createFuturo).toHaveBeenCalledWith(
+      {
+        contato: expect.not.objectContaining({ observacoes: expect.anything() }),
+        futuroCorte: expect.objectContaining({
+          dataProximoContato: emDias(70),
+          comprimentoAtualCm: 50,
+          observacoes: "Prefere WhatsApp",
+        }),
+      },
+      USUARIO,
+    );
+    expect(criado.contato.status).toBe("lead");
+    expect(criado.futuroCorte?.id).toBe(FUTURO_CRIADO);
+    expect(criado.compra).toBeUndefined();
+  });
+
+  it("duplicado exige decisão e pode ser vinculado ao contato existente", async () => {
+    const { service, createFuturo, criarFuturo, update } = montar([], {
+      contatosExistentes: [existente],
+    });
+
+    await expect(service.confirmarContato(USUARIO, confirmar())).rejects.toMatchObject({
+      codigo: "possivel_duplicidade",
+    });
+
+    const criado = await service.confirmarContato(
+      USUARIO,
+      confirmar({ contatoExistenteId: existente.id, quantidadeFotos: 1 }),
+    );
+
+    expect(createFuturo).not.toHaveBeenCalled();
+    expect(criarFuturo).toHaveBeenCalledTimes(1);
+    expect(update).toHaveBeenCalledWith(existente.id, { autorizouFoto: true });
+    expect(criado.contato).toMatchObject({ id: existente.id, status: "comprado" });
+  });
+
+  it("vínculo a contato com futuro corte ativo ou inexistente é recusado", async () => {
+    const { service, update } = montar([], {
+      contatosExistentes: [existente],
+      criarFuturoImpl: async () => ({ tipo: "ja_existe_ativo" }),
+    });
+
+    await expect(
+      service.confirmarContato(
+        USUARIO,
+        confirmar({ contatoExistenteId: existente.id, quantidadeFotos: 1 }),
+      ),
+    ).rejects.toMatchObject({ codigo: "ja_existe_ativo", statusCode: 409 });
+
+    await expect(
+      service.confirmarContato(USUARIO, confirmar({ contatoExistenteId: UNIAO })),
+    ).rejects.toMatchObject({ codigo: "contato_nao_encontrado" });
+
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it("compra não pode ser vinculada a contato existente", async () => {
+    const { service, create } = montar([], { contatosExistentes: [existente] });
+
+    await expect(
+      service.confirmarContato(
+        USUARIO,
+        confirmar({
+          rascunho: rascunhoBase({ nome: "Ana Lima", cidadeId: PORTO, ...RASCUNHO_COMPRA }),
+          contatoExistenteId: existente.id,
+        }),
+      ),
+    ).rejects.toMatchObject({ codigo: "dados_invalidos" });
+    expect(create).not.toHaveBeenCalled();
+  });
 });
 
 describe("AssistenteService - interpretação e rascunho", () => {

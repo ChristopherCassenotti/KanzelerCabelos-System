@@ -1,0 +1,128 @@
+[
+  {
+    "id": "column.public.contatos.cabelo_de",
+    "label": "Add column \"cabelo_de\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "cabelo_de",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"cabelo_de\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "cabelo_de"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"cabelo_de\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"cabelo_de\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"cabelo_de\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "cabelo_de"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.idade_dono_cabelo",
+    "label": "Add column \"idade_dono_cabelo\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "idade_dono_cabelo",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"idade_dono_cabelo\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "idade_dono_cabelo"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"idade_dono_cabelo\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"idade_dono_cabelo\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"idade_dono_cabelo\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "idade_dono_cabelo"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.contatos.nome_dono_cabelo",
+    "label": "Add column \"nome_dono_cabelo\" to \"contatos\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "nome_dono_cabelo",
+        "table": "contatos"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"nome_dono_cabelo\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "nome_dono_cabelo"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"nome_dono_cabelo\"",
+        "sql": "ALTER TABLE \"public\".\"contatos\" ADD COLUMN \"nome_dono_cabelo\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"nome_dono_cabelo\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "contatos",
+          "nome_dono_cabelo"
+        ]
+      }
+    ]
+  }
+]

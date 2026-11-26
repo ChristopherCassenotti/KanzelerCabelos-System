@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { FORMAS_PAGAMENTO } from "./compra.schema";
+import { CABELO_DE } from "./contato.schema";
+import { PRIORIDADES_FUTURO_CORTE } from "../services/futuro-corte.rules";
+
+export const TIPOS_CADASTRO = ["compra", "futuro_corte"] as const;
 
 /**
  * Valores canônicos usados pelos selects da ficha de contato no frontend.
@@ -66,6 +70,7 @@ const textoOpcional = (max: number) =>
  */
 export const rascunhoContatoSchema = z
   .object({
+    tipoCadastro: z.enum(TIPOS_CADASTRO).default("compra"),
     nome: textoOpcional(150),
     telefone: textoOpcional(30),
     cidadeId: z.uuid().nullable().default(null),
@@ -87,10 +92,13 @@ export const rascunhoContatoSchema = z
       .max(300)
       .nullable()
       .default(null),
+    cabeloDe: z.enum(CABELO_DE).nullable().default(null),
+    nomeDonoCabelo: textoOpcional(150),
+    idadeDonoCabelo: z.number().int().min(0).max(120).nullable().default(null),
     observacoes: textoOpcional(3000),
     autorizouFoto: z.boolean().default(false),
 
-    // Compra (o contato só é cadastrado junto com a compra).
+    // Compra (somente quando tipoCadastro = compra).
     /** Data do corte; vazia = hoje (America/Sao_Paulo) na confirmação. */
     dataCorte: dataISO.nullable().default(null),
     pesoG: z.number().int().positive().max(20_000).nullable().default(null),
@@ -100,6 +108,21 @@ export const rascunhoContatoSchema = z
     valorRevenda: valorMonetario.nullable().default(null),
     dataRevenda: dataISO.nullable().default(null),
     comprador: textoOpcional(150),
+
+    // Futuro corte (somente quando tipoCadastro = futuro_corte).
+    dataPrevista: dataISO.nullable().default(null),
+    dataProximoContato: dataISO.nullable().default(null),
+    comprimentoDesejadoCm: z
+      .number()
+      .int()
+      .positive()
+      .max(300)
+      .nullable()
+      .default(null),
+    prioridade: z
+      .enum(PRIORIDADES_FUTURO_CORTE)
+      .nullable()
+      .default(null),
   })
   .strict();
 
@@ -152,6 +175,8 @@ export const confirmarContatoAssistenteSchema = z
     idempotencyKey: z.uuid(),
     rascunho: rascunhoContatoSchema,
     ignorarDuplicidade: z.boolean().default(false),
+    /** Futuro corte: vincula ao contato já cadastrado em vez de criar outro. */
+    contatoExistenteId: z.uuid().optional(),
     /**
      * Fotos anexadas no chat que serão enviadas após o cadastro. Enviar foto
      * define o consentimento: com fotos `autorizouFoto = true`, sem fotos `false`.
@@ -184,12 +209,18 @@ export const CAMPOS_REMOVIVEIS = [
   "textura",
   "quimica",
   "comprimentoCm",
+  "cabeloDe",
+  "nomeDonoCabelo",
+  "idadeDonoCabelo",
   "observacoes",
   "dataCorte",
   "pesoG",
   "valorRevenda",
   "dataRevenda",
   "comprador",
+  "dataPrevista",
+  "comprimentoDesejadoCm",
+  "prioridade",
 ] as const;
 
 export type CampoRemovivel =
@@ -231,6 +262,9 @@ export const interpretacaoIASchema = z
         textura: z.enum(TEXTURAS_CABELO).nullable(),
         quimica: z.enum(QUIMICAS_CABELO).nullable(),
         comprimentoCm: z.number().nullable(),
+        cabeloDe: z.enum(CABELO_DE).nullable(),
+        nomeDonoCabelo: z.string().nullable(),
+        idadeDonoCabelo: z.number().nullable(),
         observacoes: z.string().nullable(),
         dataCorte: z.string().nullable(),
         pesoG: z.number().nullable(),
@@ -239,6 +273,11 @@ export const interpretacaoIASchema = z
         valorRevenda: z.number().nullable(),
         dataRevenda: z.string().nullable(),
         comprador: z.string().nullable(),
+        tipoCadastro: z.enum(TIPOS_CADASTRO).nullable(),
+        dataPrevista: z.string().nullable(),
+        dataProximoContato: z.string().nullable(),
+        comprimentoDesejadoCm: z.number().nullable(),
+        prioridade: z.enum(PRIORIDADES_FUTURO_CORTE).nullable(),
       })
       .strict(),
     camposRemovidos: z.array(z.enum(CAMPOS_REMOVIVEIS)),

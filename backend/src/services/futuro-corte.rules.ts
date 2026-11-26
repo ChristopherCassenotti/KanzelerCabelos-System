@@ -1,3 +1,6 @@
+import type { CriarFuturoCorteModel } from "../models/futuro-corte.model";
+import type { CriarFuturoCorteInput } from "../schemas/futuro-corte.schema";
+
 export const PRIORIDADES_FUTURO_CORTE = [
   "baixa",
   "media",
@@ -46,6 +49,39 @@ export function futuroCorteAtivo(
     status === "acompanhando" ||
     status === "agendado"
   );
+}
+
+/** Colunas do futuro corte com os valores padrão aplicados. */
+export function prepararFuturoCorte(
+  data: CriarFuturoCorteInput,
+): Omit<CriarFuturoCorteModel, "contatoId"> {
+  return {
+    dataPrevista: data.dataPrevista
+      ? Temporal.PlainDate.from(data.dataPrevista)
+      : null,
+
+    dataProximoContato:
+      Temporal.PlainDate.from(
+        data.dataProximoContato,
+      ),
+
+    comprimentoAtualCm:
+      data.comprimentoAtualCm ?? null,
+
+    comprimentoDesejadoCm:
+      data.comprimentoDesejadoCm ?? null,
+
+    cor: data.cor ?? null,
+    textura: data.textura ?? null,
+    quimica: data.quimica ?? null,
+    natural: data.natural ?? null,
+
+    observacoes:
+      data.observacoes ?? null,
+
+    prioridade:
+      data.prioridade ?? "media",
+  };
 }
 
 interface CalcularSituacaoInput {

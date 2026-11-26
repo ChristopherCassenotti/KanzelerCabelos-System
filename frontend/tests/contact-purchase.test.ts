@@ -75,6 +75,11 @@ describe("resumo da compra no assistente", () => {
       valorRevenda: null,
       dataRevenda: null,
       comprador: null,
+      tipoCadastro: "compra",
+      dataPrevista: null,
+      dataProximoContato: null,
+      comprimentoDesejadoCm: null,
+      prioridade: null,
     } as AssistantContactDraft);
 
     const map = Object.fromEntries(rows.map((row) => [row.label, row.value]));

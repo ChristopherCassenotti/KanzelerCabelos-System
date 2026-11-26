@@ -176,6 +176,7 @@ export function AssistantPage() {
             confirming={state.status === "confirming"}
             disabled={busy}
             onConfirm={() => void confirm()}
+            onLinkContact={(contactId) => void confirm(contactId)}
             onEdit={edit}
             onCancel={cancel}
             onOpenContact={openContact}
@@ -239,7 +240,7 @@ export function AssistantPage() {
             onKeyDown={handleKeyDown}
             rows={1}
             maxLength={ASSISTANT_MESSAGE_MAX_LENGTH}
-            placeholder={state.editing ? "Diga o que deseja alterar..." : "Ex.: Comprei o cabelo da Mariana Silva, de Porto União, R$ 900 no Pix..."}
+            placeholder={state.editing ? "Diga o que deseja alterar..." : "Ex.: Comprei o cabelo da Mariana, de Porto União, R$ 900 no Pix... ou: Maria quer cortar em março..."}
             className="max-h-[140px] min-h-[42px] flex-1 resize-none rounded-[10px] border border-[var(--kanzler-line)] bg-white px-3 py-2.5 text-[13.5px] leading-[1.4] text-[var(--kanzler-ink)] outline-none transition placeholder:text-[var(--kanzler-muted-2)] focus:border-[var(--kanzler-blue)] focus:ring-2 focus:ring-[var(--kanzler-blue-soft)]"
           />
           <button

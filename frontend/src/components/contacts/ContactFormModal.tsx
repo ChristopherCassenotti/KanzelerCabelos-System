@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, CircleDollarSign, X } from "lucide-react";
 import { useEffect } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { FormProvider, useForm, type Resolver } from "react-hook-form";
+import { HairOwnerFields } from "./HairOwnerFields";
 import {
   contactFormSchema,
   contactWithPurchaseFormSchema,
@@ -11,7 +12,7 @@ import type { City, ContactDetail } from "../../types/contact";
 import { formatCurrency } from "../../utils/contact";
 import { contactToFormValues, createEmptyContactWithPurchaseFormValues } from "../../utils/contact-form";
 import { calculatePurchasePricePerGram } from "../../utils/purchase";
-import { chemicals, colors, textures } from "../../utils/hair-options";
+import { chemicals, colors, origins, textures } from "../../utils/hair-options";
 
 interface ContactFormModalProps {
   open: boolean;
@@ -25,7 +26,6 @@ interface ContactFormModalProps {
   onSubmit: (values: ContactWithPurchaseFormValues) => unknown | Promise<unknown>;
 }
 
-const origins = ["Anúncio Meta", "Indicação", "Perfil Instagram", "Van na rua", "WhatsApp direto", "Outro"];
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
@@ -112,13 +112,18 @@ export function ContactFormModal({
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex min-h-0 flex-1 flex-col">
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <SectionTitle>Dados da cliente</SectionTitle>
+              <SectionTitle>Dados do contato</SectionTitle>
 
               <label className="sm:col-span-2">
                 <FieldLabel required>Nome</FieldLabel>
                 <input {...form.register("nome")} className={inputClass} placeholder="Nome completo" autoFocus />
                 {form.formState.errors.nome && <p className={errorClass}>{form.formState.errors.nome.message}</p>}
+                <p className="mt-1 text-[11.5px] text-[var(--kanzler-muted)]">Quem negocia. Se o cabelo for de uma criança, informe o pai ou a mãe e marque abaixo de quem é o cabelo.</p>
               </label>
+
+              <FormProvider {...form}>
+                <HairOwnerFields inputClass={inputClass} errorClass={errorClass} Label={FieldLabel} />
+              </FormProvider>
 
               <label>
                 <FieldLabel>WhatsApp</FieldLabel>

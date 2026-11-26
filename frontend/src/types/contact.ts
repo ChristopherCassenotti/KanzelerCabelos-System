@@ -1,4 +1,5 @@
 import type { RegisterPurchasePayload } from "./purchase";
+export type HairOwner = "filha" | "filho" | "outro";
 export type ContactStatus = "lead" | "avaliacao_agendada" | "comprado" | "perdido";
 
 export interface City {
@@ -31,6 +32,9 @@ export interface ContactListItem {
   textura: string | null;
   quimica: string | null;
   comprimentoCm: number | null;
+  cabeloDe: HairOwner | null;
+  nomeDonoCabelo: string | null;
+  idadeDonoCabelo: number | null;
   cicloRecompraMeses: number;
   observacoes: string | null;
   createdAt?: string;
@@ -119,6 +123,10 @@ export interface ContactPayload {
   textura?: string;
   quimica?: string;
   comprimentoCm?: number;
+  /** null limpa o campo na edição. */
+  cabeloDe?: HairOwner | null;
+  nomeDonoCabelo?: string | null;
+  idadeDonoCabelo?: number | null;
   observacoes?: string;
 }
 

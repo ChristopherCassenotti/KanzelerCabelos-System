@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { contactFormSchema } from "./contact.schema";
 
 const requiredDate = z
   .string()
@@ -29,6 +30,13 @@ export const futureCutFormSchema = z.object({
 });
 
 export type FutureCutFormValues = z.infer<typeof futureCutFormSchema>;
+
+/** Pessoa ainda sem compra: contato (lead) + futuro corte. */
+export const newFutureCutFormSchema = futureCutFormSchema.extend(
+  contactFormSchema.pick({ nome: true, telefone: true, cidadeId: true, origem: true, indicadoPor: true, cabeloDe: true, nomeDonoCabelo: true, idadeDonoCabelo: true }).shape,
+);
+
+export type NewFutureCutFormValues = z.infer<typeof newFutureCutFormSchema>;
 
 export const futureCutContactedSchema = z.object({
   dataProximoContato: requiredDate,

@@ -41,6 +41,10 @@ autorizouFoto Boolean
   textura              String?
   quimica              String?
   comprimentoCm        Int?      @map("comprimento_cm")
+  // Cabelo de outra pessoa (ex.: filha): nome é de quem negocia.
+  cabeloDe             String?   @map("cabelo_de")
+  nomeDonoCabelo       String?   @map("nome_dono_cabelo")
+  idadeDonoCabelo      Int?      @map("idade_dono_cabelo")
   cicloRecompraMeses   Int       @default(8) @map("ciclo_recompra_meses")
   observacoes           String?
   createdAt             temporal.createdAt() @map("created_at")

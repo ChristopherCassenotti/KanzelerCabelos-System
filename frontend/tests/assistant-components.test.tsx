@@ -22,6 +22,9 @@ const draft: AssistantContactDraft = {
   textura: null,
   quimica: null,
   comprimentoCm: null,
+  cabeloDe: null,
+  nomeDonoCabelo: null,
+  idadeDonoCabelo: null,
   observacoes: null,
   autorizouFoto: false,
   dataCorte: null,
@@ -31,7 +34,43 @@ const draft: AssistantContactDraft = {
   valorRevenda: null,
   dataRevenda: null,
   comprador: null,
+  tipoCadastro: "compra",
+  dataPrevista: null,
+  dataProximoContato: null,
+  comprimentoDesejadoCm: null,
+  prioridade: null,
 };
+
+describe("ContactDraftCard - futuro corte", () => {
+  const render = (tipoCadastro: "compra" | "futuro_corte") =>
+    renderToStaticMarkup(
+      <ContactDraftCard
+        draft={{ ...draft, tipoCadastro, dataProximoContato: "2027-02-10" }}
+        duplicates={[{ id: "c-1", nome: "Juliana F.", telefone: null, cidade: null, motivo: "telefone" }]}
+        photos={[]}
+        onRemovePhoto={noop}
+        confirming={false}
+        disabled={false}
+        onConfirm={noop}
+        onLinkContact={noop}
+        onEdit={noop}
+        onCancel={noop}
+        onOpenContact={noop}
+      />,
+    );
+
+  it("mostra os dados do acompanhamento e permite vincular", () => {
+    const html = render("futuro_corte");
+
+    expect(html).toContain("10/02/2027");
+    expect(html).toContain("é esta pessoa, vincular");
+    expect(html).not.toContain("Forma de pagamento");
+  });
+
+  it("compra não oferece vínculo", () => {
+    expect(render("compra")).not.toContain("vincular");
+  });
+});
 
 describe("ContactDraftCard", () => {
   it("exibe resumo e ações de confirmar, editar e cancelar", () => {

@@ -11,7 +11,10 @@ import {
   type MensagemHistorico,
   type RascunhoContato,
 } from "../schemas/assistente.schema";
-import { criarContatoComCompraSchema } from "../schemas/contato.schema";
+import {
+  criarContatoComCompraSchema,
+  criarContatoComFuturoCorteSchema,
+} from "../schemas/contato.schema";
 import { AssistenteError } from "./assistente.errors";
 import {
   OpenAIInterpretadorService,
@@ -29,6 +32,7 @@ import {
   criarRascunhoVazio,
   rascunhoParaContextoIA,
   rascunhoParaCadastroComCompra,
+  rascunhoParaCadastroComFuturoCorte,
   rascunhoTemDados,
   type CampoPendente,
 } from "./assistente-rascunho.rules";
@@ -38,6 +42,7 @@ import {
   type CidadeResumo,
 } from "./cidade.service";
 import { ContatoService } from "./contato.service";
+import { FuturoCorteService } from "./futuro-corte.service";
 
 export type EstadoAssistente =
   | "coletando_dados"
@@ -75,10 +80,14 @@ export interface CadastroAssistente {
     status: string;
     cidade: CidadeResumo;
   };
-  compra: {
+  compra?: {
     id: string;
     dataCorte: string;
     valorPago: string;
+  };
+  futuroCorte?: {
+    id: string;
+    dataProximoContato: string;
   };
 }
 
@@ -95,6 +104,7 @@ const ROTULOS_PENDENCIA: Record<CampoPendente, string> = {
   cidade: "a cidade",
   valorPago: "o valor pago",
   formaPagamento: "a forma de pagamento (Pix ou dinheiro)",
+  dataProximoContato: "a data do próximo contato (quando devemos chamar)",
 };
 
 function listarEmPortugues(itens: string[]) {
@@ -106,13 +116,15 @@ function listarEmPortugues(itens: string[]) {
 const LIMITE_TEXTO_HISTORICO_IA = 600;
 
 const MENSAGEM_FORA_ESCOPO =
-  "Por enquanto eu consigo apenas cadastrar novas clientes junto com a compra do cabelo. " +
+  "Por enquanto eu consigo apenas cadastrar novas clientes junto com a compra do cabelo ou cadastrar futuros cortes. " +
   "Para editar, excluir, mudar status, registrar compra de cliente já cadastrada ou agendar visitas, use as telas do sistema.";
 
 const MENSAGEM_AJUDA =
   "Eu cadastro a cliente junto com a compra do cabelo a partir de uma mensagem. Exemplo: " +
   "\"Comprei o cabelo da Juliana Ferreira, de União da Vitória, telefone 42999998888, castanho, natural, 60 cm, 420 g, paguei 1.850 no Pix\". " +
-  "São obrigatórios: nome, cidade, valor pago e forma de pagamento (a data do corte é hoje, se não for informada). Antes de salvar, eu mostro um resumo para você confirmar.";
+  "São obrigatórios: nome, cidade, valor pago e forma de pagamento (a data do corte é hoje, se não for informada). Antes de salvar, eu mostro um resumo para você confirmar. " +
+  "Também cadastro futuros cortes: \"Maria, de Videira, castanho liso 50 cm, quer cortar em março, chamar em 10 de fevereiro\". " +
+  "Nesse caso são obrigatórios: nome, cidade e a data do próximo contato.";
 
 function nomeCurto(nome: string | null) {
   return nome?.split(" ")[0] ?? "contato";
@@ -158,6 +170,7 @@ export class AssistenteService {
       { janelaMs: 60_000, maximo: 20 },
     ]),
     private readonly idempotencia = new RegistroIdempotencia<CadastroAssistente>(),
+    private readonly futuroCorteService = new FuturoCorteService(),
   ) {}
 
   async processarMensagem(
@@ -215,12 +228,14 @@ export class AssistenteService {
       const { resultado, reaproveitado } =
         await this.idempotencia.executar(
           `${usuarioId}:${input.idempotencyKey}`,
-          impressaoRascunho(rascunho),
+          impressaoRascunho(rascunho) +
+            (input.contatoExistenteId ?? ""),
           () =>
             this.criarContato(
               usuarioId,
               rascunho,
               input.ignorarDuplicidade,
+              input.contatoExistenteId,
             ),
         );
 
@@ -245,7 +260,25 @@ export class AssistenteService {
     usuarioId: string,
     rascunho: RascunhoContato,
     ignorarDuplicidade: boolean,
+    contatoExistenteId?: string,
   ): Promise<CadastroAssistente> {
+    if (rascunho.tipoCadastro === "futuro_corte") {
+      return this.criarFuturoCorte(
+        usuarioId,
+        rascunho,
+        ignorarDuplicidade,
+        contatoExistenteId,
+      );
+    }
+
+    if (contatoExistenteId !== undefined) {
+      throw new AssistenteError(
+        "dados_invalidos",
+        "Compra de cliente já cadastrada deve ser registrada pela ficha.",
+        400,
+      );
+    }
+
     const cidade = rascunho.cidadeId
       ? await this.cidadeService.findById(rascunho.cidadeId)
       : null;
@@ -271,18 +304,7 @@ export class AssistenteService {
       );
     }
 
-    if (!ignorarDuplicidade) {
-      const duplicados = await this.buscarPossiveisDuplicados(rascunho);
-
-      if (duplicados.length > 0) {
-        throw new AssistenteError(
-          "possivel_duplicidade",
-          "Encontrei contatos parecidos já cadastrados. Confira antes de criar outro.",
-          409,
-          { possiveisDuplicados: duplicados },
-        );
-      }
-    }
+    await this.exigirSemDuplicados(rascunho, ignorarDuplicidade);
 
     // Contato (já "comprado"), compra e auditoria em uma única transação.
     const { contato, compra } = await this.contatoService.createComCompra(
@@ -290,18 +312,7 @@ export class AssistenteService {
       usuarioId,
     );
 
-    try {
-      await this.auditoriaRepository.create({
-        usuarioId,
-        acao: "contato_criado_assistente",
-        entidade: "contato",
-        entidadeId: contato.id,
-        detalhes: null,
-      });
-    } catch {
-      // A auditoria não pode desfazer nem mascarar um cadastro já gravado.
-      console.warn("assistente: falha ao registrar auditoria do cadastro");
-    }
+    await this.auditar(usuarioId, "contato_criado_assistente", contato.id);
 
     return {
       contato: {
@@ -316,6 +327,161 @@ export class AssistenteService {
         valorPago: validado.data.compra.valorPago,
       },
     };
+  }
+
+  /** Contato novo (lead) com futuro corte, ou vínculo a um já cadastrado. */
+  private async criarFuturoCorte(
+    usuarioId: string,
+    rascunho: RascunhoContato,
+    ignorarDuplicidade: boolean,
+    contatoExistenteId?: string,
+  ): Promise<CadastroAssistente> {
+    const cidade = rascunho.cidadeId
+      ? await this.cidadeService.findById(rascunho.cidadeId)
+      : null;
+
+    if (!cidade) {
+      throw new AssistenteError(
+        "cidade_invalida",
+        "A cidade do contato não foi encontrada no cadastro. Informe uma cidade válida.",
+        422,
+      );
+    }
+
+    const validado = criarContatoComFuturoCorteSchema.safeParse(
+      rascunhoParaCadastroComFuturoCorte(rascunho),
+    );
+
+    if (!validado.success) {
+      throw new AssistenteError(
+        "dados_invalidos",
+        "Os dados do contato ou do futuro corte são inválidos. Revise as informações.",
+        400,
+        validado.error.flatten(),
+      );
+    }
+
+    const { dataProximoContato } = validado.data.futuroCorte;
+
+    if (contatoExistenteId !== undefined) {
+      const existente =
+        await this.contatoRepository.findById(contatoExistenteId);
+
+      if (!existente?.cidade) {
+        throw new AssistenteError(
+          "contato_nao_encontrado",
+          "O contato escolhido não foi encontrado.",
+          404,
+        );
+      }
+
+      const criado = await this.futuroCorteService.criar(
+        contatoExistenteId,
+        validado.data.futuroCorte,
+      );
+
+      if (criado.tipo !== "sucesso") {
+        throw new AssistenteError(
+          criado.tipo,
+          criado.tipo === "ja_existe_ativo"
+            ? "Este contato já tem um futuro corte ativo. Edite pela ficha."
+            : "O contato escolhido não foi encontrado.",
+          criado.tipo === "ja_existe_ativo" ? 409 : 404,
+        );
+      }
+
+      // Enviar fotos é o consentimento, igual ao cadastro novo.
+      if (rascunho.autorizouFoto && !existente.autorizouFoto) {
+        await this.contatoRepository.update(contatoExistenteId, {
+          autorizouFoto: true,
+        });
+      }
+
+      await this.auditar(
+        usuarioId,
+        "futuro_corte_criado_assistente",
+        contatoExistenteId,
+      );
+
+      return {
+        contato: {
+          id: existente.id,
+          nome: existente.nome,
+          status: existente.status,
+          cidade: {
+            id: existente.cidade.id,
+            nome: existente.cidade.nome,
+            uf: existente.cidade.uf,
+          },
+        },
+        futuroCorte: {
+          id: criado.futuroCorte.id,
+          dataProximoContato,
+        },
+      };
+    }
+
+    await this.exigirSemDuplicados(rascunho, ignorarDuplicidade);
+
+    const { contato, futuroCorte } =
+      await this.contatoService.createComFuturoCorte(
+        validado.data,
+        usuarioId,
+      );
+
+    await this.auditar(usuarioId, "contato_criado_assistente", contato.id);
+
+    return {
+      contato: {
+        id: contato.id,
+        nome: contato.nome,
+        status: contato.status,
+        cidade,
+      },
+      futuroCorte: {
+        id: futuroCorte.id,
+        dataProximoContato,
+      },
+    };
+  }
+
+  private async exigirSemDuplicados(
+    rascunho: RascunhoContato,
+    ignorarDuplicidade: boolean,
+  ) {
+    if (ignorarDuplicidade) return;
+
+    const duplicados = await this.buscarPossiveisDuplicados(rascunho);
+
+    if (duplicados.length > 0) {
+      throw new AssistenteError(
+        "possivel_duplicidade",
+        "Encontrei contatos parecidos já cadastrados. Confira antes de criar outro.",
+        409,
+        { possiveisDuplicados: duplicados },
+      );
+    }
+  }
+
+  private async auditar(
+    usuarioId: string,
+    acao:
+      | "contato_criado_assistente"
+      | "futuro_corte_criado_assistente",
+    contatoId: string,
+  ) {
+    try {
+      await this.auditoriaRepository.create({
+        usuarioId,
+        acao,
+        entidade: "contato",
+        entidadeId: contatoId,
+        detalhes: null,
+      });
+    } catch {
+      // A auditoria não pode desfazer nem mascarar um cadastro já gravado.
+      console.warn("assistente: falha ao registrar auditoria do cadastro");
+    }
   }
 
   private consumirLimite(
@@ -503,7 +669,19 @@ export class AssistenteService {
       }
     }
 
-    return this.montarResposta(rascunho, avisos, cidadeOpcoes);
+    const resposta = await this.montarResposta(rascunho, avisos, cidadeOpcoes);
+
+    // Evita repetir a mesma pergunta sem explicar que nada foi aproveitado.
+    if (
+      rascunhoAtual &&
+      resposta.estado === "coletando_dados" &&
+      avisos.length === 0 &&
+      impressaoRascunho(rascunho) === impressaoRascunho(rascunhoAtual)
+    ) {
+      resposta.resposta = `Não consegui identificar essa informação na sua mensagem. ${resposta.resposta}`;
+    }
+
+    return resposta;
   }
 
   private async respostaSemAlteracao(
@@ -535,6 +713,7 @@ export class AssistenteService {
     cidadeOpcoes: CidadeResumo[],
   ): Promise<RespostaAssistente> {
     const pendencias = calcularPendencias(rascunho);
+    const futuro = rascunho.tipoCadastro === "futuro_corte";
     const nome = nomeCurto(rascunho.nome);
 
     if (cidadeOpcoes.length > 0) {
@@ -557,8 +736,8 @@ export class AssistenteService {
         pendencias.length === 1 && pendencias[0] === "cidade" && rascunho.nome
           ? `Qual é a cidade de ${nome}?`
           : pendencias.length === 1 && pendencias[0] === "nome"
-            ? "Qual é o nome da cliente?"
-            : `Para cadastrar ${rascunho.nome ? nome : "a cliente"} com a compra, ainda falta informar ${listarEmPortugues(
+            ? "Qual é o nome de quem está vendendo o cabelo? Se o cabelo for de uma criança, informe o nome do pai ou da mãe (ex.: \"Robert, pai da menina\")."
+            : `Para cadastrar ${rascunho.nome ? nome : "a cliente"} com ${futuro ? "o futuro corte" : "a compra"}, ainda falta informar ${listarEmPortugues(
                 pendencias.map((campo) => ROTULOS_PENDENCIA[campo]),
               )}.`;
 
@@ -579,8 +758,12 @@ export class AssistenteService {
     return {
       resposta:
         possiveisDuplicados.length > 0
-          ? "Confira os dados. Atenção: encontrei contatos parecidos já cadastrados."
-          : "Confira os dados da cliente e da compra. Posso cadastrar?",
+          ? futuro
+            ? "Encontrei contatos parecidos já cadastrados. É a mesma pessoa? Você pode vincular o futuro corte a ela."
+            : "Confira os dados. Atenção: encontrei contatos parecidos já cadastrados."
+          : futuro
+            ? "Confira os dados do contato e do futuro corte. Posso cadastrar?"
+            : "Confira os dados do contato e da compra. Posso cadastrar?",
       estado: "aguardando_confirmacao",
       rascunho,
       pendencias,

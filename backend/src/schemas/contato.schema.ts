@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { dadosCompraSchema } from "./compra.schema";
+import { criarFuturoCorteSchema } from "./futuro-corte.schema";
+
+/** De quem é o cabelo quando não é da própria pessoa cadastrada. */
+export const CABELO_DE = ["filha", "filho", "outro"] as const;
 
 export const criarContatoSchema = z.object({
   nome: z.string().min(2),
@@ -57,6 +61,11 @@ dataAvaliacao: z
     .positive()
     .optional(),
 
+  // null = o cabelo é da própria pessoa.
+  cabeloDe: z.enum(CABELO_DE).nullable().optional(),
+  nomeDonoCabelo: z.string().trim().max(150).nullable().optional(),
+  idadeDonoCabelo: z.number().int().min(0).max(120).nullable().optional(),
+
   observacoes: z.string().optional(),
 autorizouFoto: z
   .boolean()
@@ -92,6 +101,20 @@ export const criarContatoComCompraSchema = z
     compra: dadosCompraSchema,
   })
   .strict();
+
+/**
+ * Pessoa que ainda não vendeu o cabelo: o contato entra como lead junto com
+ * o futuro corte, em uma transação.
+ */
+export const criarContatoComFuturoCorteSchema = z
+  .object({
+    contato: criarContatoSchema,
+    futuroCorte: criarFuturoCorteSchema,
+  })
+  .strict();
+
+export type CriarContatoComFuturoCorteInput =
+  z.infer<typeof criarContatoComFuturoCorteSchema>;
 
 export type CriarContatoComCompraInput =
   z.infer<typeof criarContatoComCompraSchema>;

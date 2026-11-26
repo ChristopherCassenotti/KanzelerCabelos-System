@@ -69,6 +69,17 @@ export async function contatoRoutes(
     },
   );
 
+  // Pessoa sem compra: contato (lead) + futuro corte na mesma transação.
+  app.post(
+    "/com-futuro-corte",
+    (request, reply) => {
+      return contatoController.createComFuturoCorte(
+        request,
+        reply,
+      );
+    },
+  );
+
   app.patch<{
     Params: {
       id: string;

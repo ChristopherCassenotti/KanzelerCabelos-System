@@ -1,4 +1,5 @@
-import type { City } from "./contact";
+import type { City, HairOwner } from "./contact";
+import type { FutureCutPriority } from "./future-cut";
 
 export type AssistantStage =
   | "coletando_dados"
@@ -8,10 +9,11 @@ export type AssistantStage =
   | "fora_do_escopo"
   | "ajuda";
 
-export type AssistantPendingField = "nome" | "cidade" | "valorPago" | "formaPagamento";
+export type AssistantPendingField = "nome" | "cidade" | "valorPago" | "formaPagamento" | "dataProximoContato";
 
 /** Espelha `rascunhoContatoSchema` do backend. */
 export interface AssistantContactDraft {
+  tipoCadastro: "compra" | "futuro_corte";
   nome: string | null;
   telefone: string | null;
   cidadeId: string | null;
@@ -27,9 +29,12 @@ export interface AssistantContactDraft {
   textura: string | null;
   quimica: string | null;
   comprimentoCm: number | null;
+  cabeloDe: HairOwner | null;
+  nomeDonoCabelo: string | null;
+  idadeDonoCabelo: number | null;
   observacoes: string | null;
   autorizouFoto: boolean;
-  // Compra (o contato só é cadastrado junto com a compra).
+  // Compra (tipoCadastro = compra).
   dataCorte: string | null;
   pesoG: number | null;
   valorPago: string | null;
@@ -37,6 +42,11 @@ export interface AssistantContactDraft {
   valorRevenda: string | null;
   dataRevenda: string | null;
   comprador: string | null;
+  // Futuro corte (tipoCadastro = futuro_corte).
+  dataPrevista: string | null;
+  dataProximoContato: string | null;
+  comprimentoDesejadoCm: number | null;
+  prioridade: FutureCutPriority | null;
 }
 
 export interface AssistantDuplicate {
@@ -75,6 +85,8 @@ export interface AssistantConfirmPayload {
   idempotencyKey: string;
   rascunho: AssistantContactDraft;
   ignorarDuplicidade: boolean;
+  /** Futuro corte: vincula ao contato já cadastrado. */
+  contatoExistenteId?: string;
   /** Com fotos o contato é criado com `autorizouFoto = true`; sem fotos, `false`. */
   quantidadeFotos: number;
 }
@@ -102,6 +114,7 @@ export interface AssistantCreatedPurchase {
 
 export interface AssistantConfirmResponse {
   contato: AssistantCreatedContact;
-  compra: AssistantCreatedPurchase;
+  compra?: AssistantCreatedPurchase;
+  futuroCorte?: { id: string; dataProximoContato: string };
   reaproveitado: boolean;
 }

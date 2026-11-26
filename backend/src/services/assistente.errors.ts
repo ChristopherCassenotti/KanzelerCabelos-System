@@ -7,6 +7,8 @@ export type CodigoErroAssistente =
   | "cidade_invalida"
   | "dados_invalidos"
   | "possivel_duplicidade"
+  | "contato_nao_encontrado"
+  | "ja_existe_ativo"
   | "chave_reutilizada";
 
 /** Erro de negócio do assistente com mensagem segura para o usuário. */

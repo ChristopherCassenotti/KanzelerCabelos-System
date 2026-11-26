@@ -3,7 +3,9 @@ export type AcaoAuditoria =
   | "contato_excluido"
   | "contato_excluido_definitivo"
   | "contato_criado_assistente"
-  | "contato_criado_com_compra";
+  | "futuro_corte_criado_assistente"
+  | "contato_criado_com_compra"
+  | "contato_criado_com_futuro_corte";
 
 export type EntidadeAuditoria =
   | "compra"

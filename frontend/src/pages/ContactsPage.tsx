@@ -15,6 +15,7 @@ import { ContactDrawer } from "../components/contacts/ContactDrawer";
 import { ContactFormModal } from "../components/contacts/ContactFormModal";
 import { ContactStatusBadge } from "../components/contacts/ContactStatusBadge";
 import { FutureCutsTab } from "../components/future-cuts/FutureCutsTab";
+import { NewFutureCutModal } from "../components/future-cuts/NewFutureCutModal";
 import { PurchaseFormModal } from "../components/purchases/PurchaseFormModal";
 import { ConfirmDialog } from "../components/contacts/ConfirmDialog";
 import type { ContactFormValues, ContactWithPurchaseFormValues } from "../schemas/contact.schema";
@@ -29,6 +30,9 @@ import {
   softDeleteContact,
   updateContact,
 } from "../services/contacts/contacts.service";
+import { createContactWithFutureCut } from "../services/future-cuts/future-cuts.service";
+import type { NewFutureCutFormValues } from "../schemas/future-cut.schema";
+import { formValuesToNewFutureCutPayload } from "../utils/future-cut";
 import type { ContactDetail, ContactExportFilters, ContactStatus } from "../types/contact";
 import {
   buildMapsUrl,
@@ -36,6 +40,7 @@ import {
   formatCurrency,
   formatDate,
   formatPhone,
+  hairOwnerLabel,
   initials,
   latestPurchase,
   pricePerGram,
@@ -99,6 +104,7 @@ export function ContactsPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [confirmMode, setConfirmMode] = useState<"soft" | "hard" | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [newFutureCutOpen, setNewFutureCutOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
 
   const [cityFilter, setCityFilter] = useState("");
@@ -179,6 +185,19 @@ export function ContactsPage() {
       setToast("Contato e compra registrados com sucesso.");
     },
     onError: (error) => setFormError(errorMessage(error)),
+  });
+
+  const futureCutMutation = useMutation({
+    mutationFn: (values: NewFutureCutFormValues) => createContactWithFutureCut(formValuesToNewFutureCutPayload(values)),
+    onSuccess: async ({ contato }) => {
+      setNewFutureCutOpen(false);
+      await Promise.all([
+        invalidateContactArea(contato.id),
+        queryClient.invalidateQueries({ queryKey: ["agenda"] }),
+        queryClient.invalidateQueries({ queryKey: ["map"] }),
+      ]);
+      setToast("Futuro corte cadastrado.");
+    },
   });
 
   const updateMutation = useMutation({
@@ -326,7 +345,8 @@ export function ContactsPage() {
         </div>
       )}
 
-      <div className="flex overflow-x-auto border-b border-[var(--kanzler-line)]" role="tablist">
+      <div className="flex items-center gap-2 border-b border-[var(--kanzler-line)]">
+      <div className="flex min-w-0 flex-1 overflow-x-auto" role="tablist">
         {statusTabs.map(({ key, label }) => {
           const active = !isFutureCutsTab && statusFilter === key;
           return (
@@ -338,6 +358,10 @@ export function ContactsPage() {
         <button type="button" role="tab" aria-selected={isFutureCutsTab} onClick={() => selectTab("futuros")} className={tabClass(isFutureCutsTab)}>
           Futuros cortes
         </button>
+      </div>
+      <button type="button" onClick={() => { futureCutMutation.reset(); setNewFutureCutOpen(true); }} className="mb-1.5 inline-flex shrink-0 items-center gap-2 rounded-[10px] border border-[var(--kanzler-line)] bg-white px-3 py-2 text-[12.5px] font-semibold text-[var(--kanzler-blue)] hover:bg-[var(--kanzler-blue-soft)]">
+        <Plus size={15} /> Novo futuro corte
+      </button>
       </div>
 
       {isFutureCutsTab && <FutureCutsTab cities={cities} onOpenContact={openContact} />}
@@ -426,7 +450,7 @@ export function ContactsPage() {
                             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--kanzler-blue-soft)] text-[11px] font-bold text-[var(--kanzler-blue)]">{initials(contact.nome)}</span>
                             <div className="min-w-0">
                               <p className="truncate text-[13px] font-semibold">{contact.nome}</p>
-                              <p className="mt-0.5 truncate text-[11.5px] text-[var(--kanzler-muted)]">{formatPhone(contact.telefone)}</p>
+                              <p className="mt-0.5 truncate text-[11.5px] text-[var(--kanzler-muted)]">{[formatPhone(contact.telefone), hairOwnerLabel(contact)].filter(Boolean).join(" · ")}</p>
                             </div>
                           </div>
                         </td>
@@ -489,6 +513,18 @@ export function ContactsPage() {
         )}
       </section>
       </>
+      )}
+
+      {newFutureCutOpen && (
+        <NewFutureCutModal
+          cities={cities}
+          contacts={contacts}
+          pending={futureCutMutation.isPending}
+          error={futureCutMutation.isError ? errorMessage(futureCutMutation.error) : null}
+          onClose={() => setNewFutureCutOpen(false)}
+          onOpenContact={(id) => { setNewFutureCutOpen(false); openContact(id); }}
+          onSubmit={(values) => futureCutMutation.mutate(values)}
+        />
       )}
 
       <ContactFormModal

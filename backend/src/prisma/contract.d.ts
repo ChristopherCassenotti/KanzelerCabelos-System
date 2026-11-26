@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'bd60ac491bcc221e19218b34eb9bff99adf86ace0347ed2a5ddeab375fc6c3e8'>;
+  StorageHashBase<'e8b96722f60f6c0c8ca7c9da7f96af24534f96068553980e200b8e8f919ca44d'>;
 export type ExecutionHash =
   ExecutionHashBase<'21088b6ce934ce6ae4cbabe55534bdee95c48942e2633d8f63540f540758cef6'>;
 export type ProfileHash =
@@ -286,6 +286,7 @@ export type FieldOutputTypes = {
     };
     readonly Contato: {
       readonly autorizouFoto: CodecTypes['pg/bool@1']['output'];
+      readonly cabeloDe: CodecTypes['pg/text@1']['output'] | null;
       readonly cicloRecompraMeses: CodecTypes['pg/int4@1']['output'];
       readonly cidadeId: CodecTypes['pg/uuid@1']['output'];
       readonly comprimentoCm: CodecTypes['pg/int4@1']['output'] | null;
@@ -298,12 +299,14 @@ export type FieldOutputTypes = {
       readonly geoFonte: CodecTypes['pg/text@1']['output'] | null;
       readonly geoPlaceId: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly idadeDonoCabelo: CodecTypes['pg/int4@1']['output'] | null;
       readonly indicadoPor: CodecTypes['pg/text@1']['output'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['output'] | null;
       readonly motivoPerda: CodecTypes['pg/text@1']['output'] | null;
       readonly natural: CodecTypes['pg/bool@1']['output'] | null;
       readonly nome: CodecTypes['pg/text@1']['output'];
+      readonly nomeDonoCabelo: CodecTypes['pg/text@1']['output'] | null;
       readonly observacoes: CodecTypes['pg/text@1']['output'] | null;
       readonly origem: CodecTypes['pg/text@1']['output'] | null;
       readonly quimica: CodecTypes['pg/text@1']['output'] | null;
@@ -410,6 +413,7 @@ export type FieldInputTypes = {
     };
     readonly Contato: {
       readonly autorizouFoto: CodecTypes['pg/bool@1']['input'];
+      readonly cabeloDe: CodecTypes['pg/text@1']['input'] | null;
       readonly cicloRecompraMeses: CodecTypes['pg/int4@1']['input'];
       readonly cidadeId: CodecTypes['pg/uuid@1']['input'];
       readonly comprimentoCm: CodecTypes['pg/int4@1']['input'] | null;
@@ -422,12 +426,14 @@ export type FieldInputTypes = {
       readonly geoFonte: CodecTypes['pg/text@1']['input'] | null;
       readonly geoPlaceId: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly idadeDonoCabelo: CodecTypes['pg/int4@1']['input'] | null;
       readonly indicadoPor: CodecTypes['pg/text@1']['input'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['input'] | null;
       readonly motivoPerda: CodecTypes['pg/text@1']['input'] | null;
       readonly natural: CodecTypes['pg/bool@1']['input'] | null;
       readonly nome: CodecTypes['pg/text@1']['input'];
+      readonly nomeDonoCabelo: CodecTypes['pg/text@1']['input'] | null;
       readonly observacoes: CodecTypes['pg/text@1']['input'] | null;
       readonly origem: CodecTypes['pg/text@1']['input'] | null;
       readonly quimica: CodecTypes['pg/text@1']['input'] | null;
@@ -534,6 +540,7 @@ export type StorageColumnTypes = {
     };
     readonly contatos: {
       readonly autorizou_foto: CodecTypes['pg/bool@1']['output'];
+      readonly cabelo_de: CodecTypes['pg/text@1']['output'] | null;
       readonly ciclo_recompra_meses: CodecTypes['pg/int4@1']['output'];
       readonly cidade_id: CodecTypes['pg/uuid@1']['output'];
       readonly comprimento_cm: CodecTypes['pg/int4@1']['output'] | null;
@@ -546,12 +553,14 @@ export type StorageColumnTypes = {
       readonly geo_fonte: CodecTypes['pg/text@1']['output'] | null;
       readonly geo_place_id: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/uuid@1']['output'];
+      readonly idade_dono_cabelo: CodecTypes['pg/int4@1']['output'] | null;
       readonly indicado_por: CodecTypes['pg/text@1']['output'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['output'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['output'] | null;
       readonly motivo_perda: CodecTypes['pg/text@1']['output'] | null;
       readonly natural: CodecTypes['pg/bool@1']['output'] | null;
       readonly nome: CodecTypes['pg/text@1']['output'];
+      readonly nome_dono_cabelo: CodecTypes['pg/text@1']['output'] | null;
       readonly observacoes: CodecTypes['pg/text@1']['output'] | null;
       readonly origem: CodecTypes['pg/text@1']['output'] | null;
       readonly quimica: CodecTypes['pg/text@1']['output'] | null;
@@ -658,6 +667,7 @@ export type StorageColumnInputTypes = {
     };
     readonly contatos: {
       readonly autorizou_foto: CodecTypes['pg/bool@1']['input'];
+      readonly cabelo_de: CodecTypes['pg/text@1']['input'] | null;
       readonly ciclo_recompra_meses: CodecTypes['pg/int4@1']['input'];
       readonly cidade_id: CodecTypes['pg/uuid@1']['input'];
       readonly comprimento_cm: CodecTypes['pg/int4@1']['input'] | null;
@@ -670,12 +680,14 @@ export type StorageColumnInputTypes = {
       readonly geo_fonte: CodecTypes['pg/text@1']['input'] | null;
       readonly geo_place_id: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/uuid@1']['input'];
+      readonly idade_dono_cabelo: CodecTypes['pg/int4@1']['input'] | null;
       readonly indicado_por: CodecTypes['pg/text@1']['input'] | null;
       readonly lat: CodecTypes['pg/numeric@1']['input'] | null;
       readonly lng: CodecTypes['pg/numeric@1']['input'] | null;
       readonly motivo_perda: CodecTypes['pg/text@1']['input'] | null;
       readonly natural: CodecTypes['pg/bool@1']['input'] | null;
       readonly nome: CodecTypes['pg/text@1']['input'];
+      readonly nome_dono_cabelo: CodecTypes['pg/text@1']['input'] | null;
       readonly observacoes: CodecTypes['pg/text@1']['input'] | null;
       readonly origem: CodecTypes['pg/text@1']['input'] | null;
       readonly quimica: CodecTypes['pg/text@1']['input'] | null;
@@ -790,6 +802,7 @@ export namespace Models {
   };
   export type public_Contato = {
     autorizouFoto: CodecTypes['pg/bool@1']['output'];
+    cabeloDe: CodecTypes['pg/text@1']['output'] | null;
     cicloRecompraMeses: CodecTypes['pg/int4@1']['output'];
     cidadeId: CodecTypes['pg/uuid@1']['output'];
     comprimentoCm: CodecTypes['pg/int4@1']['output'] | null;
@@ -802,12 +815,14 @@ export namespace Models {
     geoFonte: CodecTypes['pg/text@1']['output'] | null;
     geoPlaceId: CodecTypes['pg/text@1']['output'] | null;
     id: CodecTypes['pg/uuid@1']['output'];
+    idadeDonoCabelo: CodecTypes['pg/int4@1']['output'] | null;
     indicadoPor: CodecTypes['pg/text@1']['output'] | null;
     lat: CodecTypes['pg/numeric@1']['output'] | null;
     lng: CodecTypes['pg/numeric@1']['output'] | null;
     motivoPerda: CodecTypes['pg/text@1']['output'] | null;
     natural: CodecTypes['pg/bool@1']['output'] | null;
     nome: CodecTypes['pg/text@1']['output'];
+    nomeDonoCabelo: CodecTypes['pg/text@1']['output'] | null;
     observacoes: CodecTypes['pg/text@1']['output'] | null;
     origem: CodecTypes['pg/text@1']['output'] | null;
     quimica: CodecTypes['pg/text@1']['output'] | null;
@@ -1151,6 +1166,11 @@ type ContractBase = Omit<
                     readonly value: DefaultLiteralValue<'pg/bool@1', false>;
                   };
                 };
+                readonly cabelo_de: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly ciclo_recompra_meses: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -1215,6 +1235,11 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                 };
+                readonly idade_dono_cabelo: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                };
                 readonly indicado_por: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
@@ -1244,6 +1269,11 @@ type ContractBase = Omit<
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                };
+                readonly nome_dono_cabelo: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                 };
                 readonly observacoes: {
                   readonly nativeType: 'text';
@@ -2060,6 +2090,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
               };
+              readonly cabeloDe: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly cicloRecompraMeses: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -2114,6 +2148,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
+              readonly idadeDonoCabelo: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
               readonly indicadoPor: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -2136,6 +2174,10 @@ type ContractBase = Omit<
               };
               readonly nome: {
                 readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly nomeDonoCabelo: {
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly observacoes: {
@@ -2230,6 +2272,7 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly autorizouFoto: { readonly column: 'autorizou_foto' };
+                readonly cabeloDe: { readonly column: 'cabelo_de' };
                 readonly cicloRecompraMeses: { readonly column: 'ciclo_recompra_meses' };
                 readonly cidadeId: { readonly column: 'cidade_id' };
                 readonly comprimentoCm: { readonly column: 'comprimento_cm' };
@@ -2242,12 +2285,14 @@ type ContractBase = Omit<
                 readonly geoFonte: { readonly column: 'geo_fonte' };
                 readonly geoPlaceId: { readonly column: 'geo_place_id' };
                 readonly id: { readonly column: 'id' };
+                readonly idadeDonoCabelo: { readonly column: 'idade_dono_cabelo' };
                 readonly indicadoPor: { readonly column: 'indicado_por' };
                 readonly lat: { readonly column: 'lat' };
                 readonly lng: { readonly column: 'lng' };
                 readonly motivoPerda: { readonly column: 'motivo_perda' };
                 readonly natural: { readonly column: 'natural' };
                 readonly nome: { readonly column: 'nome' };
+                readonly nomeDonoCabelo: { readonly column: 'nome_dono_cabelo' };
                 readonly observacoes: { readonly column: 'observacoes' };
                 readonly origem: { readonly column: 'origem' };
                 readonly quimica: { readonly column: 'quimica' };

@@ -44,6 +44,9 @@ const saidaValida = {
     textura: null,
     quimica: null,
     comprimentoCm: null,
+    cabeloDe: null,
+    nomeDonoCabelo: null,
+    idadeDonoCabelo: null,
     observacoes: null,
     dataCorte: null,
     pesoG: null,
@@ -52,6 +55,11 @@ const saidaValida = {
     valorRevenda: null,
     dataRevenda: null,
     comprador: null,
+    tipoCadastro: null,
+    dataPrevista: null,
+    dataProximoContato: null,
+    comprimentoDesejadoCm: null,
+    prioridade: null,
   },
   camposRemovidos: [],
 };
@@ -253,5 +261,8 @@ describe("OpenAIInterpretadorService", () => {
     expect(instrucoes).toMatch(/fora_do_escopo/);
     expect(instrucoes).toMatch(/Autorização de fotos não é extraída do texto/);
     expect(instrucoes).toMatch(/America\/Sao_Paulo/);
+    expect(instrucoes).toMatch(/futuro_corte/);
+    expect(instrucoes).toMatch(/nome do pai Robert/);
+    expect(instrucoes).toMatch(/editar ou remover futuro corte/);
   });
 });

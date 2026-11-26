@@ -1,3 +1,4 @@
+export const origins = ["Anúncio Meta", "Indicação", "Perfil Instagram", "Van na rua", "WhatsApp direto", "Outro"];
 export const colors = ["Preto", "Castanho escuro", "Castanho", "Castanho claro", "Loiro", "Ruivo", "Grisalho"];
 export const textures = ["Liso", "Ondulado", "Cacheado", "Crespo"];
 export const chemicals = ["Nenhuma", "Tintura", "Luzes/mechas", "Progressiva", "Alisamento"];

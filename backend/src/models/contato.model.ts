@@ -1,3 +1,7 @@
+import type { CABELO_DE } from "../schemas/contato.schema";
+
+export type CabeloDe = (typeof CABELO_DE)[number];
+
 export interface CriarContatoModel {
   nome: string;
   cidadeId: string;
@@ -27,6 +31,10 @@ export interface CriarContatoModel {
   quimica: string | null;
 
   comprimentoCm: number | null;
+
+  cabeloDe: CabeloDe | null;
+  nomeDonoCabelo: string | null;
+  idadeDonoCabelo: number | null;
 
   observacoes: string | null;
 }
@@ -59,6 +67,10 @@ export interface AtualizarContatoModel {
   quimica?: string | null;
 
   comprimentoCm?: number | null;
+
+  cabeloDe?: CabeloDe | null;
+  nomeDonoCabelo?: string | null;
+  idadeDonoCabelo?: number | null;
 
   observacoes?: string | null;
 }

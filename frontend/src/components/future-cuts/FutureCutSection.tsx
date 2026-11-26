@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, Edit3, Phone, Plus } from "lucide-react";
+import { CalendarDays, Edit3, Phone, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { listCities } from "../../services/contacts/contacts.service";
 import {
@@ -144,11 +144,13 @@ export function FutureCutSection({ contact }: { contact: ContactDetail }) {
             >
               <CalendarDays size={13} /> Agendar avaliação
             </button>
+            <button type="button" onClick={() => open("descartar")} className={`${buttonClass} text-[var(--kanzler-red)] hover:border-[#e5adad] hover:bg-[var(--kanzler-red-soft)]`}>
+              <Trash2 size={13} /> Remover
+            </button>
           </div>
 
           <div className="mt-3 flex gap-4 text-[11.5px] font-semibold text-[var(--kanzler-muted)]">
             <button type="button" onClick={() => open("converter")} className="hover:text-[var(--kanzler-green)]">Marcar como convertido</button>
-            <button type="button" onClick={() => open("descartar")} className="hover:text-[var(--kanzler-red)]">Descartar</button>
           </div>
         </>
       )}
@@ -193,9 +195,9 @@ export function FutureCutSection({ contact }: { contact: ContactDetail }) {
 
       <ConfirmDialog
         open={(modal === "converter" || modal === "descartar") && Boolean(active)}
-        title={modal === "converter" ? "Marcar como convertido?" : "Descartar interesse futuro?"}
+        title={modal === "converter" ? "Marcar como convertido?" : "Remover dos futuros cortes?"}
         description={error ?? "O acompanhamento será encerrado e permanecerá no histórico do contato."}
-        confirmLabel={modal === "converter" ? "Converter" : "Descartar"}
+        confirmLabel={modal === "converter" ? "Converter" : "Remover"}
         destructive={modal === "descartar"}
         pending={mutation.isPending}
         onCancel={close}

@@ -36,6 +36,9 @@ function draft(overrides: Partial<AssistantContactDraft> = {}): AssistantContact
     textura: null,
     quimica: null,
     comprimentoCm: 60,
+    cabeloDe: null,
+    nomeDonoCabelo: null,
+    idadeDonoCabelo: null,
     observacoes: null,
     autorizouFoto: false,
     dataCorte: null,
@@ -45,6 +48,11 @@ function draft(overrides: Partial<AssistantContactDraft> = {}): AssistantContact
     valorRevenda: null,
     dataRevenda: null,
     comprador: null,
+    tipoCadastro: "compra",
+    dataPrevista: null,
+    dataProximoContato: null,
+    comprimentoDesejadoCm: null,
+    prioridade: null,
     ...overrides,
   };
 }

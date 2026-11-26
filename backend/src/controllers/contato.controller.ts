@@ -6,6 +6,7 @@ import type {
 import {
   criarContatoSchema,
   criarContatoComCompraSchema,
+  criarContatoComFuturoCorteSchema,
   atualizarContatoSchema,
 } from "../schemas/contato.schema";
 
@@ -83,6 +84,47 @@ export class ContatoController {
         result.data,
         request.usuarioId,
       );
+
+    return reply
+      .status(201)
+      .send(criado);
+  }
+
+  async createComFuturoCorte(
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) {
+    const result =
+      criarContatoComFuturoCorteSchema.safeParse(
+        request.body,
+      );
+
+    if (!result.success) {
+      return reply.status(400).send({
+        error: "Dados inválidos",
+        details:
+          result.error.flatten(),
+      });
+    }
+
+    const cidade =
+      await this.cidadeService.findById(
+        result.data.contato.cidadeId,
+      );
+
+    if (!cidade) {
+      return reply.status(422).send({
+        error:
+          "Cidade não encontrada",
+      });
+    }
+
+    const criado =
+      await this.contatoService
+        .createComFuturoCorte(
+          result.data,
+          request.usuarioId,
+        );
 
     return reply
       .status(201)

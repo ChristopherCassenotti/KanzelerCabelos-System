@@ -1,4 +1,4 @@
-import type { CriarContatoInput, AtualizarContatoInput, CriarContatoComCompraInput } from "../schemas/contato.schema";
+import type { CriarContatoInput, AtualizarContatoInput, CriarContatoComCompraInput, CriarContatoComFuturoCorteInput } from "../schemas/contato.schema";
 import { ContatoRepository } from "../repositories/contato.repository";
 import type { CriarContatoModel, AtualizarContatoModel } from "../models/contato.model";
 import { FotoRepository } from "../repositories/foto.repository";
@@ -8,6 +8,7 @@ import { RecompraService } from "./recompra.service";
 import { CidadeRepository } from "../repositories/cidade.repository";
 import { GeocodingService } from "./geocoding.service";
 import { AuditoriaRepository } from "../repositories/auditoria.repository";
+import { prepararFuturoCorte } from "./futuro-corte.rules";
 
 function normalizarBusca(
   valor: string | null | undefined,
@@ -62,6 +63,18 @@ async createComCompra(
   return this.contatoRepository.createComCompra(
     await this.prepararContato(data.contato),
     data.compra,
+    usuarioId,
+  );
+}
+
+/** Pessoa ainda sem compra: nasce como lead, com o futuro corte. */
+async createComFuturoCorte(
+  data: CriarContatoComFuturoCorteInput,
+  usuarioId: string | null = null,
+) {
+  return this.contatoRepository.createComFuturoCorte(
+    await this.prepararContato(data.contato),
+    prepararFuturoCorte(data.futuroCorte),
     usuarioId,
   );
 }
@@ -174,6 +187,15 @@ autorizouFoto:
     comprimentoCm:
       data.comprimentoCm ?? null,
 
+    cabeloDe:
+      data.cabeloDe ?? null,
+
+    nomeDonoCabelo:
+      data.nomeDonoCabelo || null,
+
+    idadeDonoCabelo:
+      data.idadeDonoCabelo ?? null,
+
     observacoes:
       data.observacoes ?? null,
   };
@@ -281,6 +303,20 @@ if (
   if (data.comprimentoCm !== undefined) {
     contato.comprimentoCm =
       data.comprimentoCm;
+  }
+
+  if (data.cabeloDe !== undefined) {
+    contato.cabeloDe = data.cabeloDe;
+  }
+
+  if (data.nomeDonoCabelo !== undefined) {
+    contato.nomeDonoCabelo =
+      data.nomeDonoCabelo || null;
+  }
+
+  if (data.idadeDonoCabelo !== undefined) {
+    contato.idadeDonoCabelo =
+      data.idadeDonoCabelo;
   }
 
   if (data.observacoes !== undefined) {

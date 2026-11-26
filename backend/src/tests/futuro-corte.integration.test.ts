@@ -115,6 +115,9 @@ describe("Futuros cortes - endpoints", () => {
       textura: "Liso",
       quimica: "Nenhuma",
       comprimentoCm: 50,
+      cabeloDe: null,
+      nomeDonoCabelo: null,
+      idadeDonoCabelo: null,
       observacoes: null,
     });
 
@@ -157,6 +160,34 @@ describe("Futuros cortes - endpoints", () => {
 
     const contato = await contatoRepository.findById(contatoId);
     expect(contato?.status).toBe("lead");
+  });
+
+  it("cria lead e futuro corte juntos, sem compra", async () => {
+    const payload = {
+      contato: { nome: "Pessoa Nova", cidadeId },
+      futuroCorte: { dataProximoContato: dia(40) },
+    };
+
+    const { status, body } = await chamar("POST", "/contatos/com-futuro-corte", payload);
+
+    expect(status).toBe(201);
+    expect(body.contato.status).toBe("lead");
+    expect(body.futuroCorte.contatoId).toBe(body.contato.id);
+    expect(await listarCidade()).toHaveLength(1);
+
+    await contatoRepository.hardDelete(body.contato.id);
+
+    expect(
+      (await chamar("POST", "/contatos/com-futuro-corte", { ...payload, futuroCorte: {} })).status,
+    ).toBe(400);
+    expect(
+      (
+        await chamar("POST", "/contatos/com-futuro-corte", {
+          ...payload,
+          contato: { nome: "Pessoa Nova", cidadeId: randomUUID() },
+        })
+      ).status,
+    ).toBe(422);
   });
 
   it("rejeita segundo ativo, mas aceita após descartar", async () => {

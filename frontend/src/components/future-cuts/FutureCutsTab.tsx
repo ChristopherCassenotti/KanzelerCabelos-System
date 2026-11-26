@@ -1,13 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { AlertCircle, RefreshCw, SearchX } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlertCircle, RefreshCw, SearchX, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
-import { listFutureCuts } from "../../services/future-cuts/future-cuts.service";
+import { closeFutureCut, listFutureCuts } from "../../services/future-cuts/future-cuts.service";
 import type { City } from "../../types/contact";
-import type { FutureCutFilters, FutureCutSituationFilter } from "../../types/future-cut";
+import type { FutureCutFilters, FutureCutSituationFilter, FutureCutWithContact } from "../../types/future-cut";
 import { formatDate, formatPhone, initials } from "../../utils/contact";
 import { futureCutBadgeClass, futureCutHair, futureCutLabel, priorityLabels } from "../../utils/future-cut";
 import { colors, textures } from "../../utils/hair-options";
+import { ConfirmDialog } from "../contacts/ConfirmDialog";
 
 interface FutureCutsTabProps {
   cities: City[];
@@ -63,6 +64,23 @@ export function FutureCutsTab({ cities, onOpenContact }: FutureCutsTabProps) {
     queryFn: () => listFutureCuts(filters),
     enabled: !invalidRange,
   });
+
+  const queryClient = useQueryClient();
+  const [removing, setRemoving] = useState<FutureCutWithContact | null>(null);
+
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => closeFutureCut(id, "descartar"),
+    onSuccess: async () => {
+      setRemoving(null);
+      await Promise.all(
+        ["contacts", "dashboard", "agenda"].map((key) => queryClient.invalidateQueries({ queryKey: [key] })),
+      );
+    },
+  });
+
+  const removeError = removeMutation.isError
+    ? removeMutation.error instanceof Error ? removeMutation.error.message : "Não foi possível remover"
+    : null;
 
   const items = invalidRange ? [] : query.data ?? [];
 
@@ -129,7 +147,8 @@ export function FutureCutsTab({ cities, onOpenContact }: FutureCutsTabProps) {
         ) : (
           <div className="divide-y divide-[var(--kanzler-line)]">
             {items.map((item) => (
-              <button key={item.id} type="button" onClick={() => onOpenContact(item.contatoId)} className="flex w-full flex-wrap items-center gap-3 px-4 py-3.5 text-left hover:bg-[#fbfcfe]">
+              <div key={item.id} className="flex items-center hover:bg-[#fbfcfe]">
+              <button type="button" onClick={() => onOpenContact(item.contatoId)} className="flex min-w-0 flex-1 flex-wrap items-center gap-3 px-4 py-3.5 text-left">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--kanzler-blue-soft)] text-[11px] font-bold text-[var(--kanzler-blue)]">{initials(item.contato.nome)}</span>
                 <span className="min-w-[160px] flex-1">
                   <span className="block truncate text-[13px] font-semibold">{item.contato.nome}</span>
@@ -142,10 +161,31 @@ export function FutureCutsTab({ cities, onOpenContact }: FutureCutsTabProps) {
                 <span className="text-[12px] font-semibold">{formatDate(item.dataProximoContato)}</span>
                 <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${futureCutBadgeClass(item)}`}>{futureCutLabel(item)}</span>
               </button>
+              <button
+                type="button"
+                onClick={() => { removeMutation.reset(); setRemoving(item); }}
+                className="mr-4 grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-[var(--kanzler-line)] text-[var(--kanzler-muted)] hover:border-[#e5adad] hover:text-[var(--kanzler-red)]"
+                title="Remover dos futuros cortes"
+                aria-label={`Remover ${item.contato.nome} dos futuros cortes`}
+              >
+                <Trash2 size={15} />
+              </button>
+              </div>
             ))}
           </div>
         )}
       </section>
+
+      <ConfirmDialog
+        open={Boolean(removing)}
+        title="Remover dos futuros cortes?"
+        description={removeError ?? `O acompanhamento de ${removing?.contato.nome ?? ""} será encerrado. O contato continua cadastrado.`}
+        confirmLabel="Remover"
+        destructive
+        pending={removeMutation.isPending}
+        onCancel={() => setRemoving(null)}
+        onConfirm={() => removing && removeMutation.mutate(removing.id)}
+      />
     </>
   );
 }

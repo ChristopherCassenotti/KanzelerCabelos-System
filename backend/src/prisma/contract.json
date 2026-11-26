@@ -516,6 +516,13 @@
                   "kind": "scalar"
                 }
               },
+              "cabeloDe": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "cicloRecompraMeses": {
                 "nullable": false,
                 "type": {
@@ -600,6 +607,13 @@
                   "kind": "scalar"
                 }
               },
+              "idadeDonoCabelo": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "indicadoPor": {
                 "nullable": true,
                 "type": {
@@ -637,6 +651,13 @@
               },
               "nome": {
                 "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "nomeDonoCabelo": {
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -775,6 +796,9 @@
                 "autorizouFoto": {
                   "column": "autorizou_foto"
                 },
+                "cabeloDe": {
+                  "column": "cabelo_de"
+                },
                 "cicloRecompraMeses": {
                   "column": "ciclo_recompra_meses"
                 },
@@ -811,6 +835,9 @@
                 "id": {
                   "column": "id"
                 },
+                "idadeDonoCabelo": {
+                  "column": "idade_dono_cabelo"
+                },
                 "indicadoPor": {
                   "column": "indicado_por"
                 },
@@ -828,6 +855,9 @@
                 },
                 "nome": {
                   "column": "nome"
+                },
+                "nomeDonoCabelo": {
+                  "column": "nome_dono_cabelo"
                 },
                 "observacoes": {
                   "column": "observacoes"
@@ -1867,6 +1897,11 @@
                   "nativeType": "bool",
                   "nullable": false
                 },
+                "cabelo_de": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "ciclo_recompra_meses": {
                   "codecId": "pg/int4@1",
                   "default": {
@@ -1931,6 +1966,11 @@
                   "nativeType": "uuid",
                   "nullable": false
                 },
+                "idade_dono_cabelo": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
+                },
                 "indicado_por": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -1960,6 +2000,11 @@
                   "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
+                },
+                "nome_dono_cabelo": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "observacoes": {
                   "codecId": "pg/text@1",
@@ -2653,7 +2698,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "bd60ac491bcc221e19218b34eb9bff99adf86ace0347ed2a5ddeab375fc6c3e8"
+    "storageHash": "e8b96722f60f6c0c8ca7c9da7f96af24534f96068553980e200b8e8f919ca44d"
   },
   "execution": {
     "executionHash": "21088b6ce934ce6ae4cbabe55534bdee95c48942e2633d8f63540f540758cef6",

@@ -70,6 +70,12 @@ dataAvaliacao: null,
       textura: "Ondulado",
       quimica: "Nenhuma",
       comprimentoCm: 70,
+
+      cabeloDe: null,
+
+      nomeDonoCabelo: null,
+
+      idadeDonoCabelo: null,
       observacoes: null,
     });
 
@@ -163,6 +169,12 @@ dataAvaliacao: null,
         textura: "Liso",
         quimica: "Nenhuma",
         comprimentoCm: 65,
+
+        cabeloDe: null,
+
+        nomeDonoCabelo: null,
+
+        idadeDonoCabelo: null,
         observacoes: null,
       });
 

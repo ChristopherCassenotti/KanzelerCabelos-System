@@ -1,5 +1,7 @@
 import { http } from "../api/http";
+import type { ContactListItem } from "../../types/contact";
 import type {
+  CreateContactWithFutureCutPayload,
   FutureCut,
   FutureCutContactedPayload,
   FutureCutFilters,
@@ -20,6 +22,14 @@ export async function listContactFutureCuts(contactId: string) {
 
 export async function createFutureCut(contactId: string, payload: FutureCutPayload) {
   const response = await http.post<FutureCut>(`/contatos/${contactId}/futuros-cortes`, payload);
+  return response.data;
+}
+
+export async function createContactWithFutureCut(payload: CreateContactWithFutureCutPayload) {
+  const response = await http.post<{ contato: ContactListItem; futuroCorte: { id: string } }>(
+    "/contatos/com-futuro-corte",
+    payload,
+  );
   return response.data;
 }
 

@@ -19,6 +19,9 @@ export function createEmptyContactFormValues(): ContactFormValues {
     textura: "",
     quimica: "",
     comprimentoCm: "",
+    cabeloDe: "",
+    nomeDonoCabelo: "",
+    idadeDonoCabelo: "",
     autorizouFoto: false,
     observacoes: "",
   };
@@ -39,8 +42,28 @@ export function contactToFormValues(contact: ContactDetail): ContactFormValues {
     textura: contact.textura ?? "",
     quimica: contact.quimica ?? "",
     comprimentoCm: contact.comprimentoCm === null ? "" : String(contact.comprimentoCm),
+    cabeloDe: contact.cabeloDe ?? "",
+    nomeDonoCabelo: contact.nomeDonoCabelo ?? "",
+    idadeDonoCabelo: contact.idadeDonoCabelo == null ? "" : String(contact.idadeDonoCabelo),
     autorizouFoto: contact.autorizouFoto,
     observacoes: contact.observacoes ?? "",
+  };
+}
+
+type HairOwnerFormValues = Pick<ContactFormValues, "cabeloDe" | "nomeDonoCabelo" | "idadeDonoCabelo">;
+
+/** Sem "cabelo de", nome e idade da criança não fazem sentido e são descartados. */
+export function hairOwnerPayload(values: HairOwnerFormValues, includeNulls: boolean) {
+  const owner = values.cabeloDe || null;
+  const name = owner ? nonEmpty(values.nomeDonoCabelo) ?? null : null;
+  const age = owner && values.idadeDonoCabelo !== "" ? Number(values.idadeDonoCabelo) : null;
+
+  if (includeNulls) return { cabeloDe: owner, nomeDonoCabelo: name, idadeDonoCabelo: age };
+
+  return {
+    ...(owner ? { cabeloDe: owner } : {}),
+    ...(name ? { nomeDonoCabelo: name } : {}),
+    ...(age !== null ? { idadeDonoCabelo: age } : {}),
   };
 }
 
@@ -64,6 +87,7 @@ export function formValuesToCreatePayload(values: ContactFormValues): ContactPay
     ...(nonEmpty(values.textura) ? { textura: nonEmpty(values.textura) } : {}),
     ...(nonEmpty(values.quimica) ? { quimica: nonEmpty(values.quimica) } : {}),
     ...(values.comprimentoCm !== "" ? { comprimentoCm: Number(values.comprimentoCm) } : {}),
+    ...hairOwnerPayload(values, false),
     autorizouFoto: values.autorizouFoto,
     ...(nonEmpty(values.observacoes) ? { observacoes: nonEmpty(values.observacoes) } : {}),
   };
@@ -72,7 +96,8 @@ export function formValuesToCreatePayload(values: ContactFormValues): ContactPay
 export function formValuesToUpdatePayload(values: ContactFormValues): UpdateContactPayload {
   // O contrato atual aceita PATCH parcial. Campos vazios são omitidos para não enviar valores inválidos.
   // A limpeza explícita de campos será revisitada se o backend expuser null de forma uniforme no schema.
-  return formValuesToCreatePayload(values);
+  // De quem é o cabelo pode ser desfeito: envia null explicitamente.
+  return { ...formValuesToCreatePayload(values), ...hairOwnerPayload(values, true) };
 }
 
 export function createEmptyContactWithPurchaseFormValues(): ContactWithPurchaseFormValues {

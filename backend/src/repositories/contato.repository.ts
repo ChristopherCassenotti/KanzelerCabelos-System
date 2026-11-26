@@ -3,6 +3,7 @@ import type { CriarContatoModel, AtualizarContatoModel } from "../models/contato
 
 import { montarCompra } from "./compra.repository";
 import type { DadosCompraModel } from "../models/compra.model";
+import type { CriarFuturoCorteModel } from "../models/futuro-corte.model";
 import { STATUS_CONTATO } from "../services/contato-status.rules";
 
 function colunasContato(data: CriarContatoModel) {
@@ -34,6 +35,10 @@ function colunasContato(data: CriarContatoModel) {
     quimica: data.quimica,
 
     comprimentoCm: data.comprimentoCm,
+
+    cabeloDe: data.cabeloDe,
+    nomeDonoCabelo: data.nomeDonoCabelo,
+    idadeDonoCabelo: data.idadeDonoCabelo,
 
     observacoes: data.observacoes,
   };
@@ -94,6 +99,41 @@ export class ContatoRepository {
       return {
         contato,
         compra,
+      };
+    });
+  }
+
+  /** Contato (lead) + futuro corte + auditoria: ou grava tudo, ou nada. */
+  async createComFuturoCorte(
+    contatoData: CriarContatoModel,
+    futuroCorteData: Omit<CriarFuturoCorteModel, "contatoId">,
+    usuarioId: string | null,
+  ) {
+    return db.transaction(async (tx) => {
+      const contato =
+        await tx.orm.public.Contato.create(
+          colunasContato(contatoData),
+        );
+
+      const futuroCorte =
+        await tx.orm.public.FuturoCorte.create({
+          ...futuroCorteData,
+          contatoId: contato.id,
+        });
+
+      await tx.orm.public.Auditoria.create({
+        usuarioId,
+        acao: "contato_criado_com_futuro_corte",
+        entidade: "contato",
+        entidadeId: contato.id,
+        detalhes: JSON.stringify({
+          futuroCorteId: futuroCorte.id,
+        }),
+      });
+
+      return {
+        contato,
+        futuroCorte,
       };
     });
   }

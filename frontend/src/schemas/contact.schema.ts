@@ -24,6 +24,12 @@ export const contactFormSchema = z.object({
     .trim()
     .refine((value) => value === "" || /^\d+$/.test(value), "Use um número inteiro")
     .refine((value) => value === "" || Number(value) >= 0, "Valor inválido"),
+  cabeloDe: z.enum(["", "filha", "filho", "outro"]),
+  nomeDonoCabelo: z.string().trim().max(150),
+  idadeDonoCabelo: z
+    .string()
+    .trim()
+    .refine((value) => value === "" || (/^\d+$/.test(value) && Number(value) <= 120), "Informe a idade em anos"),
   autorizouFoto: z.boolean(),
   observacoes: z.string().trim().max(3000),
 });

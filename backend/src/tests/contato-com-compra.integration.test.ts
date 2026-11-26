@@ -33,6 +33,12 @@ describe("ContatoRepository.createComCompra - integração", () => {
     textura: null,
     quimica: null,
     comprimentoCm: 60,
+
+    cabeloDe: null,
+
+    nomeDonoCabelo: null,
+
+    idadeDonoCabelo: null,
     observacoes: null,
   });
 

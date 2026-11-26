@@ -179,7 +179,7 @@ export function useAssistantChat() {
     [runMessage],
   );
 
-  const confirm = useCallback(() => {
+  const confirm = useCallback((existingContactId?: string) => {
     const current = stateRef.current;
 
     if (!current.draft || !current.confirmationKey) return Promise.resolve();
@@ -190,6 +190,7 @@ export function useAssistantChat() {
       // Só chega aqui com duplicados quando o aviso já foi exibido no resumo.
       ignorarDuplicidade: current.duplicates.length > 0,
       quantidadeFotos: current.photos.length,
+      ...(existingContactId ? { contatoExistenteId: existingContactId } : {}),
     });
   }, [runConfirm]);
 
