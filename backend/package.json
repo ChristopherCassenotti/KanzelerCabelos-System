@@ -12,7 +12,8 @@
     "postinstall": "prisma skills sync || exit 0",
     "contract:emit": "prisma contract emit",
     "dev": "tsx watch src/server.ts",
-    "seed:demo": "tsx src/seed-demo.ts"
+    "seed:demo": "tsx src/seed-demo.ts",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +31,7 @@
     "fastify": "^5.12.5",
     "openai": "^7.41.0",
     "temporal-polyfill": "^1.0.5",
+    "tsx": "^4.23.15",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -37,7 +39,6 @@
     "@types/node": "^26.6.3",
     "dotenv-cli": "^11.0.0",
     "prisma": "^8.0.0-rc.17",
-    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^5.0.3"
   }
